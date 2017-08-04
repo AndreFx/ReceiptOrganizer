@@ -24,6 +24,11 @@
             <div class="user-head">
                 <a class="inbox-avatar">
                     <img  width="64" height="60" src="http://bootsnipp.com/img/avatars/ebeb306fd7ec11ab68cbcaa34282158bd80361a7.jpg">
+                    <form:form method="post" action="../logout.do">
+                        <button class="btn btn-compose">
+                            Logout
+                        </button>
+                    </form:form>
                 </a>
                 <div class="user-name">
                     <h5><a href="#">${username}</a></h5>

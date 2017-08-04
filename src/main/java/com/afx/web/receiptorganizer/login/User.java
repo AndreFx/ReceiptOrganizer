@@ -1,4 +1,4 @@
-package com.afx.web.receiptorganizer;
+package com.afx.web.receiptorganizer.login;
 
 public class User {
 
