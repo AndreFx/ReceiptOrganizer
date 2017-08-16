@@ -51,7 +51,7 @@ public class ReceiptOrganizerFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         // pass the request along the filter chain
-        if (httpReq.getSession().getAttribute("username") != null) {
+        if (httpReq.getSession().getAttribute("user") != null) {
             chain.doFilter(request, response);
         } else if(httpReq.getRequestURI().equals(this.fc.getInitParameter("login-page"))
                 || httpReq.getRequestURI().equals(this.fc.getInitParameter("login-action"))

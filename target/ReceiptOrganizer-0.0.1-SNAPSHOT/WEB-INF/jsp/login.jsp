@@ -26,7 +26,7 @@
 		<div class="logo">login</div>
 		<!-- Main Form -->
 		<div class="login-form-1">
-			<form:form method="post" action="login.do" id="login-form"
+			<form:form method="post" modelAttribute="user" action="login.do" id="login-form"
 				class="text-left">
 				<div class="login-form-main-message"></div>
 				<div class="main-login-form">
