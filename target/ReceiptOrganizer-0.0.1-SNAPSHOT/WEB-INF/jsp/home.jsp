@@ -8,17 +8,24 @@
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
     <spring:url value="/resources/css/bootstrap-multiselect.css" var="multiselectcss"/>
     <spring:url value="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" var="fontawesomecss"/>
+    <spring:url value="/resources/css/jquery-ui.css" var="uicss"/>
+
     <spring:url value="/resources/js/bootstrap.min.js" var="bootstrapjs"/>
     <spring:url value="/resources/js/jquery-3.2.1.min.js" var="jquery"/>
     <spring:url value="/resources/js/bootstrap-multiselect.js" var="multiselectjs"/>
+    <spring:url value="/resources/js/jquery.validate.min.js" var="validate"/>
+    <spring:url value="/resources/js/jquery-ui.min.js" var="ui"/>
     <link rel="stylesheet" href="${styleguide}">
     <link rel="stylesheet" href="${fontawesomecss}"/>
     <link rel="stylesheet" href="${bootstrap}"/>
     <link rel="stylesheet" href="${multiselectcss}"/>
+    <link rel="stylesheet" href="${uicss}"/>
 
     <script src="${jquery}"></script>
     <script src="${bootstrapjs}"></script>
     <script src="${multiselectjs}"></script>
+    <script src="${validate}"></script>
+    <script src="${ui}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('#labels').multiselect({
@@ -29,7 +36,108 @@
                 disableText: 'No labels available',
                 maxHeight: 250
             });
+
+            //Create datepicker
+            $('#date').datepicker();
+            
+            $('#addReceipt').on('hidden.bs.modal', function() {
+                console.log('Modal closed.');
+
+                //Hide error messages
+                $('div#receiptErrors').empty();
+                $('#receiptErrorContainer').hide();
+
+                //Clear any user input
+                $(this).find('form')[0].reset();
+            });
+
+            //Validator for newReceipt form.
+            $('#newReceipt').validate({
+                rules: {
+                    title: "required",
+                    multipartFile: "required",
+                    numItems: "digits",
+                    receiptAmount: {
+                        number: true
+                    }
+                },
+
+                messages: {
+                    title: "Title is required",
+                    multipartFile: "Receipt Upload is required",
+                    numItems: "# of Items must be a whole number"
+                },
+
+                onkeyup: false,
+
+                onfocusout: false,
+
+                errorElement: 'div',
+
+                errorPlacement: function(error, element) {
+                    console.log("Placing newReceipt form errors.");
+                    error.appendTo('div#receiptErrors');
+                    $('#receiptErrorContainer').show();
+                },
+
+                submitHandler: function(form) {
+                    $('#receiptErrorContainer').hide();
+                    form.submit();
+                }
+            });
+
+//TODO AJAX Example
+//            $(function() {
+//                //  Submit form using Ajax
+//                $('#newReceipt').submit(function(e) {
+//                    e.preventDefault();
+//
+//                    //Remove all errors
+//                    $('input').next().remove();
+//
+//                    //Setup form data
+//                    var fd = new FormData();
+//
+//                    fd.append( "title", $('input[name=title]').val());
+//                    fd.append( "date", $('input[name=date]').val());
+//                    fd.append( "numItems", $('input[name=numItems]').val());
+//                    fd.append( "receiptAmount", $('input[name=receiptAmount]').val());
+//                    fd.append( "labels", $('select[name=labels]').val());
+//                    fd.append( "description", $('textarea[name=description]').val());
+//                    var temp = $('input[name=multipartFile]').get(0).files[0];
+//                    //Don't pass undefined string if there is no file.
+//                    if (typeof temp  != 'undefined') {
+//                        fd.append( "multipartFile", temp);
+//                    }
+//
+//                    $.ajax({
+//                        url : 'validatereceipt.do',
+//                        type: "POST",
+//                        data : fd,
+//                        enctype: 'multipart/form-data',
+//                        processData: false,
+//                        contentType: false,
+//                        success : function(res) {
+//
+//                            if(res.validated){
+//                                //Submit to real service
+//                                //$('#receiptCreateSubmit').submit();
+//                                console.log("Valid submission attempt.");
+//                                return true;
+//                            } else {
+//                                //Set error messages
+//                                console.log("Invalid submission attempt.");
+//                                $.each(res.errorMessages, function(key,value){
+//                                    $('input[name='+key+']').after('<div class="alert alert-danger">'+value+'</div>');
+//                                });
+//                                return false;
+//                            }
+//                        }
+//                    })
+//                });
+//            });
         });
+
     </script>
     <title>Receipts</title>
 </head>
@@ -50,20 +158,19 @@
                     Add Receipt
                 </a>
                 <!-- Modal -->
-                <div aria-hidden=${receiptHidden == null ? "true" : "false"} aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="addReceipt" class="modal fade" style="display: none;">
+                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="addReceipt" class="modal fade" style="display: none;">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <button aria-hidden=${receiptHidden == null ? "true" : "false"} data-dismiss="modal" class="close" type="button">×</button>
+                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
                                 <h4 class="modal-title">Add Receipt</h4>
                             </div>
                             <div class="modal-body">
                                 <form:form autocomplete="false" modelAttribute="newReceipt" method="post" action="uploadreceipt.do" class="form-horizontal" enctype="multipart/form-data">
-                                    <spring:hasBindErrors name="newReceipt">
-                                        <c:forEach var="error" items="${errors.allErrors}">
-                                            <spring:message message="${error}"/>
-                                        </c:forEach>
-                                    </spring:hasBindErrors>
+                                    <div class="form-group alert alert-danger" hidden="true" id="receiptErrorContainer">
+                                        <div class="col-lg-10" id="receiptErrors">
+                                        </div>
+                                    </div>
                                     <div class="form-group">
                                         <form:label path="title" class="col-lg-2 control-name">Title</form:label>
                                         <div class="col-lg-10">
@@ -109,7 +216,7 @@
                                                 <span>Receipt</span>
                                                 <form:input path="multipartFile" type="file" accept=".png,.jpg"/>
                                             </span>
-                                            <form:button class="btn btn-send">Create</form:button>
+                                            <form:button id="receiptCreateSubmit" class="btn btn-send">Create</form:button>
                                         </div>
                                     </div>
                                 </form:form>

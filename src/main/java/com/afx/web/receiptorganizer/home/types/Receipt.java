@@ -1,39 +1,27 @@
 package com.afx.web.receiptorganizer.home.types;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Size;
 import java.util.Date;
 
 public class Receipt {
 
-    @NotNull
-    @Size(min=2, max=50)
+    /*
+    Private fields
+     */
+
     private String title;
-
-    @DateTimeFormat(pattern="MM/dd/yyyy")
-    @NotNull
-    @Past
     private Date date;
-
-    @NotNull
     private Float receiptAmount;
-
-    @NotNull
     private Integer numItems;
-
-    @Size(max=100)
     private String description;
-
     private byte[] file;
-
-    @NotNull
     private MultipartFile multipartFile;
-
     private String[] labels;
+
+    /*
+    Getters and setters
+     */
+
 
     public String getTitle() {
         return title;

@@ -2,27 +2,35 @@ package com.afx.web.receiptorganizer.home;
 
 import com.afx.web.receiptorganizer.home.dao.LabelDao;
 import com.afx.web.receiptorganizer.home.dao.ReceiptDao;
+import com.afx.web.receiptorganizer.home.responses.ReceiptJsonResponse;
 import com.afx.web.receiptorganizer.home.types.Label;
 import com.afx.web.receiptorganizer.home.types.HomeModel;
 import com.afx.web.receiptorganizer.home.types.Receipt;
+import com.afx.web.receiptorganizer.home.validators.ReceiptValidator;
 import com.afx.web.receiptorganizer.login.types.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.context.MessageSource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.imageio.ImageIO;
-import javax.naming.Binding;
 import javax.validation.Valid;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("home")
@@ -36,6 +44,17 @@ public class HomeController {
 
     @Autowired
     private ReceiptDao receiptDao;
+
+    @Autowired
+    private MessageSource messageSource;
+
+    @InitBinder("newReceipt")
+    public void receiptInitBinder(WebDataBinder binder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+
+        binder.setValidator(new ReceiptValidator());
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String initForm(@ModelAttribute("user") User user, ModelMap model) {
@@ -71,10 +90,32 @@ public class HomeController {
         return "redirect:/home/";
     }
 
+//    //Example ajax validation
+//    @RequestMapping(value="/validatereceipt.do", produces={MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
+//    @ResponseBody
+//    public ReceiptJsonResponse validateReceipt(Locale locale, @ModelAttribute("newReceipt") @Valid Receipt newReceipt, BindingResult result) {
+//        logger.info("Serving ajax request to validate Receipt.");
+//
+//        ReceiptJsonResponse response = new ReceiptJsonResponse();
+//
+//        if (result.hasErrors()) {
+//            logger.warn("User attempted to submit invalid request, sending error messages.");
+//            Map<String, String> errors = new HashMap<>();
+//            for (FieldError error : result.getFieldErrors()) {
+//                errors.put(error.getField(), messageSource.getMessage(error, locale));
+//            }
+//            response.setValidated(false);
+//            response.setErrorMessages(errors);
+//        } else {
+//            logger.info("User submitted valid request to create new receipt.");
+//            response.setValidated(true);
+//        }
+//
+//        return response;
+//    }
+
     @RequestMapping(value = "/uploadreceipt.do", method = RequestMethod.POST)
     public String createReceipt(@ModelAttribute("user") User user, @ModelAttribute("newReceipt") Receipt newReceipt, RedirectAttributes ra) {
-
-        //TODO Validation
 
         if (newReceipt.getMultipartFile() != null && !newReceipt.getMultipartFile().isEmpty()) {
             try {
