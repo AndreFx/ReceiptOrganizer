@@ -6,8 +6,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -16,6 +19,8 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +83,42 @@ public class ReceiptDaoImpl implements ReceiptDao {
 
     public void editReceipt(String username, Receipt receipt) {
 
+    }
+
+    public List<Receipt> getAllUserReceipts(String username) {
+        TransactionDefinition def = new DefaultTransactionDefinition();
+        TransactionStatus status = transactionManager.getTransaction(def);
+
+        List<Receipt> userReceipts;
+
+        try {
+            SqlParameterSource parameters = new MapSqlParameterSource("username", username);
+            String query = "SELECT * " +
+                    "FROM [ReceiptOrganizer].[dbo].[USER_RECEIPTS] " +
+                    "INNER JOIN [ReceiptOrganizer].[dbo].[RECEIPT] " +
+                    "ON [USER_RECEIPTS].[ReceiptId] = [RECEIPT].[ReceiptId]" +
+                    "WHERE [Username] = :username ";
+            userReceipts = this.jdbcTemplate.query(query, parameters, new RowMapper<Receipt>() {
+                public Receipt mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    Receipt receipt = new Receipt();
+                    receipt.setTitle(rs.getString("Title"));
+                    receipt.setDescription(rs.getString("Description"));
+                    receipt.setDate(rs.getDate("Date"));
+                    receipt.setReceiptAmount(rs.getFloat("ReceiptAmount"));
+                    receipt.setNumItems(rs.getInt("NumItems"));
+                    receipt.setFile(rs.getBytes("Image"));
+                    return receipt;
+                }
+            });
+
+            transactionManager.commit(status);
+        } catch (DataAccessException e) {
+            logger.error("Unable to fetch user receipts from database. Error: " + e.getMessage());
+            transactionManager.rollback(status);
+            throw e;
+        }
+
+        return userReceipts;
     }
 
     public List<Receipt> getUserReceiptsForLabel(String username) {

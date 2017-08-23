@@ -30,7 +30,6 @@ public class ReceiptOrganizerFilter implements Filter {
      * Default constructor.
      */
     public ReceiptOrganizerFilter() {
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -38,7 +37,6 @@ public class ReceiptOrganizerFilter implements Filter {
      */
     @Override
     public void destroy() {
-        // TODO Auto-generated method stub
     }
 
     /**

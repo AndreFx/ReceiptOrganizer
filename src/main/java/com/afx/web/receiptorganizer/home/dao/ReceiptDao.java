@@ -14,4 +14,6 @@ public interface ReceiptDao {
 
     List<Receipt> getUserReceiptsForLabel(String username);
 
+    List<Receipt> getAllUserReceipts(String username);
+
 }

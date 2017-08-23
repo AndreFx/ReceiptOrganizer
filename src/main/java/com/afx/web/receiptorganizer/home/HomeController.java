@@ -2,35 +2,26 @@ package com.afx.web.receiptorganizer.home;
 
 import com.afx.web.receiptorganizer.home.dao.LabelDao;
 import com.afx.web.receiptorganizer.home.dao.ReceiptDao;
-import com.afx.web.receiptorganizer.home.responses.ReceiptJsonResponse;
 import com.afx.web.receiptorganizer.home.types.Label;
 import com.afx.web.receiptorganizer.home.types.HomeModel;
 import com.afx.web.receiptorganizer.home.types.Receipt;
-import com.afx.web.receiptorganizer.home.validators.ReceiptValidator;
 import com.afx.web.receiptorganizer.login.types.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.DataBinder;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.imageio.ImageIO;
-import javax.validation.Valid;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("home")
@@ -50,21 +41,22 @@ public class HomeController {
 
     @InitBinder("newReceipt")
     public void receiptInitBinder(WebDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
 
-        binder.setValidator(new ReceiptValidator());
+        //Unneeded for validation. Using jquery on client
+        //binder.setValidator(new ReceiptValidator());
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String initForm(@ModelAttribute("user") User user, ModelMap model) {
         logger.debug("Serving user request for home screen.");
 
-        //Labels 1
+        //All user labels
         List<Label> labels = labelDao.getAllUserLabels(user.getUsername());
 
-        //Receipts
-        List<Receipt> receipts = new ArrayList<>();
+        //All user receipts
+        List<Receipt> receipts = receiptDao.getAllUserReceipts(user.getUsername());
 
         HomeModel homeModel = new HomeModel();
         homeModel.setLabels(labels);

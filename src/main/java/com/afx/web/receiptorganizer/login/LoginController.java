@@ -32,7 +32,7 @@ public class LoginController {
         //TODO LDAP Authentication
 
         if (!userDao.isUser(user.getUsername())) {
-            //First time user, add user to database.
+            //First time user, add user to database
             try {
                 userDao.add(user);
             } catch (Exception e) {

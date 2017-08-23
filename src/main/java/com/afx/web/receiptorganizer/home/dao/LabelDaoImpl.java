@@ -40,6 +40,7 @@ public class LabelDaoImpl implements LabelDao {
 
     }
 
+    //TODO Modify to return the number of receipts each label has.
     public List<Label> getAllUserLabels(String username) {
         SqlParameterSource parameters = new MapSqlParameterSource("username", username);
         String query = "SELECT [LabelName] " +
