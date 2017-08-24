@@ -27,7 +27,7 @@ public class LabelDaoImpl implements LabelDao {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("username", username);
         parameters.put("labelName", label.getName());
-        String sql = "INSERT INTO [ReceiptOrganizer].[dbo].[USER_LABELS] " +
+        String sql = "INSERT INTO USER_LABELS " +
                 "VALUES (:username, :labelName)";
         this.jdbcTemplate.update(sql, parameters);
     }
@@ -43,9 +43,9 @@ public class LabelDaoImpl implements LabelDao {
     //TODO Modify to return the number of receipts each label has.
     public List<Label> getAllUserLabels(String username) {
         SqlParameterSource parameters = new MapSqlParameterSource("username", username);
-        String query = "SELECT [LabelName] " +
-                "FROM [ReceiptOrganizer].[dbo].[USER_LABELS] " +
-                "WHERE [Username] = :username ";
+        String query = "SELECT LabelName " +
+                "FROM USER_LABELS " +
+                "WHERE Username = :username ";
         return this.jdbcTemplate.query(query, parameters, new RowMapper<Label>() {
             public Label mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Label label = new Label();

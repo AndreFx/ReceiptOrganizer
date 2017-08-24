@@ -28,9 +28,9 @@ public class UserDaoImpl implements UserDao {
         String user = "";
         try {
             SqlParameterSource parameters = new MapSqlParameterSource("username", username);
-            String query = "SELECT [Username] " +
+            String query = "SELECT Username " +
                     "FROM [ReceiptOrganizer].[dbo].[USER] " +
-                    "WHERE [Username] = :username";
+                    "WHERE Username = :username";
             user = this.jdbcTemplate.queryForObject(query, parameters, String.class);
         } catch (EmptyResultDataAccessException e) {
             logger.info("Username not found, new user logging in.");
@@ -45,7 +45,7 @@ public class UserDaoImpl implements UserDao {
         parameters.put("fName", user.getfName());
         parameters.put("lName", user.getlName());
 
-        String sql = "INSERT INTO [ReceiptOrganizer].[dbo].[USER]" +
+        String sql = "INSERT INTO [ReceiptOrganizer].[dbo].[USER] " +
                 "VALUES (:username, :fName, :lName)";
         this.jdbcTemplate.update(sql, parameters);
 

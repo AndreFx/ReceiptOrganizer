@@ -12,8 +12,6 @@ public interface ReceiptDao {
 
     void editReceipt(String username, Receipt receipt);
 
-    List<Receipt> getUserReceiptsForLabel(String username);
-
-    List<Receipt> getAllUserReceipts(String username);
+    List<Receipt> getUserReceiptsForLabel(String username, String label);
 
 }

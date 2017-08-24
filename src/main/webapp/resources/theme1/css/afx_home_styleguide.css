@@ -224,14 +224,6 @@ ul.inbox-pagination li {
     display: inline-block;
     padding: 5px 10px;
 }
-.inbox-pagination a.np-btn {
-    background: none repeat scroll 0 0 #fcfcfc;
-    border: 1px solid #e7e7e7;
-    border-radius: 3px !important;
-    color: #afafaf;
-    display: inline-block;
-    padding: 5px 15px;
-}
 .mail-option .chk-all input[type="checkbox"] {
     margin-top: 0;
 }
@@ -239,13 +231,8 @@ ul.inbox-pagination li {
     border: medium none;
     padding: 0;
 }
-.inbox-pagination a.np-btn {
-    margin-left: 5px;
-}
-.inbox-pagination li span {
-    display: inline-block;
-    margin-right: 5px;
-    margin-top: 7px;
+.pagination-nav {
+    float: right;
 }
 .fileinput-button {
     background: none repeat scroll 0 0 #eeeeee;
@@ -378,4 +365,17 @@ ul {
     list-style-type: none;
     padding: 0px;
     margin: 0px;
+}
+
+/* Bootstrap overrides */
+
+.pagination {
+   margin: 0 !important;
+}
+.pagination > li.active > a, .pagination > li.active > a:hover {
+    background: #bb0000;
+    border-color: #bb0000;
+}
+.pagination > li:not(.active) > a, .pagination > li:disabled:hover > a {
+    color: #bb0000;
 }

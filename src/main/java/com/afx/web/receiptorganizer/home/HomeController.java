@@ -3,13 +3,13 @@ package com.afx.web.receiptorganizer.home;
 import com.afx.web.receiptorganizer.home.dao.LabelDao;
 import com.afx.web.receiptorganizer.home.dao.ReceiptDao;
 import com.afx.web.receiptorganizer.home.types.Label;
-import com.afx.web.receiptorganizer.home.types.HomeModel;
 import com.afx.web.receiptorganizer.home.types.Receipt;
 import com.afx.web.receiptorganizer.login.types.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -49,21 +49,34 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String initForm(@ModelAttribute("user") User user, ModelMap model) {
+    public String initForm(@RequestParam(value = "label", required = false) String label, @RequestParam(value = "page", required = false) Integer page,
+                           @ModelAttribute("user") User user, ModelMap model) {
         logger.debug("Serving user request for home screen.");
 
         //All user labels
         List<Label> labels = labelDao.getAllUserLabels(user.getUsername());
+        List<Receipt> receipts = receiptDao.getUserReceiptsForLabel(user.getUsername(), label);
 
-        //All user receipts
-        List<Receipt> receipts = receiptDao.getAllUserReceipts(user.getUsername());
+        PagedListHolder<Receipt> pagedReceipts = new PagedListHolder<>(receipts);
+        //TODO Allow this to be customized by user
+        pagedReceipts.setPageSize(5);
 
-        HomeModel homeModel = new HomeModel();
-        homeModel.setLabels(labels);
-        homeModel.setReceipts(receipts);
+        if (page == null || page < 1 || page > pagedReceipts.getPageCount()) {
+            //Default to page 1 when input is invalid.
+            page = 1;
+            pagedReceipts.setPage(0);
+        } else {
+            pagedReceipts.setPage(page - 1);
+        }
+
+        model.addAttribute("labels", labels);
+        model.addAttribute("receipts", pagedReceipts.getPageList());
         model.addAttribute("newReceipt", new Receipt());
         model.addAttribute("newLabel", new Label());
-        model.addAttribute("dataModel", homeModel);
+        model.addAttribute("currentLabel", label);
+        model.addAttribute("numPages", pagedReceipts.getPageCount());
+        model.addAttribute("currentPage", page);
+
 
         return "home";
     }

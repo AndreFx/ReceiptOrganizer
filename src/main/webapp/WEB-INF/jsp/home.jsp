@@ -16,11 +16,13 @@
     <spring:url value="/resources/js/jquery.validate.min.js" var="validate"/>
     <spring:url value="/resources/js/jquery-ui.min.js" var="ui"/>
     <spring:url value="/resources/js/receiptOrganizerHome.js" var="receiptHome"/>
-    <link rel="stylesheet" href="${styleguide}">
     <link rel="stylesheet" href="${fontawesomecss}"/>
     <link rel="stylesheet" href="${bootstrap}"/>
     <link rel="stylesheet" href="${multiselectcss}"/>
     <link rel="stylesheet" href="${uicss}"/>
+
+    <!-- My stylesheet last -->
+    <link rel="stylesheet" href="${styleguide}">
 
     <script src="${jquery}"></script>
     <script src="${bootstrapjs}"></script>
@@ -88,7 +90,7 @@
                                         <form:label path="labels" class="col-lg-2 control-name">Labels</form:label>
                                         <div class="col-lg-10">
                                             <form:select multiple="true" path="labels" placeholder="" value="" class="form-control">
-                                                <form:options items="${dataModel.labels}" itemLabel="name" itemValue="name"/>
+                                                <form:options items="${labels}" itemLabel="name" itemValue="name"/>
                                             </form:select>
                                         </div>
                                     </div>
@@ -116,9 +118,10 @@
             </div>
             <ul class="nav-stacked labels-info nav nav-pills inbox-divider">
                 <li><h4>Labels</h4></li>
-                <li><a href="getreceipts.do?label=all"><i class=" fa fa-sign-blank text-info"></i> Show All Receipts </a></li>
-                <c:forEach items="${dataModel.labels}" var="label" varStatus="i">
-                    <li><a href="getreceipts.do?label=${label.name}"><i class=" fa fa-sign-blank text-info"></i> ${label.name}
+                <!-- TODO Set one of these as active -->
+                <li class="nav-item"><a class="nav-link active" href="."><i class="fa fa-sign-blank text-info"></i> Show All Receipts </a></li>
+                <c:forEach items="${labels}" var="label" varStatus="i">
+                    <li class="nav-item"><a class="nav-link" href="?label=${label.name}"><i class="fa fa-sign-blank text-info"></i> ${label.name}
                         <!-- TODO FIX
                     <span class="name name-info pull-right">Number of receipts</span>
                     -->
@@ -189,30 +192,69 @@
                             <li><a href="#"><i class="fa fa-trash-o"></i> Delete</a></li>
                         </ul>
                     </div>
+                    <!-- TODO Make these numbers correct, and put in correct position on page. -->
                     <ul class="unstyled inbox-pagination">
-                        <!-- TODO Make this number real -->
                         <c:choose>
-                            <c:when test="${dataModel.receipts.size() == 0}">
+                            <c:when test="${receipts.size() == 0}">
                                 <li><span>0-0 of 0</span></li>
                             </c:when>
-                            <c:when test="${dataModel.receipts.size() > 50}">
-                                <li><span>1-50 of ${dataModel.receipts.size()}</span></li>
+                            <c:when test="${receipts.size() > 50}">
+                                <li><span>1-50 of ${receipts.size()}</span></li>
                             </c:when>
                             <c:otherwise>
-                                <li><span>1-${dataModel.receipts.size()} of ${dataModel.receipts.size()}</span></li>
+                                <li><span>1-${receipts.size()} of ${receipts.size()}</span></li>
                             </c:otherwise>
                         </c:choose>
-                        <li>
-                            <a class="np-btn" href="#"><i class="fa fa-angle-left  pagination-left"></i></a>
-                        </li>
-                        <li>
-                            <a class="np-btn" href="#"><i class="fa fa-angle-right pagination-right"></i></a>
-                        </li>
                     </ul>
+                    <nav aria-label="page navigation" class="pagination-nav">
+                        <ul class="pagination inbox-pagination">
+                            <!-- Previous button -->
+                            <c:url value="." var="prev">
+                                <c:param name="page" value="${currentPage-1}"/>
+                            </c:url>
+                            <c:choose>
+                                <c:when test="${currentPage > 1}">
+                                    <li class="page-item"><a href="<c:out value="${prev}" />" class="page-link">Previous</a></li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="page-item disabled"><a tabindex="-1" href="<c:out value="${prev}" />" class="page-link">Previous</a></li>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <!-- Numbered buttons -->
+                            <c:forEach begin="1" end="${numPages}" step="1" varStatus="i">
+                                <c:choose>
+                                    <c:when test="${currentPage == i.index}">
+                                        <li class="page-item active"><a class="page-link">${i.index}</a></li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:url value="." var="url">
+                                            <c:param name="page" value="${i.index}"/>
+                                        </c:url>
+                                        <li class="page-item"><a href='<c:out value="${url}" />' class="page-link">${i.index}</a></li>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+
+                            <!-- Next button -->
+                            <c:url value="." var="next">
+                                <c:param name="page" value="${currentPage + 1}"/>
+                            </c:url>
+                            <c:choose>
+                                <c:when test="${currentPage + 1 <= numPages}">
+                                    <li class="page-item"><a href='<c:out value="${next}" />' class="page-link">Next</a></li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="page-item disabled"><a tabindex="-1" href='<c:out value="${next}" />' class="page-link">Next</a></li>
+                                </c:otherwise>
+                            </c:choose>
+
+                        </ul>
+                    </nav>
                 </div>
                 <table class="table table-inbox table-hover">
                     <tbody>
-                    <c:forEach items="${dataModel.receipts}" var="receipt" varStatus="i">
+                    <c:forEach items="${receipts}" var="receipt" varStatus="i">
                         <tr>
                             <td class="inbox-small-cells">
                                 <input type="checkbox" class="mail-checkbox">

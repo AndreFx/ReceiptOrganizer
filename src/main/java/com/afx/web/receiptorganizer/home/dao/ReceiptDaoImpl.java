@@ -44,7 +44,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
 
         try {
             //Insert into RECEIPT table first.
-            String sql = "INSERT INTO [ReceiptOrganizer].[dbo].[RECEIPT] " +
+            String sql = "INSERT INTO RECEIPT " +
                     "VALUES (:title, :description, :date, :receiptAmount, :numItems, :file)";
             KeyHolder keyHolder = new GeneratedKeyHolder();
             this.jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(receipt), keyHolder);
@@ -53,7 +53,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
             Map<String, Object> userReceiptParameters = new HashMap<>();
             userReceiptParameters.put("username", username);
             userReceiptParameters.put("receiptid", keyHolder.getKey().intValue());
-            String userReceiptsSql = "INSERT INTO [ReceiptOrganizer].[dbo].[USER_RECEIPTS] " +
+            String userReceiptsSql = "INSERT INTO USER_RECEIPTS " +
                     "VALUES (:username, :receiptid)";
             this.jdbcTemplate.update(userReceiptsSql, userReceiptParameters);
 
@@ -66,7 +66,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
                 temp.put("labelname", receipt.getLabels()[i]);
                 batchParams[i] = temp;
             }
-            String batchSql = "INSERT INTO [ReceiptOrganizer].[dbo].[RECEIPT_LABELS] " +
+            String batchSql = "INSERT INTO RECEIPT_LABELS " +
                     "VALUES (:receiptid, :username, :labelname)";
             this.jdbcTemplate.batchUpdate(batchSql, batchParams);
             transactionManager.commit(status);
@@ -85,19 +85,37 @@ public class ReceiptDaoImpl implements ReceiptDao {
 
     }
 
-    public List<Receipt> getAllUserReceipts(String username) {
+    public List<Receipt> getUserReceiptsForLabel(String username, String label) {
         TransactionDefinition def = new DefaultTransactionDefinition();
         TransactionStatus status = transactionManager.getTransaction(def);
 
         List<Receipt> userReceipts;
 
         try {
-            SqlParameterSource parameters = new MapSqlParameterSource("username", username);
-            String query = "SELECT * " +
-                    "FROM [ReceiptOrganizer].[dbo].[USER_RECEIPTS] " +
-                    "INNER JOIN [ReceiptOrganizer].[dbo].[RECEIPT] " +
-                    "ON [USER_RECEIPTS].[ReceiptId] = [RECEIPT].[ReceiptId]" +
-                    "WHERE [Username] = :username ";
+            SqlParameterSource parameters;
+            String query;
+            if (label == null) {
+                //Get all user receipts
+                parameters = new MapSqlParameterSource("username", username);
+                query = "SELECT * " +
+                        "FROM USER_RECEIPTS " +
+                        "INNER JOIN RECEIPT " +
+                        "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
+                        "WHERE Username = :username ";
+            } else {
+                //Get receipts for specifc label
+                parameters = new MapSqlParameterSource("username", username)
+                        .addValue("labelname", label);
+                query = "SELECT * " +
+                        "FROM USER_RECEIPTS " +
+                        "INNER JOIN RECEIPT " +
+                        "ON USER_RECEIPTS.ReceiptId = RECEIPT.[ReceiptId] " +
+                        "INNER JOIN RECEIPT_LABELS " +
+                        "ON RECEIPT.ReceiptId = RECEIPT_LABELS.ReceiptId " +
+                        "WHERE RECEIPT_LABELS.Username = :username " +
+                        "AND LabelName = :labelname ";
+            }
+
             userReceipts = this.jdbcTemplate.query(query, parameters, new RowMapper<Receipt>() {
                 public Receipt mapRow(ResultSet rs, int rowNum) throws SQLException {
                     Receipt receipt = new Receipt();
@@ -119,9 +137,6 @@ public class ReceiptDaoImpl implements ReceiptDao {
         }
 
         return userReceipts;
-    }
 
-    public List<Receipt> getUserReceiptsForLabel(String username) {
-        return null;
     }
 }
