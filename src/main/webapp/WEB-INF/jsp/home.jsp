@@ -177,80 +177,85 @@
             </div>
             <div class="inbox-body">
                 <div class="mail-option">
-
-                    <div class="btn-group">
-                        <a data-original-title="Refresh" data-placement="top" data-toggle="dropdown" href="#" class="btn mini tooltips">
-                            <i class=" fa fa-refresh"></i>
-                        </a>
+                    <div class="btn-group-container">
+                        <div class="btn-group">
+                            <a data-original-title="Refresh" data-placement="top" data-toggle="dropdown" href="#" class="btn mini tooltips">
+                                <i class=" fa fa-refresh"></i>
+                            </a>
+                        </div>
+                        <div class="btn-group hidden-phone">
+                            <a data-toggle="dropdown" href="#" class="btn mini blue" aria-expanded="false">
+                                More
+                                <i class="fa fa-angle-down "></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#"><i class="fa fa-trash-o"></i> Delete</a></li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="btn-group hidden-phone">
-                        <a data-toggle="dropdown" href="#" class="btn mini blue" aria-expanded="false">
-                            More
-                            <i class="fa fa-angle-down "></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#"><i class="fa fa-trash-o"></i> Delete</a></li>
-                        </ul>
-                    </div>
-                    <!-- TODO Make these numbers correct, and put in correct position on page. -->
-                    <ul class="unstyled inbox-pagination">
+                    <div class="btn-group-container">
                         <c:choose>
-                            <c:when test="${receipts.size() == 0}">
-                                <li><span>0-0 of 0</span></li>
-                            </c:when>
-                            <c:when test="${receipts.size() > 50}">
-                                <li><span>1-50 of ${receipts.size()}</span></li>
+                            <c:when test="${numReceipts == 0}">
+                                <span class="pagination-number">0 - 0 of 0</span>
                             </c:when>
                             <c:otherwise>
-                                <li><span>1-${receipts.size()} of ${receipts.size()}</span></li>
-                            </c:otherwise>
-                        </c:choose>
-                    </ul>
-                    <nav aria-label="page navigation" class="pagination-nav">
-                        <ul class="pagination inbox-pagination">
-                            <!-- Previous button -->
-                            <c:url value="." var="prev">
-                                <c:param name="page" value="${currentPage-1}"/>
-                            </c:url>
-                            <c:choose>
-                                <c:when test="${currentPage > 1}">
-                                    <li class="page-item"><a href="<c:out value="${prev}" />" class="page-link">Previous</a></li>
-                                </c:when>
-                                <c:otherwise>
-                                    <li class="page-item disabled"><a tabindex="-1" href="<c:out value="${prev}" />" class="page-link">Previous</a></li>
-                                </c:otherwise>
-                            </c:choose>
-
-                            <!-- Numbered buttons -->
-                            <c:forEach begin="1" end="${numPages}" step="1" varStatus="i">
                                 <c:choose>
-                                    <c:when test="${currentPage == i.index}">
-                                        <li class="page-item active"><a class="page-link">${i.index}</a></li>
+                                    <c:when test="${currentPage * pageSize > numReceipts}">
+                                        <span class="pagination-number">${(currentPage - 1) * pageSize + 1} - ${numReceipts} of ${numReceipts}</span>
                                     </c:when>
                                     <c:otherwise>
-                                        <c:url value="." var="url">
-                                            <c:param name="page" value="${i.index}"/>
-                                        </c:url>
-                                        <li class="page-item"><a href='<c:out value="${url}" />' class="page-link">${i.index}</a></li>
+                                        <span class="pagination-number">${(currentPage - 1) * pageSize + 1} - ${currentPage * pageSize} of ${numReceipts}</span>
                                     </c:otherwise>
                                 </c:choose>
-                            </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
 
-                            <!-- Next button -->
-                            <c:url value="." var="next">
-                                <c:param name="page" value="${currentPage + 1}"/>
-                            </c:url>
-                            <c:choose>
-                                <c:when test="${currentPage + 1 <= numPages}">
-                                    <li class="page-item"><a href='<c:out value="${next}" />' class="page-link">Next</a></li>
-                                </c:when>
-                                <c:otherwise>
-                                    <li class="page-item disabled"><a tabindex="-1" href='<c:out value="${next}" />' class="page-link">Next</a></li>
-                                </c:otherwise>
-                            </c:choose>
+                        <nav class="pagination-nav" aria-label="page navigation">
+                            <ul class="pagination">
+                                <!-- Previous button -->
+                                <c:url value="." var="prev">
+                                    <c:param name="page" value="${currentPage-1}"/>
+                                </c:url>
+                                <c:choose>
+                                    <c:when test="${currentPage > 1}">
+                                        <li class="page-item"><a href="<c:out value="${prev}" />" class="page-link">Previous</a></li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <li class="page-item disabled"><a tabindex="-1" href="<c:out value="${prev}" />" class="page-link">Previous</a></li>
+                                    </c:otherwise>
+                                </c:choose>
 
-                        </ul>
-                    </nav>
+                                <!-- Numbered buttons -->
+                                <c:forEach begin="1" end="${numPages}" step="1" varStatus="i">
+                                    <c:choose>
+                                        <c:when test="${currentPage == i.index}">
+                                            <li class="page-item active"><a class="page-link">${i.index}</a></li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:url value="." var="url">
+                                                <c:param name="page" value="${i.index}"/>
+                                            </c:url>
+                                            <li class="page-item"><a href='<c:out value="${url}" />' class="page-link">${i.index}</a></li>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+
+                                <!-- Next button -->
+                                <c:url value="." var="next">
+                                    <c:param name="page" value="${currentPage + 1}"/>
+                                </c:url>
+                                <c:choose>
+                                    <c:when test="${currentPage + 1 <= numPages}">
+                                        <li class="page-item"><a href='<c:out value="${next}" />' class="page-link">Next</a></li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <li class="page-item disabled"><a tabindex="-1" href='<c:out value="${next}" />' class="page-link">Next</a></li>
+                                    </c:otherwise>
+                                </c:choose>
+
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
                 <table class="table table-inbox table-hover">
                     <tbody>

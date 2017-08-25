@@ -202,14 +202,21 @@ ul.labels-info li a i {
     background: none repeat scroll 0 0 #f7f7f7;
     font-weight: 600;
 }
-ul.inbox-pagination {
-    float: right;
+.btn-group-container {
+    display: inline-block;
 }
-ul.inbox-pagination li {
-    float: left;
+.pagination-number {
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.pagination-nav {
+    display: inline-block;
+    vertical-align: middle;
 }
 .mail-option {
-    display: inline-block;
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
     margin-bottom: 10px;
     width: 100%;
 }
@@ -230,9 +237,6 @@ ul.inbox-pagination li {
 .mail-option .btn-group a.all {
     border: medium none;
     padding: 0;
-}
-.pagination-nav {
-    float: right;
 }
 .fileinput-button {
     background: none repeat scroll 0 0 #eeeeee;
@@ -376,6 +380,6 @@ ul {
     background: #bb0000;
     border-color: #bb0000;
 }
-.pagination > li:not(.active) > a, .pagination > li:disabled:hover > a {
+.pagination > li:not(.active):not(.disabled) > a {
     color: #bb0000;
 }

@@ -76,6 +76,8 @@ public class HomeController {
         model.addAttribute("currentLabel", label);
         model.addAttribute("numPages", pagedReceipts.getPageCount());
         model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", pagedReceipts.getPageSize());
+        model.addAttribute("numReceipts", receipts.size());
 
 
         return "home";
