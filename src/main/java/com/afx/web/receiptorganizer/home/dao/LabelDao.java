@@ -8,10 +8,12 @@ public interface LabelDao {
 
     void addLabel(String username, Label label);
 
-    void deleteLabel(Label label);
+    void deleteLabel(String username, Label label);
 
-    void editLabel(Label label);
+    void editLabel(String username, Label oldLabel, Label newLabel);
 
     List<Label> getAllUserLabels(String username);
+
+    boolean isLabelUnique(String username, Label label);
 
 }

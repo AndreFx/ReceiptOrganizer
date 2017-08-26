@@ -117,15 +117,23 @@
                 </div><!-- /.modal -->
             </div>
             <ul class="nav-stacked labels-info nav nav-pills inbox-divider">
-                <li><h4>Labels</h4></li>
-                <!-- TODO Set one of these as active -->
-                <li class="nav-item"><a class="nav-link active" href="."><i class="fa fa-sign-blank text-info"></i> Show All Receipts </a></li>
+                <li><div class="labels-title-container"><h4 class="labels-title">Labels</h4><a href="#editLabel" data-toggle="modal"  title="Edit Labels" class="labels-edit"><i class="fa fa-pencil-square-o"></i></a></div></li>
+                <div aria-hidden="true" aria-labelledby="editLabelModel" role="dialog" tabindex="-1" id="editLabel" class="modal fade" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                <h4 class="modal-title">Edit Labels</h4>
+                            </div>
+                            <div class="modal-body">
+                                <!-- TODO Add form for Editing/Deleting -->
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+                <li class="nav-item"><a class="nav-link" href="."><i class="fa fa-sign-blank text-info"></i> Show All Receipts </a></li>
                 <c:forEach items="${labels}" var="label" varStatus="i">
-                    <li class="nav-item"><a class="nav-link" href="?label=${label.name}"><i class="fa fa-sign-blank text-info"></i> ${label.name}
-                        <!-- TODO FIX
-                    <span class="name name-info pull-right">Number of receipts</span>
-                    -->
-                    </a></li>
+                    <li class="nav-item"><a class="nav-link" href="?label=${label.name}"><i class="fa fa-sign-blank text-info"></i>${label.name}</a></li>
                 </c:forEach>
                 <li><a href="#addLabel" data-toggle="modal"  title="Add Label"><i class="fa fa-plus"></i><i class="fa fa-sign-blank text-info"></i> Create New Label</a></li>
                 <div aria-hidden="true" aria-labelledby="addLabelModal" role="dialog" tabindex="-1" id="addLabel" class="modal fade" style="display: none;">
@@ -209,7 +217,6 @@
                                 </c:choose>
                             </c:otherwise>
                         </c:choose>
-
                         <nav class="pagination-nav" aria-label="page navigation">
                             <ul class="pagination">
                                 <!-- Previous button -->
@@ -252,7 +259,6 @@
                                         <li class="page-item disabled"><a tabindex="-1" href='<c:out value="${next}" />' class="page-link">Next</a></li>
                                     </c:otherwise>
                                 </c:choose>
-
                             </ul>
                         </nav>
                     </div>
@@ -264,7 +270,6 @@
                             <td class="inbox-small-cells">
                                 <input type="checkbox" class="mail-checkbox">
                             </td>
-                            <td class="inbox-small-cells"><i class="fa fa-star"></i></td>
                             <td class="view-message  dont-show">${receipt.title}</td>
                             <td class="view-message ">${receipt.description}</td>
                             <td class="view-message  inbox-small-cells"><i class="fa fa-paperclip"></i></td>

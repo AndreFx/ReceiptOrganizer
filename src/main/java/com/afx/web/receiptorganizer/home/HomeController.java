@@ -59,7 +59,7 @@ public class HomeController {
 
         PagedListHolder<Receipt> pagedReceipts = new PagedListHolder<>(receipts);
         //TODO Allow this to be customized by user
-        pagedReceipts.setPageSize(5);
+        pagedReceipts.setPageSize(10);
 
         if (page == null || page < 1 || page > pagedReceipts.getPageCount()) {
             //Default to page 1 when input is invalid.

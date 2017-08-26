@@ -108,6 +108,30 @@ ul.inbox-nav li a i {
 ul.inbox-nav li a span.label {
     margin-top: 13px;
 }
+.labels-title-container {
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+}
+.labels-title {
+    display: inline-block;
+}
+.labels-edit:hover, .labels-edit:focus {
+    background: none repeat scroll 0 0 transparent !important;
+    color: #6a6a6a !important;
+}
+.labels-edit {
+    vertical-align: middle;
+    display: inline-block !important;
+    padding: 0 0 0 0 !important;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    margin-right: 10px;
+}
+.labels-edit i {
+    vertical-align: middle;
+    padding: 0 0 0 0 !important;
+}
 ul.labels-info li h4 {
     color: #5c5c5e;
     font-size: 13px;
