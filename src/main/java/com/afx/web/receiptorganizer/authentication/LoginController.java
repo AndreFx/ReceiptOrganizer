@@ -1,18 +1,18 @@
-package com.afx.web.receiptorganizer.login;
+package com.afx.web.receiptorganizer.authentication;
 
-import com.afx.web.receiptorganizer.login.dao.UserDao;
-import com.afx.web.receiptorganizer.login.types.User;
+import com.afx.web.receiptorganizer.dao.user.UserDao;
+import com.afx.web.receiptorganizer.types.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
+@RequestMapping("login")
 @SessionAttributes("user")
 public class LoginController {
 
@@ -21,13 +21,13 @@ public class LoginController {
     @Autowired
     private UserDao userDao;
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public ModelAndView loginPage() {
         logger.debug("Request for login page.");
         return new ModelAndView("login", "user", new User());
     }
 
-    @RequestMapping(value = "/login.do", method = RequestMethod.POST)
+    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public String loginAction(@ModelAttribute("user") User user, RedirectAttributes ra) {
         //TODO LDAP Authentication
 
@@ -43,12 +43,5 @@ public class LoginController {
 
         logger.debug("Login action performed for: " + user.getUsername());
         return "redirect:/home/";
-    }
-
-    @RequestMapping(value = "/logout.do", method = RequestMethod.POST)
-    public String logoutAction(@SessionAttribute("user") User user,  SessionStatus status, RedirectAttributes ra) {
-        logger.debug("logout action performed for: " + user.getUsername());
-        status.setComplete();
-        return "redirect:/";
     }
 }

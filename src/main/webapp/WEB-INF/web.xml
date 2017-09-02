@@ -12,14 +12,14 @@
   </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>
-    <filter-class>com.afx.web.receiptorganizer.auth.ReceiptOrganizerFilter</filter-class>
+    <filter-class>com.afx.web.receiptorganizer.authentication.ReceiptOrganizerFilter</filter-class>
     <init-param>
       <param-name>login-page</param-name>
       <param-value>/ReceiptOrganizer/</param-value>
     </init-param>
     <init-param>
       <param-name>login-action</param-name>
-      <param-value>/ReceiptOrganizer/login.do</param-value>
+      <param-value>/ReceiptOrganizer/login/authenticate</param-value>
     </init-param>
     <init-param>
       <param-name>resources</param-name>

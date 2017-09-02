@@ -1,4 +1,4 @@
-package com.afx.web.receiptorganizer.home.types;
+package com.afx.web.receiptorganizer.types;
 
 public class Label {
 

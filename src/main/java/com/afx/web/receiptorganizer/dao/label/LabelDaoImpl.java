@@ -1,6 +1,7 @@
-package com.afx.web.receiptorganizer.home.dao;
+package com.afx.web.receiptorganizer.dao.label;
 
-import com.afx.web.receiptorganizer.home.types.Label;
+import com.afx.web.receiptorganizer.dao.receipt.ReceiptDaoImpl;
+import com.afx.web.receiptorganizer.types.Label;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +85,7 @@ public class LabelDaoImpl implements LabelDao {
             parameters.put("newLabelName", newLabel.getName());
             parameters.put("username", username);
             String sql = "UPDATE USER_LABELS " +
-                    "SET Username = :username AND LabelName = :newLabelName " +
+                    "SET LabelName = :newLabelName " +
                     "WHERE Username = :username AND LabelName = :labelName";
             this.jdbcTemplate.update(sql, parameters);
             transactionManager.commit(status);

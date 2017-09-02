@@ -1,4 +1,4 @@
-package com.afx.web.receiptorganizer.home.types;
+package com.afx.web.receiptorganizer.types;
 
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
@@ -17,6 +17,8 @@ public class Receipt {
     private byte[] file;
     private MultipartFile multipartFile;
     private String[] labels;
+    private String viewableImage;
+    private int receiptId;
 
     /*
     Getters and setters
@@ -85,5 +87,21 @@ public class Receipt {
 
     public void setLabels(String[] labels) {
         this.labels = labels;
+    }
+
+    public String getViewableImage() {
+        return viewableImage;
+    }
+
+    public void setViewableImage(String viewableImage) {
+        this.viewableImage = viewableImage;
+    }
+
+    public int getReceiptId() {
+        return receiptId;
+    }
+
+    public void setReceiptId(int receiptId) {
+        this.receiptId = receiptId;
     }
 }

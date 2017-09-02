@@ -1,4 +1,4 @@
-package com.afx.web.receiptorganizer.home.responses;
+package com.afx.web.receiptorganizer.userview.responses;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package com.afx.web.receiptorganizer.login.types;
+package com.afx.web.receiptorganizer.types;
 
 import java.io.Serializable;
 

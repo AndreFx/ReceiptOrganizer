@@ -1,9 +1,24 @@
+/* Utilities */
+div.inline {
+    display: inline-block;
+}
+.center-full-width {
+    width: 100%;
+    margin-right: auto !important;
+    margin-left: auto !important;
+}
+.vertical-align-text {
+    vertical-align: middle !important;
+}
+
+/* Page Specific */
 .mail-box {
     border-collapse: collapse;
     border-spacing: 0;
     display: table;
     table-layout: fixed;
     width: 100%;
+    margin-bottom: 50px
 }
 .mail-box aside {
     display: table-cell;
@@ -108,6 +123,18 @@ ul.inbox-nav li a i {
 ul.inbox-nav li a span.label {
     margin-top: 13px;
 }
+.receiptThumbnail {
+    max-width: 175px;
+    width: auto;
+    height: 84px;
+}
+.receiptEditImage {
+    display: block;
+    margin: auto;
+    padding-bottom: 20px;
+    width: 50%;
+    height: auto;
+}
 .labels-title-container {
     display: flex;
     justify-content: space-between;
@@ -208,6 +235,7 @@ ul.labels-info li a i {
 }
 .table-inbox {
     border: 1px solid #d3d3d3;
+    text-align: center;
     margin-bottom: 0;
 }
 .table-inbox tr td {
@@ -388,6 +416,13 @@ ul.labels-info li a i {
     .files .delete {
         width: 60px;
     }
+}
+h4.footer-text {
+    color: #9d9f9e;
+    font-size: 12px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0 22px;
 }
 ul {
     list-style-type: none;

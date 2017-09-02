@@ -1,6 +1,6 @@
-package com.afx.web.receiptorganizer.home.validators;
+package com.afx.web.receiptorganizer.userview.validators;
 
-import com.afx.web.receiptorganizer.home.types.Receipt;
+import com.afx.web.receiptorganizer.types.Receipt;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;

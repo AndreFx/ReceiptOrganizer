@@ -1,6 +1,7 @@
-package com.afx.web.receiptorganizer.home.dao;
+package com.afx.web.receiptorganizer.dao.receipt;
 
-import com.afx.web.receiptorganizer.home.types.Receipt;
+import com.afx.web.receiptorganizer.types.Receipt;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,12 +78,93 @@ public class ReceiptDaoImpl implements ReceiptDao {
         }
     }
 
-    public void deleteReceipt(String username, Receipt receipt) {
+    public void deleteReceipt(int receiptId) {
+        TransactionDefinition def = new DefaultTransactionDefinition();
+        TransactionStatus status = transactionManager.getTransaction(def);
 
+        try {
+            Map<String, Integer> parameters = new HashMap<>();
+            parameters.put("receiptid", receiptId);
+            String sql = "DELETE FROM RECEIPT " +
+                    "WHERE ReceiptId = :receiptid";
+            this.jdbcTemplate.update(sql, parameters);
+            transactionManager.commit(status);
+        } catch (DataAccessException e) {
+            logger.error("Unable to delete receipt from database. Error: " + e.getMessage());
+            transactionManager.rollback(status);
+            throw e;
+        }
     }
 
     public void editReceipt(String username, Receipt receipt) {
+        TransactionDefinition def = new DefaultTransactionDefinition();
+        TransactionStatus status = transactionManager.getTransaction(def);
 
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("receiptid", receipt.getReceiptId());
+            parameters.put("title", receipt.getTitle());
+            parameters.put("description", receipt.getDescription());
+            parameters.put("date", receipt.getDate());
+            parameters.put("receiptamount", receipt.getReceiptAmount());
+            parameters.put("numitems", receipt.getNumItems());
+            parameters.put("image", receipt.getFile());
+            String sql = "UPDATE RECEIPT " +
+                    "SET Title = :title, Description = :description, Date = :date, ReceiptAmount = :receiptamount, NumItems = :numitems, Image = :image " +
+                    "WHERE ReceiptId = :receiptid";
+            this.jdbcTemplate.update(sql, parameters);
+            transactionManager.commit(status);
+        } catch (DataAccessException e) {
+            logger.error("Unable to edit label in database. Error: " + e.getMessage());
+            transactionManager.rollback(status);
+            throw e;
+        }
+    }
+
+    public Receipt getReceipt(String username, int receiptId) {
+        TransactionDefinition def = new DefaultTransactionDefinition();
+        TransactionStatus status = transactionManager.getTransaction(def);
+
+        List<Receipt> receipts;
+
+        try {
+            SqlParameterSource parameters = new MapSqlParameterSource("receiptid", receiptId);
+            String query = "SELECT * " +
+                    "FROM RECEIPT " +
+                    "WHERE Receipt.ReceiptId = :receiptid ";
+
+            receipts = this.jdbcTemplate.query(query, parameters, new ReceiptRowMapper());
+
+            String labelQuery = "SELECT LabelName " +
+                    "FROM RECEIPT " +
+                    "INNER JOIN RECEIPT_LABELS " +
+                    "ON RECEIPT.ReceiptId = RECEIPT_LABELS.ReceiptId " +
+                    "WHERE Receipt.ReceiptId = :receiptid ";
+
+            List<String> labelNames = this.jdbcTemplate.query(labelQuery, parameters, new RowMapper<String>() {
+                public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return rs.getString("LabelName");
+                }
+            });
+
+            if (receipts != null && receipts.size() != 0) {
+                //Add labels to receipt.
+                receipts.get(0).setLabels(labelNames.toArray(new String[labelNames.size()]));
+            }
+
+            transactionManager.commit(status);
+        } catch (DataAccessException e) {
+            logger.error("Unable to fetch user receipt from database. Error: " + e.getMessage());
+            transactionManager.rollback(status);
+            throw e;
+        }
+
+        if (receipts == null || receipts.size() == 0) {
+            logger.error("Unable to get User:" + username+ " receipt: " + receiptId);
+            return null;
+        } else {
+            return receipts.get(0);
+        }
     }
 
     public List<Receipt> getUserReceiptsForLabel(String username, String label) {
@@ -116,18 +198,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
                         "AND LabelName = :labelname ";
             }
 
-            userReceipts = this.jdbcTemplate.query(query, parameters, new RowMapper<Receipt>() {
-                public Receipt mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    Receipt receipt = new Receipt();
-                    receipt.setTitle(rs.getString("Title"));
-                    receipt.setDescription(rs.getString("Description"));
-                    receipt.setDate(rs.getDate("Date"));
-                    receipt.setReceiptAmount(rs.getFloat("ReceiptAmount"));
-                    receipt.setNumItems(rs.getInt("NumItems"));
-                    receipt.setFile(rs.getBytes("Image"));
-                    return receipt;
-                }
-            });
+            userReceipts = this.jdbcTemplate.query(query, parameters, new ReceiptRowMapper());
 
             transactionManager.commit(status);
         } catch (DataAccessException e) {
@@ -137,6 +208,5 @@ public class ReceiptDaoImpl implements ReceiptDao {
         }
 
         return userReceipts;
-
     }
 }

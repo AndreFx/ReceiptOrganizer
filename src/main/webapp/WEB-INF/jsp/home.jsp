@@ -4,6 +4,19 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix = "c"%>
 <html>
 <head>
+    <spring:url var="createReceiptUrl" value="/receipts/create"/>
+    <spring:url var="deleteLabelUrl" value="/labels/delete"/>
+    <spring:url var="createLabelUrl" value="/labels/create"/>
+    <spring:url var="updateLabelUrl" value="/labels/update"/>
+    <spring:url var="logoutUrl" value="/logout"/>
+    <spring:url var="settingsUrl" value="/settings"/>
+    <spring:url value="." var="prev">
+        <spring:param name="page" value="${currentPage-1}"/>
+    </spring:url>
+    <spring:url value="." var="next">
+        <spring:param name="page" value="${currentPage + 1}"/>
+    </spring:url>
+
     <spring:url value="/resources/css/afx_home_styleguide.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
     <spring:url value="/resources/css/bootstrap-multiselect.css" var="multiselectcss"/>
@@ -30,6 +43,63 @@
     <script src="${validate}"></script>
     <script src="${ui}"></script>
     <script src="${receiptHome}"></script>
+    <script>
+        $(document).ready(function() {
+            <c:forEach items="${labels}" var="label" varStatus="i">
+            $('#editLabelForm${label.name.replaceAll("\\s+","").replaceAll("\\W+", "")}').validate({
+                rules: {
+                    oldLabelName: "required",
+                    newLabelName: {
+                        required: true,
+                        notAllSpace: true,
+                        uniqueLabel: true
+                    }
+                },
+
+                messages: {
+                    oldLabelName: "Don't mess around in the dev console",
+                    newLabelName: {
+                        required: "Cannot enter empty label for ${label.name}",
+                        notAllSpace: "Cannot enter empty label for ${label.name}",
+                        uniqueLabel: "Label name must be unique for ${label.name}"
+                    }
+                },
+
+                onkeyup: false,
+
+                onfocusout: false,
+
+                errorContainer: "#labelEditErrorContainer",
+
+                errorLabelContainer: "#labelEditErrorContainer ul",
+
+                wrapper: "li",
+
+                submitHandler: function (form) {
+                    $('#labelEditErrorContainer').hide();
+                    form.submit();
+                }
+            });
+            </c:forEach>
+
+            $('#editLabel').on('hidden.bs.modal', function() {
+                console.log('Edit Label modal closed.');
+
+                //Hide error messages
+                <c:forEach items="${labels}" var="label" varStatus="i">
+                    $('#labelEditErrorContainer ul').empty();
+                    $('#labelEditErrorContainer').hide();
+                </c:forEach>
+
+                //Clear any user input
+                var i;
+                for (i = 0; i < $(this).find('form').length; i++) {
+                    console.log('Iteration #: ' + i);
+                    $(this).find('form')[i].reset();
+                }
+            });
+        });
+    </script>
     <title>Receipts</title>
 </head>
 <body>
@@ -57,10 +127,9 @@
                                 <h4 class="modal-title">Add Receipt</h4>
                             </div>
                             <div class="modal-body">
-                                <form:form autocomplete="false" modelAttribute="newReceipt" method="post" action="uploadreceipt.do" class="form-horizontal" enctype="multipart/form-data">
-                                    <div class="form-group alert alert-danger" hidden="true" id="receiptErrorContainer">
-                                        <div class="col-lg-10" id="receiptErrors">
-                                        </div>
+                                <form:form autocomplete="false" modelAttribute="newReceipt" method="post" action="${createReceiptUrl}" class="form-horizontal" enctype="multipart/form-data">
+                                    <div class="form-group alert alert-danger center-full-width" hidden="true" id="receiptErrorContainer">
+                                        <div class="col-lg-10" id="receiptErrors"></div>
                                     </div>
                                     <div class="form-group">
                                         <form:label path="title" class="col-lg-2 control-name">Title</form:label>
@@ -112,6 +181,9 @@
                                     </div>
                                 </form:form>
                             </div>
+                            <div class="modal-footer">
+                                <h4 class="footer-text">Create a new receipt</h4>
+                            </div>
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
@@ -126,12 +198,37 @@
                                 <h4 class="modal-title">Edit Labels</h4>
                             </div>
                             <div class="modal-body">
-                                <!-- TODO Add form for Editing/Deleting -->
+                                <div class="form-group alert alert-danger row center-full-width" id="labelEditErrorContainer" style="display: none">
+                                    <ul></ul>
+                                </div>
+                                <c:forEach items="${labels}" var="label" varStatus="i">
+                                    <div class="form-group row">
+                                        <form id="editLabelForm${label.name.replaceAll("\\s+","")}" action="${updateLabelUrl}" method="post" class="col-lg-10 form-horizontal">
+                                            <label class="col-lg-4 control-name">${label.name}</label>
+                                            <div class="col-lg-5">
+                                                <input name="oldLabelName" value="${label.name}" type="hidden">
+                                                <input name="newLabelName" placeholder="" value="${label.name}" class="form-control"/>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <button type="submit" value="Submit" class="btn btn-send">Save Edit</button>
+                                            </div>
+                                        </form>
+                                        <div class="col-lg-2">
+                                            <form action="${deleteLabelUrl}" method="post" class="form-horizontal">
+                                                <input type="hidden" name="labelName" value="${label.name}">
+                                                <button class="btn btn-send">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                            <div class="modal-footer">
+                                <h4 class="footer-text">Edit or delete your configured labels</h4>
                             </div>
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
-                <li class="nav-item"><a class="nav-link" href="."><i class="fa fa-sign-blank text-info"></i> Show All Receipts </a></li>
+                <li class="nav-item"><a class="nav-link" href="."><i class="fa fa-sign-blank text-info"></i>Show All Receipts</a></li>
                 <c:forEach items="${labels}" var="label" varStatus="i">
                     <li class="nav-item"><a class="nav-link" href="?label=${label.name}"><i class="fa fa-sign-blank text-info"></i>${label.name}</a></li>
                 </c:forEach>
@@ -144,10 +241,9 @@
                                 <h4 class="modal-title">Add Label</h4>
                             </div>
                             <div class="modal-body">
-                                <form:form autocomplete="false" action="createlabel.do" modelAttribute="newLabel" method="post" class="form-horizontal">
-                                    <div class="form-group alert alert-danger" hidden="true" id="labelErrorContainer">
-                                        <div class="col-lg-10" id="labelErrors">
-                                        </div>
+                                <form:form autocomplete="false" action="${createLabelUrl}" modelAttribute="newLabel" method="post" class="form-horizontal">
+                                    <div class="form-group alert alert-danger center-full-width" hidden="true" id="labelErrorContainer">
+                                        <div class="col-lg-10" id="labelErrors"></div>
                                     </div>
                                     <div class="form-group">
                                         <form:label path="name" class="col-lg-2 control-name">Label</form:label>
@@ -162,6 +258,9 @@
                                     </div>
                                 </form:form>
                             </div>
+                            <div class="modal-footer">
+                                <h4 class="footer-text">Create a new label to categorize your receipts</h4>
+                            </div>
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
@@ -170,10 +269,10 @@
         <aside class="lg-side">
             <div class="inbox-head">
                 <h3>Receipts</h3>
-                <form class="pull-right position" action="../settings" method="get" id="settings-form">
+                <form class="pull-right position" action="${settingsUrl}" id="settings-form">
                     <button class="btn settings-button"><i class="fa fa-cog"></i></button>
                 </form>
-                <form class="pull-right position" action="../logout.do" method="post" id="logout-form">
+                <form class="pull-right position" action="${logoutUrl}" method="post" id="logout-form">
                     <button class="btn logout-button"><i class="fa fa-sign-out"></i></button>
                 </form>
                 <form action="#" class="pull-right position">
@@ -220,9 +319,6 @@
                         <nav class="pagination-nav" aria-label="page navigation">
                             <ul class="pagination">
                                 <!-- Previous button -->
-                                <c:url value="." var="prev">
-                                    <c:param name="page" value="${currentPage-1}"/>
-                                </c:url>
                                 <c:choose>
                                     <c:when test="${currentPage > 1}">
                                         <li class="page-item"><a href="<c:out value="${prev}" />" class="page-link">Previous</a></li>
@@ -239,18 +335,15 @@
                                             <li class="page-item active"><a class="page-link">${i.index}</a></li>
                                         </c:when>
                                         <c:otherwise>
-                                            <c:url value="." var="url">
-                                                <c:param name="page" value="${i.index}"/>
-                                            </c:url>
+                                            <spring:url value="." var="url">
+                                                <spring:param name="page" value="${i.index}"/>
+                                            </spring:url>
                                             <li class="page-item"><a href='<c:out value="${url}" />' class="page-link">${i.index}</a></li>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:forEach>
 
                                 <!-- Next button -->
-                                <c:url value="." var="next">
-                                    <c:param name="page" value="${currentPage + 1}"/>
-                                </c:url>
                                 <c:choose>
                                     <c:when test="${currentPage + 1 <= numPages}">
                                         <li class="page-item"><a href='<c:out value="${next}" />' class="page-link">Next</a></li>
@@ -266,14 +359,16 @@
                 <table class="table table-inbox table-hover">
                     <tbody>
                     <c:forEach items="${receipts}" var="receipt" varStatus="i">
+                        <spring:url value="/receipts/${receipt.receiptId}" var="receiptViewUrl"/>
                         <tr>
-                            <td class="inbox-small-cells">
-                                <input type="checkbox" class="mail-checkbox">
+                            <td class="inbox-small-cells vertical-align-text">
+                                <input type="checkbox" class="mail-checkbox vertical-align-text">
                             </td>
-                            <td class="view-message  dont-show">${receipt.title}</td>
-                            <td class="view-message ">${receipt.description}</td>
-                            <td class="view-message  inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                            <td class="view-message  text-right">${receipt.date}</td>
+                            <td class="view-message vertical-align-text"><img class="receiptThumbnail" alt="${receipt.title} Image" src="data:image/jpeg;charset=utf-8;base64,${receipt.viewableImage}"></td>
+                            <td class="view-message dont-show vertical-align-text"><a href='<c:out value="${receiptViewUrl}" />' class="page-link">${receipt.title}</a></td>
+                            <td class="view-message vertical-align-text">${receipt.description}</td>
+                            <td class="view-message vertical-align-text inbox-small-cells"><i class="fa fa-paperclip"></i></td>
+                            <td class="view-message vertical-align-text text-right">${receipt.date}</td>
                         </tr>
                     </c:forEach>
                     </tbody>

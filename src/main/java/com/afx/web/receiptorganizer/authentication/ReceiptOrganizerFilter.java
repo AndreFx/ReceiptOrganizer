@@ -1,6 +1,5 @@
-package com.afx.web.receiptorganizer.auth;
+package com.afx.web.receiptorganizer.authentication;
 
-import com.afx.web.receiptorganizer.login.LoginController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

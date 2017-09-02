@@ -1,15 +1,43 @@
 $(document).ready(function() {
-    $('#labels').multiselect({
-        enableFiltering: true,
-        enableCaseInsensitiveFiltering: true,
-        includeSelectAllOption: true,
-        disableIfEmpty: true,
-        disableText: 'No labels available',
-        maxHeight: 250
-    });
 
-    //Create datepicker
-    $('#date').datepicker();
+    //Custom validators
+
+    jQuery.validator.addMethod("notAllSpace", function(value, element) {
+        return value.trim().length != 0;
+    }, "Empty input not allowed");
+
+    //TODO Find a better way to do this. Shouldnt make synchronous Ajax call
+    jQuery.validator.addMethod("uniqueLabel", function(value, element) {
+        var success = false;
+
+        var fd = new FormData();
+        fd.append("labelName", value);
+
+        $.ajax({
+                       url : '/ReceiptOrganizer/receipts/validate',
+                       type: "POST",
+                       data : fd,
+                       processData: false,
+                       contentType: false,
+                       async: false,
+                       success : function(res) {
+
+                           if(res.validated){
+                               //Submit to real service
+                               //$('#receiptCreateSubmit').submit();
+                               console.log("Valid label submission attempt.");
+                               success = true;
+                           } else {
+                               //Set error messages
+                               console.log("Invalid label submission attempt.");
+                               success = false;
+                           }
+                       }
+       });
+       return success;
+    }, "Label must be unique");
+
+    //Modals and validation
 
     $('#addReceipt').on('hidden.bs.modal', function() {
         console.log('Receipt modal closed.');
@@ -34,11 +62,17 @@ $(document).ready(function() {
 
     $('#newLabel').validate({
         rules: {
-            name: "required",
+            name: {
+                required: true,
+                uniqueLabel: true
+            }
         },
 
         messages: {
-            name: "Label name is required"
+            name: {
+                required: "Label name is required",
+                uniqueLabel: "Label name must be unique"
+            }
         },
 
         onkeyup: false,
@@ -94,6 +128,20 @@ $(document).ready(function() {
             form.submit();
         }
     });
+
+    //Multiselect and datepicker
+
+    $('#labels').multiselect({
+        enableFiltering: true,
+        enableCaseInsensitiveFiltering: true,
+        includeSelectAllOption: true,
+        disableIfEmpty: true,
+        disableText: 'No labels available',
+        maxHeight: 250
+    });
+
+    //Create datepicker
+    $('#date').datepicker();
 
 //TODO AJAX Example
 //            $(function() {
