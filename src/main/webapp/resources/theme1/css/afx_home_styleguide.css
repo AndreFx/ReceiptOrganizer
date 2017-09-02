@@ -11,14 +11,30 @@ div.inline {
     vertical-align: middle !important;
 }
 
+/* Common AFX Styleguide */
+
+
 /* Page Specific */
+.footer {
+    padding: 50px 0;
+    margin-top: 50px;
+    text-align: left;
+    background-color: #e5e8ef;
+}
+.footer-links {
+    padding-left: 0;
+    margin-bottom: 25px;
+}
+.footer a {
+    font-weight: 500;
+    color: #464a4c;
+}
 .mail-box {
     border-collapse: collapse;
     border-spacing: 0;
     display: table;
     table-layout: fixed;
     width: 100%;
-    margin-bottom: 50px
 }
 .mail-box aside {
     display: table-cell;
@@ -256,6 +272,11 @@ ul.labels-info li a i {
 }
 .btn-group-container {
     display: inline-block;
+}
+.receiptEditButtons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 }
 .pagination-number {
     vertical-align: middle;

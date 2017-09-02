@@ -3,9 +3,11 @@ package com.afx.web.receiptorganizer.labels;
 import com.afx.web.receiptorganizer.dao.label.LabelDao;
 import com.afx.web.receiptorganizer.types.Label;
 import com.afx.web.receiptorganizer.types.User;
+import com.afx.web.receiptorganizer.userview.responses.LabelJsonResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -19,6 +21,26 @@ public class LabelController {
 
     @Autowired
     private LabelDao labelDao;
+
+    @RequestMapping(value="/validate", produces={MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
+    @ResponseBody
+    public LabelJsonResponse validateLabel(@ModelAttribute("user") User user, @RequestParam("labelName") String labelName) {
+        logger.info("Serving ajax request to validate Label: " + labelName + " for user: " + user.getUsername());
+
+        Label label = new Label();
+        label.setName(labelName);
+        LabelJsonResponse response = new LabelJsonResponse();
+
+        if (this.labelDao.isLabelUnique(user.getUsername(), label)) {
+            response.setValidated(false);
+            logger.info("User submitted non-unique request to create label");
+        } else {
+            logger.info("User submitted valid request to create new label.");
+            response.setValidated(true);
+        }
+
+        return response;
+    }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public String createLabel(@ModelAttribute("user") User user, @ModelAttribute Label newLabel, RedirectAttributes ra) {

@@ -103,7 +103,6 @@
     <title>Receipts</title>
 </head>
 <body>
-<div class="container">
     <div class="mail-box">
         <aside class="sm-side">
             <div class="user-head">
@@ -285,20 +284,7 @@
             <div class="inbox-body">
                 <div class="mail-option">
                     <div class="btn-group-container">
-                        <div class="btn-group">
-                            <a data-original-title="Refresh" data-placement="top" data-toggle="dropdown" href="#" class="btn mini tooltips">
-                                <i class=" fa fa-refresh"></i>
-                            </a>
-                        </div>
-                        <div class="btn-group hidden-phone">
-                            <a data-toggle="dropdown" href="#" class="btn mini blue" aria-expanded="false">
-                                More
-                                <i class="fa fa-angle-down "></i>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#"><i class="fa fa-trash-o"></i> Delete</a></li>
-                            </ul>
-                        </div>
+
                     </div>
                     <div class="btn-group-container">
                         <c:choose>
@@ -360,11 +346,9 @@
                     <tbody>
                     <c:forEach items="${receipts}" var="receipt" varStatus="i">
                         <spring:url value="/receipts/${receipt.receiptId}" var="receiptViewUrl"/>
+                        <spring:url value="/receipts/${receipt.receiptId}/image" var="receiptViewImageUrl"/>
                         <tr>
-                            <td class="inbox-small-cells vertical-align-text">
-                                <input type="checkbox" class="mail-checkbox vertical-align-text">
-                            </td>
-                            <td class="view-message vertical-align-text"><img class="receiptThumbnail" alt="${receipt.title} Image" src="data:image/jpeg;charset=utf-8;base64,${receipt.viewableImage}"></td>
+                            <td class="view-message vertical-align-text"><img class="receiptThumbnail" alt="${receipt.title} Image" src='<c:out value="${receiptViewImageUrl}"/>'></td>
                             <td class="view-message dont-show vertical-align-text"><a href='<c:out value="${receiptViewUrl}" />' class="page-link">${receipt.title}</a></td>
                             <td class="view-message vertical-align-text">${receipt.description}</td>
                             <td class="view-message vertical-align-text inbox-small-cells"><i class="fa fa-paperclip"></i></td>
@@ -376,6 +360,13 @@
             </div>
         </aside>
     </div>
-</div>
+    <footer class="footer">
+        <div class="container">
+            <ul class="footer-links">
+                <li><a href="https://github.com/AndreFx/ReceiptOrganizer">Github</a></li>
+            </ul>
+            <p class="text-muted">Currently v0.0.1. Written by AndreFx</p>
+        </div>
+    </footer>
 </body>
 </html>

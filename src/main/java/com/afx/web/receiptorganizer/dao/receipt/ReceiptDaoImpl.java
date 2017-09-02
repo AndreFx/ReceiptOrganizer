@@ -59,14 +59,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
             this.jdbcTemplate.update(userReceiptsSql, userReceiptParameters);
 
             //Insert into RECEIPT_LABELS
-            Map<String, ?>[] batchParams = new HashMap[receipt.getLabels().length];
-            for (int i = 0; i < receipt.getLabels().length; i++) {
-                Map<String, Object> temp = new HashMap<>();
-                temp.put("receiptid", keyHolder.getKey().intValue());
-                temp.put("username", username);
-                temp.put("labelname", receipt.getLabels()[i]);
-                batchParams[i] = temp;
-            }
+            Map<String, ?>[] batchParams = getLabelBatchParams(username, receipt);
             String batchSql = "INSERT INTO RECEIPT_LABELS " +
                     "VALUES (:receiptid, :username, :labelname)";
             this.jdbcTemplate.batchUpdate(batchSql, batchParams);
@@ -102,17 +95,33 @@ public class ReceiptDaoImpl implements ReceiptDao {
 
         try {
             Map<String, Object> parameters = new HashMap<>();
+            String sql;
             parameters.put("receiptid", receipt.getReceiptId());
             parameters.put("title", receipt.getTitle());
             parameters.put("description", receipt.getDescription());
             parameters.put("date", receipt.getDate());
             parameters.put("receiptamount", receipt.getReceiptAmount());
             parameters.put("numitems", receipt.getNumItems());
-            parameters.put("image", receipt.getFile());
-            String sql = "UPDATE RECEIPT " +
-                    "SET Title = :title, Description = :description, Date = :date, ReceiptAmount = :receiptamount, NumItems = :numitems, Image = :image " +
-                    "WHERE ReceiptId = :receiptid";
+
+            //Don't update receipt image if image is null
+            if (receipt.getFile() == null) {
+                sql = "UPDATE RECEIPT " +
+                        "SET Title = :title, Description = :description, Date = :date, ReceiptAmount = :receiptamount, NumItems = :numitems " +
+                        "WHERE ReceiptId = :receiptid";
+            } else {
+                parameters.put("image", receipt.getFile());
+                sql = "UPDATE RECEIPT " +
+                        "SET Title = :title, Description = :description, Date = :date, ReceiptAmount = :receiptamount, NumItems = :numitems, Image = :image " +
+                        "WHERE ReceiptId = :receiptid";
+            }
             this.jdbcTemplate.update(sql, parameters);
+
+            //Insert into RECEIPT_LABELS
+            Map<String, ?>[] batchParams = getLabelBatchParams(username, receipt);
+            String batchSql = "IF NOT EXISTS (SELECT * FROM RECEIPT_LABELS WHERE ReceiptId = :receiptid AND Username = :username AND LabelName = :labelname) BEGIN " +
+                    "INSERT INTO RECEIPT_LABELS " +
+                    "VALUES (:receiptid, :username, :labelname) END";
+            this.jdbcTemplate.batchUpdate(batchSql, batchParams);
             transactionManager.commit(status);
         } catch (DataAccessException e) {
             logger.error("Unable to edit label in database. Error: " + e.getMessage());
@@ -208,5 +217,19 @@ public class ReceiptDaoImpl implements ReceiptDao {
         }
 
         return userReceipts;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, ?>[] getLabelBatchParams(String username, Receipt receipt) {
+        Map<String, ?>[] batchParams = new HashMap[receipt.getLabels().length];
+        for (int i = 0; i < receipt.getLabels().length; i++) {
+            Map<String, Object> temp = new HashMap<>();
+            temp.put("receiptid", receipt.getReceiptId());
+            temp.put("username", username);
+            temp.put("labelname", receipt.getLabels()[i]);
+            batchParams[i] = temp;
+        }
+
+        return batchParams;
     }
 }

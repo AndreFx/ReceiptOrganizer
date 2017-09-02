@@ -17,8 +17,7 @@ public class Receipt {
     private byte[] file;
     private MultipartFile multipartFile;
     private String[] labels;
-    private String viewableImage;
-    private int receiptId;
+    private Integer receiptId;
 
     /*
     Getters and setters
@@ -89,19 +88,11 @@ public class Receipt {
         this.labels = labels;
     }
 
-    public String getViewableImage() {
-        return viewableImage;
-    }
-
-    public void setViewableImage(String viewableImage) {
-        this.viewableImage = viewableImage;
-    }
-
-    public int getReceiptId() {
+    public Integer getReceiptId() {
         return receiptId;
     }
 
-    public void setReceiptId(int receiptId) {
+    public void setReceiptId(Integer receiptId) {
         this.receiptId = receiptId;
     }
 }

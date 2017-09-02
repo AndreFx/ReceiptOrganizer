@@ -12,7 +12,9 @@
 <html>
 <head>
     <spring:url var="baseHomeUrl" value="/home/"/>
+    <spring:url var="createReceiptUrl" value="/receipts/create"/>
     <spring:url var="editReceiptUrl" value="/receipts/${receiptId}/update"/>
+    <spring:url var="deleteReceiptUrl" value="/receipts/${receiptId}/delete"/>
     <spring:url var="deleteLabelUrl" value="/labels/delete"/>
     <spring:url var="createLabelUrl" value="/labels/create"/>
     <spring:url var="updateLabelUrl" value="/labels/update"/>
@@ -31,6 +33,7 @@
     <spring:url value="/resources/js/jquery.validate.min.js" var="validate"/>
     <spring:url value="/resources/js/jquery-ui.min.js" var="ui"/>
     <spring:url value="/resources/js/receiptOrganizerHome.js" var="receiptHome"/>
+    <spring:url value="/resources/js/receiptEdit.js" var="receiptEdit"/>
     <link rel="stylesheet" href="${fontawesomecss}"/>
     <link rel="stylesheet" href="${bootstrap}"/>
     <link rel="stylesheet" href="${multiselectcss}"/>
@@ -45,6 +48,7 @@
     <script src="${validate}"></script>
     <script src="${ui}"></script>
     <script src="${receiptHome}"></script>
+    <script src="${receiptEdit}"></script>
     <script>
         $(document).ready(function() {
             <c:forEach items="${labels}" var="label" varStatus="i">
@@ -105,7 +109,6 @@
     <title>Receipts</title>
 </head>
 <body>
-<div class="container">
     <div class="mail-box">
         <aside class="sm-side">
             <div class="user-head">
@@ -117,6 +120,78 @@
                 </div>
             </div>
             <div class="inbox-body">
+                <a href="#addReceipt" data-toggle="modal"  title="Add Receipt" class="btn btn-compose">
+                    Add Receipt
+                </a>
+                <!-- Modal -->
+                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="addReceipt" class="modal fade" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                <h4 class="modal-title">Add Receipt</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form:form autocomplete="false" modelAttribute="newReceipt" method="post" action="${createReceiptUrl}" class="form-horizontal" enctype="multipart/form-data">
+                                    <div class="form-group alert alert-danger center-full-width" hidden="true" id="receiptErrorContainer">
+                                        <div class="col-lg-10" id="receiptErrors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <form:label path="title" class="col-lg-2 control-name">Title</form:label>
+                                        <div class="col-lg-10">
+                                            <form:input path="title" type="text" placeholder="" value="" class="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <form:label path="date" class="col-lg-2 control-name">Date</form:label>
+                                        <div class="col-lg-10">
+                                            <form:input path="date" type="text" placeholder="MM/dd/yyyy" value="" class="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <form:label path="numItems" class="col-lg-2 control-name"># of Items</form:label>
+                                        <div class="col-lg-10">
+                                            <form:input path="numItems" type="text" placeholder="" value="" class="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <form:label path="receiptAmount" class="col-lg-2 control-name">Receipt Amount</form:label>
+                                        <div class="col-lg-10">
+                                            <form:input path="receiptAmount" type="text" placeholder="" value="" class="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <form:label path="labels" class="col-lg-2 control-name">Labels</form:label>
+                                        <div class="col-lg-10">
+                                            <form:select multiple="true" path="labels" placeholder="" value="" class="form-control">
+                                                <form:options items="${labels}" itemLabel="name" itemValue="name"/>
+                                            </form:select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <form:label path="description" class="col-lg-2 control-name">Description</form:label>
+                                        <div class="col-lg-10">
+                                            <form:textarea path="description" rows="10" cols="30" value="" class="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-2 col-lg-10">
+                                            <span class="btn green fileinput-button">
+                                                <i class="fa fa-plus fa fa-white"></i>
+                                                <span>Receipt</span>
+                                                <form:input path="multipartFile" type="file" accept=".png,.jpg"/>
+                                            </span>
+                                            <form:button id="receiptCreateSubmit" class="btn btn-send">Create</form:button>
+                                        </div>
+                                    </div>
+                                </form:form>
+                            </div>
+                            <div class="modal-footer">
+                                <h4 class="footer-text">Create a new receipt</h4>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
             </div>
             <ul class="nav-stacked labels-info nav nav-pills inbox-divider">
                 <li><div class="labels-title-container"><h4 class="labels-title">Labels</h4><a href="#editLabel" data-toggle="modal"  title="Edit Labels" class="labels-edit"><i class="fa fa-pencil-square-o"></i></a></div></li>
@@ -158,7 +233,7 @@
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
-                <li class="nav-item"><a class="nav-link" href="."><i class="fa fa-sign-blank text-info"></i>Show All Receipts</a></li>
+                <li class="nav-item"><a class="nav-link" href="${baseHomeUrl}"><i class="fa fa-sign-blank text-info"></i>Show All Receipts</a></li>
                 <c:forEach items="${labels}" var="label" varStatus="i">
                     <li class="nav-item"><a class="nav-link" href="${baseHomeUrl}?label=${label.name}"><i class="fa fa-sign-blank text-info"></i>${label.name}</a></li>
                 </c:forEach>
@@ -213,39 +288,40 @@
                 </form>
             </div>
             <div class="inbox-body">
-                <img class="receiptEditImage" alt="${receipt.title} Image" src="data:image/jpeg;charset=utf-8;base64,${receipt.viewableImage}">
+                <spring:url value="/receipts/${receipt.receiptId}/image" var="receiptViewImageUrl"/>
+                <img class="receiptEditImage" alt="${receipt.title} Image" src='<c:out value="${receiptViewImageUrl}"/>'>
                 <form:form autocomplete="false" modelAttribute="receipt" method="post" action="${editReceiptUrl}" class="form-horizontal" enctype="multipart/form-data">
-                    <div class="form-group alert alert-danger center-full-width" hidden="true" id="receiptErrorContainer">
-                        <div class="col-lg-10" id="receiptErrors"></div>
+                    <div class="form-group alert alert-danger center-full-width" hidden="true" id="editReceiptErrorContainer">
+                        <div class="col-lg-10" id="editReceiptErrors"></div>
                     </div>
                     <div class="form-group">
                         <form:label path="title" class="col-lg-2 control-name">Title</form:label>
                         <div class="col-lg-10">
-                            <form:input path="title" type="text" placeholder="" value="" class="form-control"/>
+                            <form:input path="title" id="editTitle" type="text" placeholder="" value="" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <form:label path="date" class="col-lg-2 control-name">Date</form:label>
                         <div class="col-lg-10">
-                            <form:input path="date" type="text" placeholder="MM/dd/yyyy" value="" class="form-control"/>
+                            <form:input path="date" id="editDate" type="text" placeholder="MM/dd/yyyy" value="" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <form:label path="numItems" class="col-lg-2 control-name"># of Items</form:label>
                         <div class="col-lg-10">
-                            <form:input path="numItems" type="text" placeholder="" value="" class="form-control"/>
+                            <form:input path="numItems" id="editNumItems" type="text" placeholder="" value="" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <form:label path="receiptAmount" class="col-lg-2 control-name">Receipt Amount</form:label>
                         <div class="col-lg-10">
-                            <form:input path="receiptAmount" type="text" placeholder="" value="" class="form-control"/>
+                            <form:input path="receiptAmount" id="editReceiptAmount" type="text" placeholder="" value="" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <form:label path="labels" class="col-lg-2 control-name">Labels</form:label>
                         <div class="col-lg-10">
-                            <form:select multiple="true" path="labels" placeholder="" value="" class="form-control">
+                            <form:select multiple="true" path="labels" id="editLabels" placeholder="" value="" class="form-control">
                                 <form:options items="${labels}" itemLabel="name" itemValue="name"/>
                             </form:select>
                         </div>
@@ -253,23 +329,59 @@
                     <div class="form-group">
                         <form:label path="description" class="col-lg-2 control-name">Description</form:label>
                         <div class="col-lg-10">
-                            <form:textarea path="description" rows="10" cols="30" value="" class="form-control"/>
+                            <form:textarea path="description" id="editDescription" rows="10" cols="30" value="" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-lg-offset-2 col-lg-10">
-                                            <span class="btn green fileinput-button">
+                            <div class="receiptEditButtons">
+                                <div class="btn-group-container">
+                                    <span class="btn green fileinput-button">
                                                 <i class="fa fa-plus fa fa-white"></i>
                                                 <span>Change Receipt Image</span>
-                                                <form:input path="multipartFile" type="file" accept=".png,.jpg"/>
+                                                <form:input path="multipartFile" id="editMultipartFile" type="file" accept=".png,.jpg"/>
                                             </span>
-                            <form:button id="receiptCreateSubmit" class="btn btn-send">Save Changes</form:button>
+                                    <form:button id="receiptEditSubmit" class="btn btn-send">Save Changes</form:button>
+                                </div>
+                                <div class="btn-group-container">
+                                    <a href="#deleteReceipt" data-toggle="modal"  title="Delete Receipt" class="btn btn-send">
+                                        Delete Receipt
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form:form>
+                <!-- Modal -->
+                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="deleteReceipt" class="modal fade" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                <h4 class="modal-title">Delete Receipt</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p class="text-center">Are you sure you want to delete the receipt: ${receipt.title}?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <form:form autocomplete="false" action="${deleteReceiptUrl}" method="post" class="form-horizontal">
+                                    <button class="btn btn-secondary">Yes</button>
+                                    <button aria-hidden="true" data-dismiss="modal" class="btn btn-send" type="button">No</button>
+                                </form:form>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
             </div>
         </aside>
     </div>
-</div>
+    <footer class="footer">
+        <div class="container">
+            <ul class="footer-links">
+                <li><a href="https://github.com/AndreFx/ReceiptOrganizer">Github</a></li>
+            </ul>
+            <p class="text-muted">Currently v0.0.1. Written by AndreFx</p>
+        </div>
+    </footer>
 </body>
 </html>

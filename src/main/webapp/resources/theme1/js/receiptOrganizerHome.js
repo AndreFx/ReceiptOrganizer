@@ -14,7 +14,7 @@ $(document).ready(function() {
         fd.append("labelName", value);
 
         $.ajax({
-                       url : '/ReceiptOrganizer/receipts/validate',
+                       url : '/ReceiptOrganizer/labels/validate',
                        type: "POST",
                        data : fd,
                        processData: false,
