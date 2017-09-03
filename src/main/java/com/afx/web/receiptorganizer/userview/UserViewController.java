@@ -8,7 +8,6 @@ import com.afx.web.receiptorganizer.types.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -33,31 +32,62 @@ public class UserViewController {
                            @ModelAttribute("user") User user, ModelMap model) {
         logger.debug("Serving user request for home screen.");
 
+        //TODO Allow this to be customized by user
+        int pageSize = 10;
+
         //All user labels
         List<Label> labels = labelDao.getAllUserLabels(user.getUsername());
-        List<Receipt> receipts = receiptDao.getUserReceiptsForLabel(user.getUsername(), label);
-
-        PagedListHolder<Receipt> pagedReceipts = new PagedListHolder<>(receipts);
-        //TODO Allow this to be customized by user
-        pagedReceipts.setPageSize(10);
-
-        if (page == null || page < 1 || page > pagedReceipts.getPageCount()) {
-            //Default to page 1 when input is invalid.
+        int totalNumReceipts = this.receiptDao.getTotalNumUserReceiptsForLabel(user.getUsername(), label);
+        if (page == null || page < 1 || page > Math.ceil(totalNumReceipts / (float) pageSize)) {
             page = 1;
-            pagedReceipts.setPage(0);
-        } else {
-            pagedReceipts.setPage(page - 1);
         }
+        //TODO This will break if someone enters too low or too high of a page num.
+        List<Receipt> receipts = receiptDao.getRangeUserReceiptsForLabel(user.getUsername(), label, pageSize * (page - 1), pageSize);
 
         model.addAttribute("labels", labels);
-        model.addAttribute("receipts", pagedReceipts.getPageList());
+        model.addAttribute("receipts", receipts);
         model.addAttribute("newReceipt", new Receipt());
         model.addAttribute("newLabel", new Label());
         model.addAttribute("currentLabel", label);
-        model.addAttribute("numPages", pagedReceipts.getPageCount());
+        model.addAttribute("numPages", Math.ceil(totalNumReceipts / (float) pageSize));
         model.addAttribute("currentPage", page);
-        model.addAttribute("pageSize", pagedReceipts.getPageSize());
-        model.addAttribute("numReceipts", receipts.size());
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("numReceipts", totalNumReceipts);
+
+        return "home";
+    }
+
+    @RequestMapping(value="/search", method = RequestMethod.GET)
+    public String searchReceipts(@RequestParam(value = "searchString") StringBuilder searchString, @RequestParam(value = "page", required = false) Integer page,
+                                 @ModelAttribute("user") User user, ModelMap model) {
+        logger.debug("User sent search string: " + searchString);
+
+        //TODO Allow this to be customized by user
+        int pageSize = 10;
+
+        StringBuilder temp = new StringBuilder(searchString);
+        temp.insert(0, '%');
+        temp.append('%');
+
+        //All user labels
+        List<Label> labels = labelDao.getAllUserLabels(user.getUsername());
+        int totalNumReceipts = this.receiptDao.getTotalNumUserReceiptsFromString(user.getUsername(), temp.toString());
+        if (page == null || page < 1 || page > Math.ceil(totalNumReceipts / (float) pageSize)) {
+            page = 1;
+        }
+
+        List<Receipt> receipts = receiptDao.findRangeUserReceiptsFromString(user.getUsername(), temp.toString(), pageSize * (page - 1), pageSize);
+
+        model.addAttribute("labels", labels);
+        model.addAttribute("receipts", receipts);
+        model.addAttribute("newReceipt", new Receipt());
+        model.addAttribute("newLabel", new Label());
+        model.addAttribute("currentLabel", null);
+        model.addAttribute("numPages", Math.ceil(totalNumReceipts / (float) pageSize));
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("numReceipts", totalNumReceipts);
+        model.addAttribute("searchString", searchString);
 
         return "home";
     }

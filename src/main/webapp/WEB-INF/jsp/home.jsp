@@ -4,18 +4,39 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix = "c"%>
 <html>
 <head>
+    <spring:url var="searchUrl" value="/home/search"/>
     <spring:url var="createReceiptUrl" value="/receipts/create"/>
     <spring:url var="deleteLabelUrl" value="/labels/delete"/>
     <spring:url var="createLabelUrl" value="/labels/create"/>
     <spring:url var="updateLabelUrl" value="/labels/update"/>
     <spring:url var="logoutUrl" value="/logout"/>
     <spring:url var="settingsUrl" value="/settings"/>
-    <spring:url value="." var="prev">
-        <spring:param name="page" value="${currentPage-1}"/>
-    </spring:url>
-    <spring:url value="." var="next">
-        <spring:param name="page" value="${currentPage + 1}"/>
-    </spring:url>
+    <c:choose>
+        <c:when test="${searchString != null}">
+            <spring:url value="./search" var="prev">
+                <spring:param name="page" value="${currentPage-1}"/>
+                <spring:param name="searchString" value="${searchString}"/>
+            </spring:url>
+        </c:when>
+        <c:otherwise>
+            <spring:url value="." var="prev">
+                <spring:param name="page" value="${currentPage-1}"/>
+            </spring:url>
+        </c:otherwise>
+    </c:choose>
+    <c:choose>
+        <c:when test="${searchString != null}">
+            <spring:url value="./search" var="next">
+                <spring:param name="page" value="${currentPage + 1}"/>
+                <spring:param name="searchString" value="${searchString}"/>
+            </spring:url>
+        </c:when>
+        <c:otherwise>
+            <spring:url value="." var="next">
+                <spring:param name="page" value="${currentPage + 1}"/>
+            </spring:url>
+        </c:otherwise>
+    </c:choose>
 
     <spring:url value="/resources/css/afx_home_styleguide.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
@@ -274,9 +295,9 @@
                 <form class="pull-right position" action="${logoutUrl}" method="post" id="logout-form">
                     <button class="btn logout-button"><i class="fa fa-sign-out"></i></button>
                 </form>
-                <form action="#" class="pull-right position">
+                <form action="${searchUrl}" method="get" class="pull-right position">
                     <div class="input-append">
-                        <input class="sr-input" placeholder="Search Receipts">
+                        <input name="searchString" class="sr-input" placeholder="Search Receipts">
                         <button class="btn sr-btn"><i class="fa fa-search"></i></button>
                     </div>
                 </form>
@@ -310,7 +331,7 @@
                                         <li class="page-item"><a href="<c:out value="${prev}" />" class="page-link">Previous</a></li>
                                     </c:when>
                                     <c:otherwise>
-                                        <li class="page-item disabled"><a tabindex="-1" href="<c:out value="${prev}" />" class="page-link">Previous</a></li>
+                                        <li class="page-item disabled"><a tabindex="-1" href="javascript:void(0);" class="page-link">Previous</a></li>
                                     </c:otherwise>
                                 </c:choose>
 
@@ -318,12 +339,22 @@
                                 <c:forEach begin="1" end="${numPages}" step="1" varStatus="i">
                                     <c:choose>
                                         <c:when test="${currentPage == i.index}">
-                                            <li class="page-item active"><a class="page-link">${i.index}</a></li>
+                                            <li class="page-item active"><a href='javascript:void(0);' class="page-link">${i.index}</a></li>
                                         </c:when>
                                         <c:otherwise>
-                                            <spring:url value="." var="url">
-                                                <spring:param name="page" value="${i.index}"/>
-                                            </spring:url>
+                                            <c:choose>
+                                                <c:when test="${searchString != null}">
+                                                    <spring:url value="./search" var="url">
+                                                        <spring:param name="page" value="${i.index}"/>
+                                                        <spring:param name="searchString" value="${searchString}"/>
+                                                    </spring:url>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <spring:url value="." var="url">
+                                                        <spring:param name="page" value="${i.index}"/>
+                                                    </spring:url>
+                                                </c:otherwise>
+                                            </c:choose>
                                             <li class="page-item"><a href='<c:out value="${url}" />' class="page-link">${i.index}</a></li>
                                         </c:otherwise>
                                     </c:choose>
@@ -335,7 +366,7 @@
                                         <li class="page-item"><a href='<c:out value="${next}" />' class="page-link">Next</a></li>
                                     </c:when>
                                     <c:otherwise>
-                                        <li class="page-item disabled"><a tabindex="-1" href='<c:out value="${next}" />' class="page-link">Next</a></li>
+                                        <li class="page-item disabled"><a tabindex="-1" href='javascript:void(0);' class="page-link">Next</a></li>
                                     </c:otherwise>
                                 </c:choose>
                             </ul>

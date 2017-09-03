@@ -8,15 +8,11 @@
   <component name="ChangeListManager">
     <list default="true" id="6cff9b72-3d49-46f1-b6e7-fd21adea1263" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/label/LabelDaoImpl.java" afterPath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/label/LabelDaoImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptDao.java" afterPath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptDao.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptDaoImpl.java" afterPath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptDaoImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptRowMapper.java" afterPath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptRowMapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/labels/LabelController.java" afterPath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/labels/LabelController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/receipts/ReceiptController.java" afterPath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/receipts/ReceiptController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/types/Receipt.java" afterPath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/types/Receipt.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/userview/UserViewController.java" afterPath="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/userview/UserViewController.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/receiptView.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/receiptView.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/resources/theme1/css/afx_home_styleguide.css" afterPath="$PROJECT_DIR$/src/main/webapp/resources/theme1/css/afx_home_styleguide.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/resources/theme1/js/receiptOrganizerHome.js" afterPath="$PROJECT_DIR$/src/main/webapp/resources/theme1/js/receiptOrganizerHome.js" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -54,14 +50,25 @@
     <select />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="450">
+      <file leaf-file-name="UserViewController.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/userview/UserViewController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="36" column="0" lean-forward="true" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Jsp File" />
-        <option value="Class" />
         <option value="JavaScript File" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -102,8 +109,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/home/HomeModel.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/home/dao/CategoryDaoImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/login/types/User.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/home/types/HomeModel.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/home/response/ReceiptJsonResponse.java" />
@@ -131,7 +136,6 @@
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/authentication/LogoutController.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/login.jsp" />
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/UserDaoImpl.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/label/LabelDaoImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/user/UserDaoImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/types/User.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
@@ -139,20 +143,23 @@
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/label/LabelController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/authentication/LoginController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/ApplicationConfig.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/userview/UserViewController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptDao.java" />
-        <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp" />
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/types/Receipt.java" />
         <option value="$PROJECT_DIR$/src/main/resources/log4j2.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptRowMapper.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/resources/theme1/js/receiptOrganizerHome.js" />
         <option value="$PROJECT_DIR$/src/main/webapp/resources/theme1/js/receiptEdit.js" />
-        <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptDaoImpl.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/labels/LabelController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/receipts/ReceiptController.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/resources/theme1/css/afx_home_styleguide.css" />
         <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/receiptView.jsp" />
+        <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/label/LabelDaoImpl.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/types/ReceiptResults.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptCountRowMapper.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptDao.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptDaoImpl.java" />
+        <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp" />
+        <option value="$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/userview/UserViewController.java" />
       </list>
     </option>
   </component>
@@ -316,9 +323,7 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="AndroidView" />
       <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -337,10 +342,79 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="ReceiptOrganizer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ReceiptOrganizer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ReceiptOrganizer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ReceiptOrganizer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="receiptorganizer" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ReceiptOrganizer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ReceiptOrganizer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="receiptorganizer" type="462c0819:PsiDirectoryNode" />
+              <item name="dao" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ReceiptOrganizer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ReceiptOrganizer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="receiptorganizer" type="462c0819:PsiDirectoryNode" />
+              <item name="dao" type="462c0819:PsiDirectoryNode" />
+              <item name="receipt" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ReceiptOrganizer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ReceiptOrganizer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="receiptorganizer" type="462c0819:PsiDirectoryNode" />
+              <item name="userview" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ReceiptOrganizer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ReceiptOrganizer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ReceiptOrganizer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ReceiptOrganizer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ReceiptOrganizer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ReceiptOrganizer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+              <item name="jsp" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -568,11 +642,13 @@
       <workItem from="1504283391218" duration="16820000" />
       <workItem from="1504319515048" duration="2980000" />
       <workItem from="1504381789243" duration="10140000" />
+      <workItem from="1504395290622" duration="1663000" />
+      <workItem from="1504398174577" duration="7298000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="170598000" />
+    <option name="totallyTimeSpent" value="179559000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -585,6 +661,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-11" y="-11" width="2582" height="1402" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24375539" sideWeight="0.50281125" order="7" side_tool="true" content_ui="tabs" />
@@ -604,11 +681,11 @@
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30749354" sideWeight="0.49718875" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30749354" sideWeight="0.49718875" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19759037" sideWeight="0.4960981" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20281124" sideWeight="0.4960981" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25945947" sideWeight="0.5039019" order="5" side_tool="true" content_ui="tabs" />
       <window_info id="JavaEE:App" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25945947" sideWeight="0.5039019" order="6" side_tool="true" content_ui="tabs" />
@@ -631,7 +708,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="45" />
+      <option name="time" value="46" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="JBossConfiguration">
@@ -640,14 +717,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/META-INF/application.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/home/types/HomeModel.java" />
     <entry file="das://table:/c4ae8276/fceb9b9c-1559-4e3e-966e-470e10e2b23b/ReceiptOrganizer.dbo.RECEIPT_LABELS">
       <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
         <state>
@@ -744,13 +813,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/messages.properties">
+      <provider editor-type-id="ResourceBundle">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="25">
           <caret line="1" column="47" lean-forward="true" selection-start-line="1" selection-start-column="47" selection-end-line="1" selection-end-column="47" />
         </state>
-      </provider>
-      <provider editor-type-id="ResourceBundle">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/userview/validators/ReceiptValidator.java">
@@ -806,13 +875,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/label/LabelDaoImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="78" column="8" lean-forward="true" selection-start-line="78" selection-start-column="8" selection-end-line="95" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/authentication/LogoutController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="320">
@@ -846,27 +908,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/types/User.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="4" column="13" lean-forward="false" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/resources/theme1/css/afx_styleguide.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-775">
           <caret line="179" column="16" lean-forward="true" selection-start-line="179" selection-start-column="16" selection-end-line="179" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -874,14 +919,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="138">
           <caret line="35" column="45" lean-forward="true" selection-start-line="35" selection-start-column="45" selection-end-line="35" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/userview/UserViewController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="35" column="25" lean-forward="true" selection-start-line="35" selection-start-column="25" selection-end-line="35" selection-end-column="25" />
           <folding />
         </state>
       </provider>
@@ -898,7 +935,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="250">
           <caret line="10" column="11" lean-forward="false" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -906,15 +942,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="338">
           <caret line="16" column="23" lean-forward="true" selection-start-line="16" selection-start-column="23" selection-end-line="16" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptRowMapper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="13" column="40" lean-forward="true" selection-start-line="13" selection-start-column="40" selection-end-line="13" selection-end-column="40" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -922,15 +949,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
           <caret line="132" column="0" lean-forward="true" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3195">
-          <caret line="292" column="32" lean-forward="true" selection-start-line="292" selection-start-column="32" selection-end-line="292" selection-end-column="32" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -938,29 +956,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
           <caret line="36" column="10" lean-forward="true" selection-start-line="36" selection-start-column="10" selection-end-line="36" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptDaoImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2425">
-          <caret line="121" column="51" lean-forward="true" selection-start-line="121" selection-start-column="51" selection-end-line="121" selection-end-column="51" />
-          <folding>
-            <element signature="e#1619#1649#0" expanded="true" />
-            <element signature="e#9934#9964#0" expanded="true" />
-            <marker date="1504389681175" expanded="true" signature="1948:2063" ph="INSERT INTO RECEIPT... " />
-            <marker date="1504389681175" expanded="true" signature="2521:2602" ph="INSERT INTO USER_RECEIPTS... " />
-            <marker date="1504389681175" expanded="true" signature="3617:3690" ph="DELETE FROM " />
-            <marker date="1504389681175" expanded="true" signature="4839:5055" ph="UPDATE RECEI... " />
-            <marker date="1504389681175" expanded="true" signature="5162:5394" ph="UPDATE RECEI... " />
-            <marker date="1504389681175" expanded="true" signature="6592:6638" ph="SELECT * FRO... RECEIPT" />
-            <marker date="1504389681175" expanded="true" signature="6592:6670" ph="SELECT * FRO... RECEIPT" />
-            <marker date="1504389681175" expanded="true" signature="6592:6700" ph="SELECT * FRO... RECEIPT" />
-            <marker date="1504389681175" expanded="true" signature="6830:7070" ph="SELECT * FRO... RECEIPT" />
-            <marker date="1504389681175" expanded="true" signature="8602:8838" ph="SELECT * FRO... USER_RECEIPTS" />
-            <marker date="1504389681175" expanded="true" signature="9069:9510" ph="SELECT * FRO... USER_RECEIPTS" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -980,21 +975,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/receipts/ReceiptController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="370">
-          <caret line="123" column="0" lean-forward="true" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/receiptView.jsp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="325">
           <caret line="13" column="46" lean-forward="true" selection-start-line="13" selection-start-column="46" selection-end-line="13" selection-end-column="46" />
-          <folding>
-            <element signature="n#style#0;n#div#8;n#div#1;n#aside#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1002,6 +987,120 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="200">
           <caret line="11" column="1" lean-forward="false" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/receipts/ReceiptController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="43" column="0" lean-forward="true" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/types/User.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="325">
+          <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <folding>
+            <element signature="e#322#323#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/label/LabelDaoImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="237">
+          <caret line="98" column="0" lean-forward="false" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
+          <folding>
+            <marker date="1504396780931" expanded="true" signature="1965:2044" ph="INSERT INTO USER_LABELS... " />
+            <marker date="1504396780931" expanded="true" signature="2783:2885" ph="DELETE FROM " />
+            <marker date="1504396780931" expanded="true" signature="3713:3865" ph="UPDATE USER_... " />
+            <marker date="1504396780931" expanded="true" signature="4359:4461" ph="SELECT Label... USER_LABELS" />
+            <marker date="1504396780931" expanded="true" signature="5100:5262" ph="SELECT Label... USER_LABELS" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/types/ReceiptResults.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptRowMapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptCountRowMapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="250">
+          <caret line="10" column="31" lean-forward="false" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="31" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptDaoImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-112">
+          <caret line="213" column="20" lean-forward="true" selection-start-line="213" selection-start-column="20" selection-end-line="213" selection-end-column="20" />
+          <folding>
+            <marker date="1504404083115" expanded="true" signature="1901:2016" ph="INSERT INTO RECEIPT... " />
+            <marker date="1504404083115" expanded="true" signature="2474:2555" ph="INSERT INTO USER_RECEIPTS... " />
+            <marker date="1504404083115" expanded="true" signature="3635:3708" ph="DELETE FROM " />
+            <marker date="1504404083115" expanded="true" signature="4857:5073" ph="UPDATE RECEI... " />
+            <marker date="1504404083115" expanded="true" signature="5180:5412" ph="UPDATE RECEI... " />
+            <marker date="1504404083115" expanded="true" signature="6610:6656" ph="SELECT * FRO... RECEIPT" />
+            <marker date="1504404083115" expanded="true" signature="6610:6688" ph="SELECT * FRO... RECEIPT" />
+            <marker date="1504404083115" expanded="true" signature="6610:6718" ph="SELECT * FRO... RECEIPT" />
+            <marker date="1504404083115" expanded="true" signature="6848:7088" ph="SELECT * FRO... RECEIPT" />
+            <marker date="1504404083115" expanded="true" signature="8419:8692" ph="SELECT COUNT... USER_RECEIPTS" />
+            <marker date="1504404083115" expanded="true" signature="9363:9615" ph="SELECT Count... USER_RECEIPTS" />
+            <marker date="1504404083115" expanded="true" signature="9363:9617" ph="SELECT * FRO... USER_RECEIPTS" />
+            <marker date="1504404083115" expanded="true" signature="9826:10283" ph="SELECT * FRO... USER_RECEIPTS" />
+            <marker date="1504404083115" expanded="true" signature="9826:10284" ph="SELECT * FRO... USER_RECEIPTS" />
+            <marker date="1504404083115" expanded="true" signature="11038:11445" ph="SELECT * FRO... USER_RECEIPTS" />
+            <marker date="1504404083115" expanded="true" signature="12222:12458" ph="SELECT * FRO... USER_RECEIPTS" />
+            <marker date="1504404083115" expanded="true" signature="12222:12561" ph="SELECT * FRO... USER_RECEIPTS" />
+            <marker date="1504404083115" expanded="true" signature="12222:12620" ph="SELECT * FRO... USER_RECEIPTS" />
+            <marker date="1504404083115" expanded="true" signature="12540:12561" ph="OFFSET :numr... " />
+            <marker date="1504404083115" expanded="true" signature="12591:12620" ph="FETCH NEXT n... " />
+            <marker date="1504404083115" expanded="true" signature="12933:13374" ph="SELECT * FRO... USER_RECEIPTS" />
+            <marker date="1504404083115" expanded="true" signature="12933:13426" ph="SELECT * FRO... USER_RECEIPTS" />
+            <marker date="1504404083115" expanded="true" signature="12933:13462" ph="SELECT * FRO... USER_RECEIPTS" />
+            <marker date="1504404083115" expanded="true" signature="12933:13536" ph="SELECT * FRO... USER_RECEIPTS" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/dao/receipt/ReceiptDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="18" column="16" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="325">
+          <caret line="13" column="14" lean-forward="true" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/afx/web/receiptorganizer/userview/UserViewController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="36" column="0" lean-forward="true" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
           <folding />
         </state>
       </provider>

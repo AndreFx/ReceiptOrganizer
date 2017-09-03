@@ -14,6 +14,12 @@ public interface ReceiptDao {
 
     Receipt getReceipt(String username, int receiptId);
 
-    List<Receipt> getUserReceiptsForLabel(String username, String label);
+    int getTotalNumUserReceiptsFromString(String username, String searchString);
+
+    int getTotalNumUserReceiptsForLabel(String username, String label);
+
+    List<Receipt> findRangeUserReceiptsFromString(String username, String searchString, int start, int numRows);
+
+    List<Receipt> getRangeUserReceiptsForLabel(String username, String label, int start, int numRows);
 
 }
