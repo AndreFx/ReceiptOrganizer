@@ -1,5 +1,7 @@
 package com.afx.web.receiptorganizer.types;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -9,9 +11,12 @@ public class User implements Serializable {
     private String lName;
     private String password;
     private boolean remember;
+    private Integer paginationSize;
+    private MultipartFile image;
+    private byte[] file;
 
     public String getUsername() {
-	return this.username;
+	    return this.username;
     }
 
     public void setUsername(String username) {
@@ -48,5 +53,29 @@ public class User implements Serializable {
 
     public void setlName(String lName) {
         this.lName = lName;
+    }
+
+    public Integer getPaginationSize() {
+        return paginationSize;
+    }
+
+    public void setPaginationSize(Integer paginationSize) {
+        this.paginationSize = paginationSize;
+    }
+
+    public MultipartFile getImage() {
+        return image;
+    }
+
+    public void setImage(MultipartFile image) {
+        this.image = image;
+    }
+
+    public byte[] getFile() {
+        return file;
+    }
+
+    public void setFile(byte[] file) {
+        this.file = file;
     }
 }

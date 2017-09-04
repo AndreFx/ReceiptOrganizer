@@ -8,7 +8,7 @@ $(document).ready(function() {
         maxHeight: 250
     });
 
-    //Validator for newReceipt form.
+    //Validator for editReceipt form.
     $('#receipt').validate({
         rules: {
             title: "required",
@@ -31,7 +31,7 @@ $(document).ready(function() {
         errorElement: 'div',
 
         errorPlacement: function(error, element) {
-            console.log("Placing newReceipt form errors.");
+            console.log("Placing editReceipt form errors.");
             error.appendTo('div#receiptErrors');
             $('#editReceiptErrorContainer').show();
         },

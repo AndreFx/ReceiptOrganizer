@@ -143,6 +143,40 @@ $(document).ready(function() {
     //Create datepicker
     $('#date').datepicker();
 
+    $(".clickable-row").click(function() {
+        window.location = $(this).data("href");
+    });
+
+    //Show image modal
+    $(".modal-image").click(function(event) {
+        event.stopPropagation();
+        $("#imageModal").css("display", "block");
+
+        $("#modalImage").attr("src", $(this).attr("src"));
+        $("#modalCaption").text($(this).attr("alt"));
+    });
+
+    // When the user clicks on <span> (x), close the modal
+    $(".image-modal-close").click(function() {
+        $("#imageModal").css("display", "none");
+    });
+
+
+    $('#editLabel').on('hidden.bs.modal', function() {
+        console.log('Edit Label modal closed.');
+
+        //Hide error messages
+        $('#labelEditErrorContainer ul').empty();
+        $('#labelEditErrorContainer').hide();
+
+        //Clear any user input
+        var i;
+        for (i = 0; i < $(this).find('form').length; i++) {
+            console.log('Iteration #: ' + i);
+            $(this).find('form')[i].reset();
+        }
+    });
+
 //TODO AJAX Example
 //            $(function() {
 //                //  Submit form using Ajax

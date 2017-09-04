@@ -10,7 +10,8 @@
     <spring:url var="createLabelUrl" value="/labels/create"/>
     <spring:url var="updateLabelUrl" value="/labels/update"/>
     <spring:url var="logoutUrl" value="/logout"/>
-    <spring:url var="settingsUrl" value="/settings"/>
+    <spring:url var="settingsUrl" value="/users/settings"/>
+    <spring:url value="/users/getUserPhoto" var="userPhotoView"/>
     <c:choose>
         <c:when test="${searchString != null}">
             <spring:url value="./search" var="prev">
@@ -102,23 +103,6 @@
                 }
             });
             </c:forEach>
-
-            $('#editLabel').on('hidden.bs.modal', function() {
-                console.log('Edit Label modal closed.');
-
-                //Hide error messages
-                <c:forEach items="${labels}" var="label" varStatus="i">
-                    $('#labelEditErrorContainer ul').empty();
-                    $('#labelEditErrorContainer').hide();
-                </c:forEach>
-
-                //Clear any user input
-                var i;
-                for (i = 0; i < $(this).find('form').length; i++) {
-                    console.log('Iteration #: ' + i);
-                    $(this).find('form')[i].reset();
-                }
-            });
         });
     </script>
     <title>Receipts</title>
@@ -128,10 +112,11 @@
         <aside class="sm-side">
             <div class="user-head">
                 <a class="inbox-avatar">
-                    <img  width="64" height="60" src="http://bootsnipp.com/img/avatars/ebeb306fd7ec11ab68cbcaa34282158bd80361a7.jpg">
+                    <img  width="64" height="60" src='<c:out value="${userPhotoView}"/>'>
                 </a>
                 <div class="user-name">
-                    <h5>${sessionScope.user.username}</h5>
+                    <h5>Welcome ${sessionScope.user.username}!</h5>
+                    <span>${sessionScope.user.fName} ${sessionScope.user.lName}</span>
                 </div>
             </div>
             <div class="inbox-body">
@@ -339,7 +324,7 @@
                                 <c:forEach begin="1" end="${numPages}" step="1" varStatus="i">
                                     <c:choose>
                                         <c:when test="${currentPage == i.index}">
-                                            <li class="page-item active"><a href='javascript:void(0);' class="page-link">${i.index}</a></li>
+                                            <li class="page-item active"><a href='javascript:void(0);' class="page-link bottom-stack-order">${i.index}</a></li>
                                         </c:when>
                                         <c:otherwise>
                                             <c:choose>
@@ -378,15 +363,27 @@
                     <c:forEach items="${receipts}" var="receipt" varStatus="i">
                         <spring:url value="/receipts/${receipt.receiptId}" var="receiptViewUrl"/>
                         <spring:url value="/receipts/${receipt.receiptId}/image" var="receiptViewImageUrl"/>
-                        <tr>
-                            <td class="view-message vertical-align-text"><img class="receiptThumbnail" alt="${receipt.title} Image" src='<c:out value="${receiptViewImageUrl}"/>'></td>
-                            <td class="view-message dont-show vertical-align-text"><a href='<c:out value="${receiptViewUrl}" />' class="page-link">${receipt.title}</a></td>
+                        <tr class="clickable-row" data-href="<c:out value="${receiptViewUrl}"/>">
+                            <td class="view-message vertical-align-text"><img class="receiptThumbnail modal-image" alt="${receipt.title}" src='<c:out value="${receiptViewImageUrl}"/>'></td>
+                            <td class="view-message dont-show vertical-align-text">${receipt.title}</td>
                             <td class="view-message vertical-align-text">${receipt.description}</td>
-                            <td class="view-message vertical-align-text inbox-small-cells"><i class="fa fa-paperclip"></i></td>
+                            <td class="view-message vertical-align-text">$${receipt.receiptAmount}</td>
                             <td class="view-message vertical-align-text text-right">${receipt.date}</td>
                         </tr>
                     </c:forEach>
                     </tbody>
+                    <!-- Modal Image -->
+                    <div id="imageModal" class="image-modal">
+
+                        <!-- The Close Button -->
+                        <span class="image-modal-close">&times;</span>
+
+                        <!-- Modal Content (The Image) -->
+                        <img class="image-modal-content" id="modalImage">
+
+                        <!-- Modal Caption (Image Text) -->
+                        <div class="image-modal-caption" id="modalCaption"></div>
+                    </div>
                 </table>
             </div>
         </aside>

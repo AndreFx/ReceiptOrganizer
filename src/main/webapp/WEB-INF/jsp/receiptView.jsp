@@ -19,7 +19,8 @@
     <spring:url var="createLabelUrl" value="/labels/create"/>
     <spring:url var="updateLabelUrl" value="/labels/update"/>
     <spring:url var="logoutUrl" value="/logout"/>
-    <spring:url var="settingsUrl" value="/settings"/>
+    <spring:url var="settingsUrl" value="/users/settings"/>
+    <spring:url value="/users/getUserPhoto" var="userPhotoView"/>
 
     <spring:url value="/resources/css/afx_home_styleguide.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
@@ -113,10 +114,11 @@
         <aside class="sm-side">
             <div class="user-head">
                 <a class="inbox-avatar">
-                    <img  width="64" height="60" src="http://bootsnipp.com/img/avatars/ebeb306fd7ec11ab68cbcaa34282158bd80361a7.jpg">
+                    <img  width="64" height="60" src='<c:out value="${userPhotoView}"/>'>
                 </a>
                 <div class="user-name">
-                    <h5>${sessionScope.user.username}</h5>
+                    <h5>Welcome ${sessionScope.user.username}!</h5>
+                    <span>${sessionScope.user.fName} ${sessionScope.user.lName}</span>
                 </div>
             </div>
             <div class="inbox-body">

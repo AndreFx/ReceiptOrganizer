@@ -8,4 +8,8 @@ public interface UserDao {
 
     void add(User user);
 
+    User getUser(String username);
+
+    void changeUserSettings(User user);
+
 }
