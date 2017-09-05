@@ -4,6 +4,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix = "c"%>
 <html>
 <head>
+    <spring:url var="baseHomeUrl" value="/home/"/>
     <spring:url var="searchUrl" value="/home/search"/>
     <spring:url var="createReceiptUrl" value="/receipts/create"/>
     <spring:url var="deleteLabelUrl" value="/labels/delete"/>
@@ -50,6 +51,7 @@
     <spring:url value="/resources/js/bootstrap-multiselect.js" var="multiselectjs"/>
     <spring:url value="/resources/js/jquery.validate.min.js" var="validate"/>
     <spring:url value="/resources/js/jquery-ui.min.js" var="ui"/>
+    <spring:url value="/resources/js/receiptOrganizerCommon.js" var="receiptCommon"/>
     <spring:url value="/resources/js/receiptOrganizerHome.js" var="receiptHome"/>
     <link rel="stylesheet" href="${fontawesomecss}"/>
     <link rel="stylesheet" href="${bootstrap}"/>
@@ -64,6 +66,7 @@
     <script src="${multiselectjs}"></script>
     <script src="${validate}"></script>
     <script src="${ui}"></script>
+    <script src="${receiptCommon}"></script>
     <script src="${receiptHome}"></script>
     <script>
         $(document).ready(function() {
@@ -273,7 +276,7 @@
         </aside>
         <aside class="lg-side">
             <div class="inbox-head">
-                <h3>Receipts</h3>
+                <h3><a href="${baseHomeUrl}" class="home-link">ReceiptOrganizer</a></h3>
                 <form class="pull-right position" action="${settingsUrl}" id="settings-form">
                     <button class="btn settings-button"><i class="fa fa-cog"></i></button>
                 </form>

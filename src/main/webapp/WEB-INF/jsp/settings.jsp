@@ -32,6 +32,7 @@
     <spring:url value="/resources/js/bootstrap-multiselect.js" var="multiselectjs"/>
     <spring:url value="/resources/js/jquery.validate.min.js" var="validate"/>
     <spring:url value="/resources/js/jquery-ui.min.js" var="ui"/>
+    <spring:url value="/resources/js/receiptOrganizerCommon.js" var="receiptCommon"/>
     <spring:url value="/resources/js/receiptOrganizerHome.js" var="receiptHome"/>
     <spring:url value="/resources/js/userSettings.js" var="userSettings"/>
     <link rel="stylesheet" href="${fontawesomecss}"/>
@@ -47,6 +48,7 @@
     <script src="${multiselectjs}"></script>
     <script src="${validate}"></script>
     <script src="${ui}"></script>
+    <script src="${receiptCommon}"></script>
     <script src="${receiptHome}"></script>
     <script src="${userSettings}"></script>
     <script>
@@ -274,7 +276,7 @@
     </aside>
     <aside class="lg-side">
         <div class="inbox-head">
-            <h3>Receipts</h3>
+            <h3><a href="${baseHomeUrl}" class="home-link">ReceiptOrganizer</a></h3>
             <form class="pull-right position" action="${settingsUrl}" id="settings-form">
                 <button class="btn settings-button"><i class="fa fa-cog"></i></button>
             </form>

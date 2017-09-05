@@ -101,14 +101,16 @@ $(document).ready(function() {
             numItems: "digits",
             receiptAmount: {
                 number: true
-            }
+            },
+            date: "validUSDate"
         },
 
         messages: {
             title: "Title is required",
             multipartFile: "Receipt upload is required",
             numItems: "# of Items must be a whole number",
-            receiptAmount: "Receipt Amount must be a valid number"
+            receiptAmount: "Receipt Amount must be a valid number",
+            date: "Please enter a date in the format of MM/dd/yyyy"
         },
 
         onkeyup: false,

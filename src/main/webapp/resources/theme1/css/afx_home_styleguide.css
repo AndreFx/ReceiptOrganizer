@@ -15,6 +15,10 @@ div.inline {
 }
 
 /* Common AFX Styleguide */
+.home-link, .home-link:hover, .home-link:focus {
+    color: #fff;
+    text-decoration: none;
+}
 
 /* Style the Image Used to Trigger the Modal */
 .modal-image {
