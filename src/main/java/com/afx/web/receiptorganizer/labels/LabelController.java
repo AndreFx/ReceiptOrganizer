@@ -25,7 +25,7 @@ public class LabelController {
     @RequestMapping(value="/validate", produces={MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
     @ResponseBody
     public LabelJsonResponse validateLabel(@ModelAttribute("user") User user, @RequestParam("labelName") String labelName) {
-        logger.info("Serving ajax request to validate Label: " + labelName + " for user: " + user.getUsername());
+        logger.debug("Serving ajax request to validate Label: " + labelName + " for user: " + user.getUsername());
 
         Label label = new Label();
         label.setName(labelName);
@@ -33,9 +33,9 @@ public class LabelController {
 
         if (this.labelDao.isLabelUnique(user.getUsername(), label)) {
             response.setValidated(false);
-            logger.info("User submitted non-unique request to create label");
+            logger.debug("User submitted non-unique request to create label");
         } else {
-            logger.info("User submitted valid request to create new label.");
+            logger.debug("User submitted valid request to create new label.");
             response.setValidated(true);
         }
 
@@ -52,6 +52,7 @@ public class LabelController {
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public String deleteLabel(@ModelAttribute("user") User user, @RequestParam String labelName, RedirectAttributes ra) {
+        logger.debug("User: " + user.getUsername() + " deleting label: " + labelName);
         Label deleteLabel = new Label();
         deleteLabel.setName(labelName);
         this.labelDao.deleteLabel(user.getUsername(), deleteLabel);
@@ -61,6 +62,7 @@ public class LabelController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String editLabel(@ModelAttribute("user") User user, @RequestParam String oldLabelName, @RequestParam String newLabelName, RedirectAttributes ra) {
+        logger.debug("User: " + user.getUsername() + " editing label from name: " + oldLabelName + " to name: " + newLabelName);
         Label oldLabel = new Label();
         oldLabel.setName(oldLabelName);
         Label newLabel = new Label();

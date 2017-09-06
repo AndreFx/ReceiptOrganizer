@@ -33,12 +33,12 @@ public class UserViewController {
         logger.debug("Serving user request for home screen.");
 
         //All user labels
-        List<Label> labels = labelDao.getAllUserLabels(user.getUsername());
+        List<Label> labels = this.labelDao.getAllUserLabels(user.getUsername());
         int totalNumReceipts = this.receiptDao.getTotalNumUserReceiptsForLabel(user.getUsername(), label);
         if (page == null || page < 1 || page > Math.ceil(totalNumReceipts / (float) user.getPaginationSize())) {
             page = 1;
         }
-        List<Receipt> receipts = receiptDao.getRangeUserReceiptsForLabel(user.getUsername(), label,
+        List<Receipt> receipts = this.receiptDao.getRangeUserReceiptsForLabel(user.getUsername(), label,
                 user.getPaginationSize() * (page - 1), user.getPaginationSize());
 
         model.addAttribute("labels", labels);
@@ -64,13 +64,13 @@ public class UserViewController {
         temp.append('%');
 
         //All user labels
-        List<Label> labels = labelDao.getAllUserLabels(user.getUsername());
+        List<Label> labels = this.labelDao.getAllUserLabels(user.getUsername());
         int totalNumReceipts = this.receiptDao.getTotalNumUserReceiptsFromString(user.getUsername(), temp.toString());
         if (page == null || page < 1 || page > Math.ceil(totalNumReceipts / (float) user.getPaginationSize())) {
             page = 1;
         }
 
-        List<Receipt> receipts = receiptDao.findRangeUserReceiptsFromString(user.getUsername(),
+        List<Receipt> receipts = this.receiptDao.findRangeUserReceiptsFromString(user.getUsername(),
                 temp.toString(), user.getPaginationSize() * (page - 1), user.getPaginationSize());
 
         model.addAttribute("labels", labels);

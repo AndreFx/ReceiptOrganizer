@@ -2,16 +2,16 @@ package com.afx.web.receiptorganizer.receipts;
 
 import com.afx.web.receiptorganizer.dao.label.LabelDao;
 import com.afx.web.receiptorganizer.dao.receipt.ReceiptDao;
-import com.afx.web.receiptorganizer.userview.responses.LabelJsonResponse;
 import com.afx.web.receiptorganizer.types.Label;
 import com.afx.web.receiptorganizer.types.Receipt;
+import com.afx.web.receiptorganizer.exceptions.types.ReceiptNotFoundException;
 import com.afx.web.receiptorganizer.types.User;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.http.MediaType;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -56,8 +56,12 @@ public class ReceiptController {
 
     @RequestMapping(value = "/{receiptId}", method = RequestMethod.GET)
     public String showReceipt(@PathVariable(value = "receiptId") int id, @ModelAttribute("user") User user, ModelMap model) {
+        logger.debug("User: " + user.getUsername() + " viewing receipt with id: " + id);
         List<Label> labels = this.labelDao.getAllUserLabels(user.getUsername());
         Receipt receipt = this.receiptDao.getReceipt(user.getUsername(), id);
+        if (receipt == null) {
+            throw new ReceiptNotFoundException(id);
+        }
 
         model.addAttribute("labels", labels);
         model.addAttribute("receipt", receipt);
@@ -70,26 +74,27 @@ public class ReceiptController {
 
     @RequestMapping(value = "/{receiptId}/image", method = RequestMethod.GET)
     public void getReceiptImage(@PathVariable(value = "receiptId") int id, @ModelAttribute("user") User user, HttpServletResponse response) {
-        Receipt showReceipt = this.receiptDao.getReceipt(user.getUsername(), id);
+        byte[] receiptImage = this.receiptDao.getReceiptImage(user.getUsername(), id);
+        if (receiptImage == null) {
+            throw new ReceiptNotFoundException(id);
+        }
 
         try {
-            if (showReceipt.getFile() != null) {
-                InputStream in = new ByteArrayInputStream(showReceipt.getFile());
-                response.setContentType("image/jpeg");
-                response.setHeader("content-Disposition", "inline; filename=" + id + "image.jpeg");
-                response.setContentLength(showReceipt.getFile().length);
-                IOUtils.copy(in, response.getOutputStream());
-                response.flushBuffer();
-                in.close();
-            }
+            InputStream in = new ByteArrayInputStream(receiptImage);
+            response.setContentType("image/jpeg");
+            response.setHeader("content-Disposition", "inline; filename=" + id + "image.jpeg");
+            response.setContentLength(receiptImage.length);
+            IOUtils.copy(in, response.getOutputStream());
+            response.flushBuffer();
+            in.close();
         } catch(IOException e) {
             logger.error("Unable to send image id: " + id + " response to user: " + user.getUsername());
         }
-
     }
 
     @RequestMapping(value = "/{receiptId}/update", method = RequestMethod.POST)
     public String updateReceipt(@PathVariable(value = "receiptId") int id, @ModelAttribute("user") User user, @ModelAttribute("receipt") Receipt receipt) {
+        logger.debug("User: " + user.getUsername() + " updating receipt with id: " + id);
         receipt.setReceiptId(id);
 
         try {
@@ -106,10 +111,14 @@ public class ReceiptController {
 
             this.receiptDao.editReceipt(user.getUsername(), receipt);
 
-            logger.info("User: " + user.getUsername() + " successfully uploaded image.");
-        } catch (Exception e) {
+            logger.debug("User: " + user.getUsername() + " successfully uploaded image.");
+        } catch (DataAccessException e) {
             logger.error("User: " + user.getUsername() + " failed to upload file: " + receipt.getMultipartFile().getName());
             logger.error("Error description: " + e.getMessage());
+            throw new ReceiptNotFoundException(id);
+        } catch (IOException iox) {
+            logger.error("Failed to convert user: " + user.getUsername() + " image for storage on database.");
+            throw new RuntimeException(iox.getMessage());
         }
 
         return "redirect:/home/";
@@ -117,6 +126,7 @@ public class ReceiptController {
 
     @RequestMapping(value = "/{receiptId}/delete", method = RequestMethod.POST)
     public String deleteReceipt(@PathVariable(value = "receiptId") int id, @ModelAttribute("user") User user) {
+        logger.debug("User: " + user.getUsername() + " deleting receipt with id: " + id);
         this.receiptDao.deleteReceipt(id);
 
         return "redirect:/home/";
@@ -124,24 +134,29 @@ public class ReceiptController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public String insertReceipt(@ModelAttribute("user") User user, @ModelAttribute("newReceipt") Receipt newReceipt, RedirectAttributes ra) {
+        logger.debug("User: " + user.getUsername() + " creating new receipt with title: " + newReceipt.getTitle());
 
         if (newReceipt.getMultipartFile() != null && !newReceipt.getMultipartFile().isEmpty()) {
             try {
                 //Create byte array for transfer to database.
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 BufferedImage image = ImageIO.read(newReceipt.getMultipartFile().getInputStream());
-                ImageIO.write(image, "png", outputStream);
+                ImageIO.write(image, "jpeg", outputStream);
                 outputStream.flush();
                 byte[] imageAsBytes = outputStream.toByteArray();
                 outputStream.close();
                 newReceipt.setFile(imageAsBytes);
 
-                receiptDao.addReceipt(user.getUsername(), newReceipt);
+                this.receiptDao.addReceipt(user.getUsername(), newReceipt);
 
-                logger.info("User: " + user.getUsername() + " successfully uploaded image.");
-            } catch (Exception e) {
+                logger.debug("User: " + user.getUsername() + " successfully uploaded image.");
+            } catch (DataAccessException e) {
                 logger.error("User: " + user.getUsername() + " failed to upload file: " + newReceipt.getMultipartFile().getName());
                 logger.error("Error description: " + e.getMessage());
+                throw e;
+            } catch (IOException iox) {
+                logger.error("Failed to convert user: " + user.getUsername() + " image for storage on database.");
+                throw new RuntimeException(iox.getMessage());
             }
         } else {
             logger.info("User: " + user.getUsername() + " attempted to upload empty file.");

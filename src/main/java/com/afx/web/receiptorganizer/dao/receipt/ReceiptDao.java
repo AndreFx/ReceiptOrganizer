@@ -14,6 +14,8 @@ public interface ReceiptDao {
 
     Receipt getReceipt(String username, int receiptId);
 
+    byte[] getReceiptImage(String username, int receiptId);
+
     int getTotalNumUserReceiptsFromString(String username, String searchString);
 
     int getTotalNumUserReceiptsForLabel(String username, String label);

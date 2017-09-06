@@ -15,6 +15,8 @@
     <spring:url var="logoutUrl" value="/logout"/>
     <spring:url var="settingsUrl" value="/users/settings"/>
 
+    <spring:url value="/resources/images/systemError.jpg" var="errorImage"/>
+
     <spring:url value="/resources/css/afx_home_styleguide.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
     <spring:url value="/resources/css/bootstrap-multiselect.css" var="multiselectcss"/>
@@ -62,7 +64,7 @@
                 </form>
             </div>
             <div class="inbox-body">
-                <h1 class="text-center">D'Oh!</h1>
+                <img class="error-image" src="${errorImage}" alt="System Error">
                 <p class="text-center">${errorMessage}</p>
 
                 <!--

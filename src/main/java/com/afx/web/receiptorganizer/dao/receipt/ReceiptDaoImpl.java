@@ -134,15 +134,15 @@ public class ReceiptDaoImpl implements ReceiptDao {
         TransactionDefinition def = new DefaultTransactionDefinition();
         TransactionStatus status = transactionManager.getTransaction(def);
 
-        List<Receipt> receipts;
+        Receipt userReceipt = null;
 
         try {
             SqlParameterSource parameters = new MapSqlParameterSource("receiptid", receiptId);
-            String query = "SELECT * " +
+            String query = "SELECT ReceiptId, Title, Description, Date, ReceiptAmount, NumItems " +
                     "FROM RECEIPT " +
                     "WHERE Receipt.ReceiptId = :receiptid ";
 
-            receipts = this.jdbcTemplate.query(query, parameters, new ReceiptRowMapper());
+            userReceipt = this.jdbcTemplate.queryForObject(query, parameters, new ReceiptRowMapper());
 
             String labelQuery = "SELECT LabelName " +
                     "FROM RECEIPT " +
@@ -156,24 +156,36 @@ public class ReceiptDaoImpl implements ReceiptDao {
                 }
             });
 
-            if (receipts != null && receipts.size() != 0) {
+            if (userReceipt != null) {
                 //Add labels to receipt.
-                receipts.get(0).setLabels(labelNames.toArray(new String[labelNames.size()]));
+                userReceipt.setLabels(labelNames.toArray(new String[labelNames.size()]));
             }
 
             transactionManager.commit(status);
         } catch (DataAccessException e) {
+            logger.error("Unable to get User: " + username + "'s receipt with id: " + receiptId);
             logger.error("Unable to fetch user receipt from database. Error: " + e.getMessage());
             transactionManager.rollback(status);
-            throw e;
         }
 
-        if (receipts == null || receipts.size() == 0) {
-            logger.error("Unable to get User:" + username+ " receipt: " + receiptId);
-            return null;
-        } else {
-            return receipts.get(0);
+        return userReceipt;
+    }
+
+    public byte[] getReceiptImage(String username, int receiptId) {
+        byte[] receiptImage = null;
+
+        try {
+            SqlParameterSource parameters = new MapSqlParameterSource("receiptid", receiptId);
+            String query = "SELECT Image " +
+                    "FROM RECEIPT " +
+                    "WHERE Receipt.ReceiptId = :receiptid ";
+
+            receiptImage = this.jdbcTemplate.queryForObject(query, parameters, new ReceiptImageRowMapper());
+        } catch (DataAccessException e) {
+            logger.error("Unable to fetch user receipt from database. Error: " + e.getMessage());
         }
+
+        return receiptImage;
     }
 
     public int getTotalNumUserReceiptsFromString(String username, String searchString) {
@@ -239,7 +251,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
             //Get all user receipts
             SqlParameterSource parameters = new MapSqlParameterSource("username", username).addValue("searchstring", searchString)
                     .addValue("startrow", start).addValue("numrows", numRows);
-            String query = "SELECT * " +
+            String query = "SELECT RECEIPT.ReceiptId, Title, Description, Date, ReceiptAmount, NumItems  " +
                     "FROM USER_RECEIPTS " +
                     "INNER JOIN RECEIPT " +
                     "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
@@ -267,7 +279,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
                 //Get all user receipts
                 parameters = new MapSqlParameterSource("username", username)
                         .addValue("startrow", start).addValue("numrows", numRows);
-                query = "SELECT * " +
+                query = "SELECT RECEIPT.ReceiptId, Title, Description, Date, ReceiptAmount, NumItems  " +
                         "FROM USER_RECEIPTS " +
                         "INNER JOIN RECEIPT " +
                         "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
@@ -280,7 +292,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
                 parameters = new MapSqlParameterSource("username", username)
                         .addValue("labelname", label).addValue("startrow", start)
                         .addValue("numrows", numRows);
-                query = "SELECT * " +
+                query = "SELECT RECEIPT.ReceiptId, Title, Description, Date, ReceiptAmount, NumItems  " +
                         "FROM USER_RECEIPTS " +
                         "INNER JOIN RECEIPT " +
                         "ON USER_RECEIPTS.ReceiptId = RECEIPT.[ReceiptId] " +

@@ -19,6 +19,9 @@ div.inline {
     color: #fff;
     text-decoration: none;
 }
+.error-container {
+    display: none;
+}
 
 /* Style the Image Used to Trigger the Modal */
 .modal-image {
@@ -234,17 +237,25 @@ ul.inbox-nav li a i {
 ul.inbox-nav li a span.label {
     margin-top: 13px;
 }
-.receiptThumbnail {
+.receipt-thumbnail {
     max-width: 175px;
     width: auto;
     height: 84px;
 }
-.receiptEditImage {
+.receipt-edit-image {
     display: block;
     margin: auto;
     padding-bottom: 20px;
-    width: 50%;
-    height: auto;
+    max-width: 1200px;
+    width: auto;
+    height: 400px;
+}
+.error-image {
+    display: block;
+    margin: auto;
+    padding-bottom: 20px;
+    width: auto;
+    height: 400px;
 }
 .labels-title-container {
     display: flex;

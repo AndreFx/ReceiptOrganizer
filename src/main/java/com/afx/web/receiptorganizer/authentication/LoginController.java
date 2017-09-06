@@ -5,6 +5,7 @@ import com.afx.web.receiptorganizer.types.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +37,8 @@ public class LoginController {
              input = new FileInputStream("application.properties");
 
              appProperties.load(input);
-        } catch(IOException e) {
-            logger.error("Unable to get application properties.");
+        } catch(IOException iox) {
+            logger.fatal("Unable to get application properties.");
         } finally {
             if (input != null) {
                 try {
@@ -61,17 +62,14 @@ public class LoginController {
 
         if (!this.userDao.isUser(user.getUsername())) {
             //First time user, add user to database
-            try {
-                user.setPaginationSize(Integer.parseInt(appProperties.getProperty("defaultPaginationSize")));
-                this.userDao.add(user);
-            } catch (Exception e) {
-                //TODO Show error screen.
-                logger.error("Unable to add user: " + user.getUsername() + " to database. Failed to login.");
-            }
+            user.setPaginationSize(Integer.parseInt(appProperties.getProperty("defaultPaginationSize")));
+            this.userDao.add(user);
         } else {
+            //Not first time user, get user settings from database.
             user = this.userDao.getUser(user.getUsername());
         }
 
+        //Remove unneeded user password storage
         user.setPassword(null);
 
         model.addAttribute("user", user);
