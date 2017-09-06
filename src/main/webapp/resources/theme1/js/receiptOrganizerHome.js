@@ -152,6 +152,7 @@ $(document).ready(function() {
     //Show image modal
     $(".modal-image").click(function(event) {
         event.stopPropagation();
+        $("body").addClass("image-modal-open");
         $("#imageModal").css("display", "block");
 
         $("#modalImage").attr("src", $(this).attr("src"));
@@ -160,6 +161,7 @@ $(document).ready(function() {
 
     // When the user clicks on <span> (x), close the modal
     $(".image-modal-close").click(function() {
+        $("body").removeClass("image-modal-open")
         $("#imageModal").css("display", "none");
     });
 

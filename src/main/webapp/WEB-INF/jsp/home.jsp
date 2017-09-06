@@ -214,20 +214,9 @@
                     </c:forEach>
                     </tbody>
                 </table>
-                <!-- Modal Image -->
-                <div id="imageModal" class="image-modal">
-
-                    <!-- The Close Button -->
-                    <span class="image-modal-close">&times;</span>
-
-                    <!-- Modal Content (The Image) -->
-                    <img class="image-modal-content" id="modalImage">
-
-                    <!-- Modal Caption (Image Text) -->
-                    <div class="image-modal-caption" id="modalCaption"></div>
-                </div>
             </div>
         </aside>
+        <jsp:include page="/WEB-INF/jsp/imageModal.jsp"/>
     </div>
     <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
 </body>

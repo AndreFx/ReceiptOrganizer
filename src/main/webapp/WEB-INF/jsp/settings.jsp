@@ -107,70 +107,71 @@
     <title>User Settings</title>
 </head>
 <body>
-<div class="mail-box">
-    <jsp:include page="/WEB-INF/jsp/userLabelsAside.jsp">
-        <jsp:param name="userPhotoView" value="${userPhotoView}"/>
-        <jsp:param name="baseHomeUrl" value="${baseHomeUrl}"/>
-    </jsp:include>
-    <aside class="lg-side">
-        <div class="inbox-head">
-            <h3><a href="${baseHomeUrl}" class="home-link">ReceiptOrganizer</a></h3>
-            <form class="pull-right position" action="${settingsUrl}" id="settings-form">
-                <button class="btn settings-button"><i class="fa fa-cog"></i></button>
-            </form>
-            <form class="pull-right position" action="${logoutUrl}" method="post" id="logout-form">
-                <button class="btn logout-button"><i class="fa fa-sign-out"></i></button>
-            </form>
-            <form action="#" class="pull-right position">
-                <div class="input-append">
-                    <input class="sr-input" placeholder="Search Receipts">
-                    <button class="btn sr-btn"><i class="fa fa-search"></i></button>
-                </div>
-            </form>
-        </div>
-        <div class="inbox-body">
-            <img class="receipt-edit-image" alt="${sessionScope.user.username} Image" src='<c:out value="${userPhotoView}"/>'>
-            <form:form autocomplete="false" modelAttribute="user" method="post" action="${settingsUpdateUrl}" class="form-horizontal" enctype="multipart/form-data">
-                <div class="form-group alert alert-danger center-full-width error-container" id="userSettingsErrorContainer">
-                    <div class="col-lg-10" id="userSettingsErrors"></div>
-                </div>
-                <div class="form-group">
-                    <form:label path="fName" class="col-lg-2 control-name">First Name</form:label>
-                    <div class="col-lg-10">
-                        <form:input path="fName" type="text" placeholder="" value="" class="form-control"/>
+    <div class="mail-box">
+        <jsp:include page="/WEB-INF/jsp/userLabelsAside.jsp">
+            <jsp:param name="userPhotoView" value="${userPhotoView}"/>
+            <jsp:param name="baseHomeUrl" value="${baseHomeUrl}"/>
+        </jsp:include>
+        <aside class="lg-side">
+            <div class="inbox-head">
+                <h3><a href="${baseHomeUrl}" class="home-link">ReceiptOrganizer</a></h3>
+                <form class="pull-right position" action="${settingsUrl}" id="settings-form">
+                    <button class="btn settings-button"><i class="fa fa-cog"></i></button>
+                </form>
+                <form class="pull-right position" action="${logoutUrl}" method="post" id="logout-form">
+                    <button class="btn logout-button"><i class="fa fa-sign-out"></i></button>
+                </form>
+                <form action="#" class="pull-right position">
+                    <div class="input-append">
+                        <input class="sr-input" placeholder="Search Receipts">
+                        <button class="btn sr-btn"><i class="fa fa-search"></i></button>
                     </div>
-                </div>
-                <div class="form-group">
-                    <form:label path="lName" class="col-lg-2 control-name">Last Name</form:label>
-                    <div class="col-lg-10">
-                        <form:input path="lName" type="text" placeholder="" value="" class="form-control"/>
+                </form>
+            </div>
+            <div class="inbox-body">
+                <img class="receipt-edit-image modal-image" alt="${sessionScope.user.username} Image" src='<c:out value="${userPhotoView}"/>'>
+                <form:form autocomplete="false" modelAttribute="user" method="post" action="${settingsUpdateUrl}" class="form-horizontal" enctype="multipart/form-data">
+                    <div class="form-group alert alert-danger center-full-width error-container" id="userSettingsErrorContainer">
+                        <div class="col-lg-10" id="userSettingsErrors"></div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <form:label path="paginationSize" class="col-lg-2 control-name">Page Size (5 - 25)</form:label>
-                    <div class="col-lg-10">
-                        <form:input path="paginationSize" type="text" placeholder="" value="" class="form-control"/>
+                    <div class="form-group">
+                        <form:label path="fName" class="col-lg-2 control-name">First Name</form:label>
+                        <div class="col-lg-10">
+                            <form:input path="fName" type="text" placeholder="" value="" class="form-control"/>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-lg-offset-2 col-lg-10">
-                        <div class="receiptEditButtons">
-                            <div class="btn-group-container">
-                                    <span class="btn green fileinput-button">
-                                                <i class="fa fa-plus fa fa-white"></i>
-                                                <span>Change your photo</span>
-                                                <form:input path="image" id="editMultipartFile" type="file" accept=".png,.jpg"/>
-                                            </span>
-                                <form:button id="userSettingsSubmit" class="btn btn-send">Save Changes</form:button>
+                    <div class="form-group">
+                        <form:label path="lName" class="col-lg-2 control-name">Last Name</form:label>
+                        <div class="col-lg-10">
+                            <form:input path="lName" type="text" placeholder="" value="" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <form:label path="paginationSize" class="col-lg-2 control-name">Page Size (5 - 25)</form:label>
+                        <div class="col-lg-10">
+                            <form:input path="paginationSize" type="text" placeholder="" value="" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-offset-2 col-lg-10">
+                            <div class="receiptEditButtons">
+                                <div class="btn-group-container">
+                                        <span class="btn green fileinput-button">
+                                                    <i class="fa fa-plus fa fa-white"></i>
+                                                    <span>Change your photo</span>
+                                                    <form:input path="image" id="editMultipartFile" type="file" accept=".png,.jpg"/>
+                                                </span>
+                                    <form:button id="userSettingsSubmit" class="btn btn-send">Save Changes</form:button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </form:form>
-        </div>
-    </aside>
-</div>
-<jsp:include page="/WEB-INF/jsp/footer.jsp"/>
+                </form:form>
+            </div>
+        </aside>
+        <jsp:include page="/WEB-INF/jsp/imageModal.jsp"/>
+    </div>
+    <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
 </body>
 </html>
 
