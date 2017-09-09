@@ -25,22 +25,6 @@ public class UserDaoImpl implements UserDao {
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
-    public boolean isUser(String username) {
-        String user;
-        try {
-            SqlParameterSource parameters = new MapSqlParameterSource("username", username);
-            String query = "SELECT Username " +
-                    "FROM [ReceiptOrganizer].[dbo].[USER] " +
-                    "WHERE Username = :username";
-            user = this.jdbcTemplate.queryForObject(query, parameters, String.class);
-        } catch (DataAccessException e) {
-            logger.info("Username not found, new user logging in.");
-            throw e;
-        }
-
-        return !user.equals("");
-    }
-
     public User getUser(String username) {
         User user;
         try {
@@ -66,7 +50,7 @@ public class UserDaoImpl implements UserDao {
             parameters.put("paginationsize", user.getPaginationSize());
 
             String sql = "INSERT INTO [ReceiptOrganizer].[dbo].[USER] " +
-                    "VALUES (Username = :username, fName = :fName, lName = :lName, PaginationSize = :paginationsize, NULL)";
+                    "VALUES (:username, :fName, :lName, NULL, :paginationsize)";
             this.jdbcTemplate.update(sql, parameters);
 
             logger.info("New user: " + user.getUsername() + " added to database.");

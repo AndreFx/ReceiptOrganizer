@@ -380,6 +380,7 @@ ul.labels-info li a i {
 }
 .btn-group-container {
     display: inline-block;
+    line-height: 35px;
 }
 .receiptEditButtons {
     display: flex;

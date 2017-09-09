@@ -31,6 +31,7 @@ public class UserViewController {
     public String initForm(@RequestParam(value = "label", required = false) String label, @RequestParam(value = "page", required = false) Integer page,
                            @ModelAttribute("user") User user, ModelMap model) {
         logger.debug("Serving user request for home screen.");
+        List<Receipt> receipts = null;
 
         //All user labels
         List<Label> labels = this.labelDao.getAllUserLabels(user.getUsername());
@@ -38,14 +39,17 @@ public class UserViewController {
         if (page == null || page < 1 || page > Math.ceil(totalNumReceipts / (float) user.getPaginationSize())) {
             page = 1;
         }
-        List<Receipt> receipts = this.receiptDao.getRangeUserReceiptsForLabel(user.getUsername(), label,
-                user.getPaginationSize() * (page - 1), user.getPaginationSize());
+        if (totalNumReceipts != 0) {
+            receipts = this.receiptDao.getRangeUserReceiptsForLabel(user.getUsername(), label,
+                    user.getPaginationSize() * (page - 1), user.getPaginationSize());
+        }
 
         model.addAttribute("labels", labels);
         model.addAttribute("receipts", receipts);
         model.addAttribute("newReceipt", new Receipt());
         model.addAttribute("newLabel", new Label());
         model.addAttribute("currentLabel", label);
+        model.addAttribute("searchString", null);
         model.addAttribute("numPages", Math.ceil(totalNumReceipts / (float) user.getPaginationSize()));
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", user.getPaginationSize());
@@ -59,6 +63,7 @@ public class UserViewController {
                                  @ModelAttribute("user") User user, ModelMap model) {
         logger.debug("User sent search string: " + searchString);
 
+        List<Receipt> receipts = null;
         StringBuilder temp = new StringBuilder(searchString);
         temp.insert(0, '%');
         temp.append('%');
@@ -69,9 +74,10 @@ public class UserViewController {
         if (page == null || page < 1 || page > Math.ceil(totalNumReceipts / (float) user.getPaginationSize())) {
             page = 1;
         }
-
-        List<Receipt> receipts = this.receiptDao.findRangeUserReceiptsFromString(user.getUsername(),
-                temp.toString(), user.getPaginationSize() * (page - 1), user.getPaginationSize());
+        if (totalNumReceipts != 0) {
+            receipts = this.receiptDao.findRangeUserReceiptsFromString(user.getUsername(),
+                    temp.toString(), user.getPaginationSize() * (page - 1), user.getPaginationSize());
+        }
 
         model.addAttribute("labels", labels);
         model.addAttribute("receipts", receipts);

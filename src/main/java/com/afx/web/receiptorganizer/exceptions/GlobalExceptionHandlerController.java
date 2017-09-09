@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.naming.CommunicationException;
+
 @ControllerAdvice
 public class GlobalExceptionHandlerController {
 
@@ -38,6 +40,14 @@ public class GlobalExceptionHandlerController {
     public String handleDataException(DataAccessException e, Model model) {
         model.addAttribute("exception", e);
         model.addAttribute("errorMessage", "Error sending request to database.\nPlease contact your system administrator.");
+
+        return DEFAULT_VIEW;
+    }
+
+    @ExceptionHandler(CommunicationException.class)
+    public String handleCommunicationException(CommunicationException e, Model model) {
+        model.addAttribute("exception", e);
+        model.addAttribute("errorMessage", "Error contacting ActiveDirectory server.\nPlease contact your system administrator.");
 
         return DEFAULT_VIEW;
     }

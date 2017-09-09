@@ -1,6 +1,5 @@
 package com.afx.web.receiptorganizer.users;
 
-import com.afx.web.receiptorganizer.authentication.LoginController;
 import com.afx.web.receiptorganizer.dao.label.LabelDao;
 import com.afx.web.receiptorganizer.dao.user.UserDao;
 import com.afx.web.receiptorganizer.types.Label;
@@ -10,9 +9,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -31,7 +27,7 @@ import java.util.List;
 @SessionAttributes(value={"user"})
 public class UserController {
 
-    private static Logger logger = LogManager.getLogger(LoginController.class);
+    private static Logger logger = LogManager.getLogger(UserController.class);
 
     @Autowired
     private LabelDao labelDao;
@@ -61,8 +57,8 @@ public class UserController {
                 response.setContentLength(baos.toByteArray().length);
             }
 
-            response.setContentType("image/jpeg");
-            response.setHeader("content-Disposition", "inline; filename=" + user.getUsername() + "image.jpeg");
+            response.setContentType("image/png");
+            response.setHeader("content-Disposition", "inline; filename=" + user.getUsername() + "image.png");
             IOUtils.copy(in, response.getOutputStream());
             response.flushBuffer();
             in.close();
@@ -80,7 +76,7 @@ public class UserController {
             if (user.getImage() != null && !user.getImage().isEmpty()) {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 BufferedImage image = ImageIO.read(user.getImage().getInputStream());
-                ImageIO.write(image, "jpeg", outputStream);
+                ImageIO.write(image, "png", outputStream);
                 outputStream.flush();
                 byte[] imageAsBytes = outputStream.toByteArray();
                 outputStream.close();

@@ -10,24 +10,24 @@
     <servlet-name>ReceiptOrganizer</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
+
+  <!-- Exception Handling -->
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/internalerror</location>
+  </error-page>
+
+  <!-- Security -->
+  <session-config>
+    <session-timeout>30</session-timeout>
+  </session-config>
+
   <filter>
-    <filter-name>loginFilter</filter-name>
-    <filter-class>com.afx.web.receiptorganizer.authentication.ReceiptOrganizerFilter</filter-class>
-    <init-param>
-      <param-name>login-page</param-name>
-      <param-value>/ReceiptOrganizer/</param-value>
-    </init-param>
-    <init-param>
-      <param-name>login-action</param-name>
-      <param-value>/ReceiptOrganizer/login/authenticate</param-value>
-    </init-param>
-    <init-param>
-      <param-name>resources</param-name>
-      <param-value>/resources/</param-value>
-    </init-param>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
   </filter>
   <filter-mapping>
-    <filter-name>loginFilter</filter-name>
-    <url-pattern>/*</url-pattern>
+      <filter-name>springSecurityFilterChain</filter-name>
+      <url-pattern>/*</url-pattern>
   </filter-mapping>
 </web-app>

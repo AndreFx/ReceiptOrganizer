@@ -5,14 +5,14 @@
 <html>
 <head>
     <spring:url var="baseHomeUrl" value="/home/"/>
-    <spring:url var="searchUrl" value="/home/search"/>
-    <spring:url var="logoutUrl" value="/logout"/>
-    <spring:url var="settingsUrl" value="/users/settings"/>
-    <spring:url value="/users/getUserPhoto" var="userPhotoView"/>
     <c:choose>
         <c:when test="${searchString != null}">
             <spring:url value="./search" var="prev">
                 <spring:param name="page" value="${currentPage-1}"/>
+                <spring:param name="searchString" value="${searchString}"/>
+            </spring:url>
+            <spring:url value="./search" var="next">
+                <spring:param name="page" value="${currentPage + 1}"/>
                 <spring:param name="searchString" value="${searchString}"/>
             </spring:url>
         </c:when>
@@ -20,23 +20,13 @@
             <spring:url value="." var="prev">
                 <spring:param name="page" value="${currentPage-1}"/>
             </spring:url>
-        </c:otherwise>
-    </c:choose>
-    <c:choose>
-        <c:when test="${searchString != null}">
-            <spring:url value="./search" var="next">
-                <spring:param name="page" value="${currentPage + 1}"/>
-                <spring:param name="searchString" value="${searchString}"/>
-            </spring:url>
-        </c:when>
-        <c:otherwise>
             <spring:url value="." var="next">
                 <spring:param name="page" value="${currentPage + 1}"/>
             </spring:url>
         </c:otherwise>
     </c:choose>
 
-    <spring:url value="/resources/css/afx_home_styleguide.css" var="styleguide"/>
+    <spring:url value="/resources/css/afx-home-styleguide.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
     <spring:url value="/resources/css/bootstrap-multiselect.css" var="multiselectcss"/>
     <spring:url value="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" var="fontawesomecss"/>
@@ -66,6 +56,14 @@
     <script src="${receiptHome}"></script>
     <script>
         $(document).ready(function() {
+            $(function () {
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+                $(document).ajaxSend(function(e, xhr, options) {
+                    xhr.setRequestHeader(header, token);
+                });
+            });
+
             <c:forEach items="${labels}" var="label" varStatus="i">
             $('#editLabelForm${label.name.replaceAll("\\s+","").replaceAll("\\W+", "")}').validate({
                 rules: {
@@ -104,34 +102,29 @@
             </c:forEach>
         });
     </script>
-    <title>Receipts</title>
+    <title>ReceiptOrganizer</title>
 </head>
 <body>
     <div class="mail-box">
         <jsp:include page="/WEB-INF/jsp/userLabelsAside.jsp">
-            <jsp:param name="userPhotoView" value="${userPhotoView}"/>
             <jsp:param name="baseHomeUrl" value="${baseHomeUrl}"/>
         </jsp:include>
         <aside class="lg-side">
-            <div class="inbox-head">
-                <h3><a href="${baseHomeUrl}" class="home-link">ReceiptOrganizer</a></h3>
-                <form class="pull-right position" action="${settingsUrl}" id="settings-form">
-                    <button class="btn settings-button"><i class="fa fa-cog"></i></button>
-                </form>
-                <form class="pull-right position" action="${logoutUrl}" method="post" id="logout-form">
-                    <button class="btn logout-button"><i class="fa fa-sign-out"></i></button>
-                </form>
-                <form action="${searchUrl}" method="get" class="pull-right position">
-                    <div class="input-append">
-                        <input name="searchString" class="sr-input" placeholder="Search Receipts">
-                        <button class="btn sr-btn"><i class="fa fa-search"></i></button>
-                    </div>
-                </form>
-            </div>
+            <jsp:include page="rightNavbar.jsp"/>
             <div class="inbox-body">
                 <div class="mail-option">
                     <div class="btn-group-container">
-
+                        <c:choose>
+                            <c:when test="${currentLabel != null}">
+                                <span class="vertical-align-text">${currentLabel}</span>
+                            </c:when>
+                            <c:when test="${searchString != null}">
+                                <span class="vertical-align-text">Search for: "${searchString}"</span>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="vertical-align-text">All Receipts</span>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <div class="btn-group-container">
                         <c:choose>
@@ -199,21 +192,28 @@
                         </nav>
                     </div>
                 </div>
-                <table class="table table-inbox table-hover">
-                    <tbody>
-                    <c:forEach items="${receipts}" var="receipt" varStatus="i">
-                        <spring:url value="/receipts/${receipt.receiptId}" var="receiptViewUrl"/>
-                        <spring:url value="/receipts/${receipt.receiptId}/image" var="receiptViewImageUrl"/>
-                        <tr class="clickable-row" data-href="<c:out value="${receiptViewUrl}"/>">
-                            <td class="view-message vertical-align-text"><img class="receipt-thumbnail modal-image" alt="${receipt.title}" src='<c:out value="${receiptViewImageUrl}"/>'></td>
-                            <td class="view-message dont-show vertical-align-text">${receipt.title}</td>
-                            <td class="view-message vertical-align-text">${receipt.description}</td>
-                            <td class="view-message vertical-align-text">$${receipt.receiptAmount}</td>
-                            <td class="view-message vertical-align-text text-right">${receipt.date}</td>
-                        </tr>
-                    </c:forEach>
-                    </tbody>
-                </table>
+                <c:choose>
+                    <c:when test="${receipts != null}">
+                        <table class="table table-inbox table-hover">
+                            <tbody>
+                            <c:forEach items="${receipts}" var="receipt" varStatus="i">
+                                <spring:url value="/receipts/${receipt.receiptId}" var="receiptViewUrl"/>
+                                <spring:url value="/receipts/${receipt.receiptId}/image" var="receiptViewImageUrl"/>
+                                <tr class="clickable-row" data-href="<c:out value="${receiptViewUrl}"/>">
+                                    <td class="view-message vertical-align-text"><img class="receipt-thumbnail modal-image" alt="${receipt.title}" src='<c:out value="${receiptViewImageUrl}"/>'></td>
+                                    <td class="view-message dont-show vertical-align-text">${receipt.title}</td>
+                                    <td class="view-message vertical-align-text">${receipt.description}</td>
+                                    <td class="view-message vertical-align-text">$${receipt.receiptAmount}</td>
+                                    <td class="view-message vertical-align-text text-right">${receipt.date}</td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                    </c:when>
+                    <c:otherwise>
+                        <p class="text-center"> No receipts!</p>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </aside>
         <jsp:include page="/WEB-INF/jsp/imageModal.jsp"/>

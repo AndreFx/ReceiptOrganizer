@@ -12,12 +12,13 @@
 <html>
 <head>
     <spring:url var="baseHomeUrl" value="/home/"/>
+    <spring:url var="searchUrl" value="/home/search"/>
     <spring:url var="logoutUrl" value="/logout"/>
     <spring:url var="settingsUrl" value="/users/settings"/>
     <spring:url var="settingsUpdateUrl" value="/users/settings/update"/>
     <spring:url value="/users/getUserPhoto" var="userPhotoView"/>
 
-    <spring:url value="/resources/css/afx_home_styleguide.css" var="styleguide"/>
+    <spring:url value="/resources/css/afx-home-styleguide.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
     <spring:url value="/resources/css/bootstrap-multiselect.css" var="multiselectcss"/>
     <spring:url value="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" var="fontawesomecss"/>
@@ -49,6 +50,14 @@
     <script src="${userSettings}"></script>
     <script>
         $(document).ready(function() {
+            $(function () {
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+                $(document).ajaxSend(function(e, xhr, options) {
+                    xhr.setRequestHeader(header, token);
+                });
+            });
+
             <c:forEach items="${labels}" var="label" varStatus="i">
             $('#editLabelForm${label.name.replaceAll("\\s+","").replaceAll("\\W+", "")}').validate({
                 rules: {
@@ -109,28 +118,13 @@
 <body>
     <div class="mail-box">
         <jsp:include page="/WEB-INF/jsp/userLabelsAside.jsp">
-            <jsp:param name="userPhotoView" value="${userPhotoView}"/>
             <jsp:param name="baseHomeUrl" value="${baseHomeUrl}"/>
         </jsp:include>
         <aside class="lg-side">
-            <div class="inbox-head">
-                <h3><a href="${baseHomeUrl}" class="home-link">ReceiptOrganizer</a></h3>
-                <form class="pull-right position" action="${settingsUrl}" id="settings-form">
-                    <button class="btn settings-button"><i class="fa fa-cog"></i></button>
-                </form>
-                <form class="pull-right position" action="${logoutUrl}" method="post" id="logout-form">
-                    <button class="btn logout-button"><i class="fa fa-sign-out"></i></button>
-                </form>
-                <form action="#" class="pull-right position">
-                    <div class="input-append">
-                        <input class="sr-input" placeholder="Search Receipts">
-                        <button class="btn sr-btn"><i class="fa fa-search"></i></button>
-                    </div>
-                </form>
-            </div>
+            <jsp:include page="rightNavbar.jsp"/>
             <div class="inbox-body">
                 <img class="receipt-edit-image modal-image" alt="${sessionScope.user.username} Image" src='<c:out value="${userPhotoView}"/>'>
-                <form:form autocomplete="false" modelAttribute="user" method="post" action="${settingsUpdateUrl}" class="form-horizontal" enctype="multipart/form-data">
+                <form:form autocomplete="false" modelAttribute="user" method="post" action="${settingsUpdateUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-group alert alert-danger center-full-width error-container" id="userSettingsErrorContainer">
                         <div class="col-lg-10" id="userSettingsErrors"></div>
                     </div>

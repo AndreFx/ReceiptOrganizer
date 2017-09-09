@@ -17,7 +17,7 @@
 
     <spring:url value="/resources/images/systemError.jpg" var="errorImage"/>
 
-    <spring:url value="/resources/css/afx_home_styleguide.css" var="styleguide"/>
+    <spring:url value="/resources/css/afx-home-styleguide.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
     <spring:url value="/resources/css/bootstrap-multiselect.css" var="multiselectcss"/>
     <spring:url value="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" var="fontawesomecss"/>

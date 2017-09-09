@@ -9,8 +9,6 @@ public class User implements Serializable {
     private String username;
     private String fName;
     private String lName;
-    private String password;
-    private boolean remember;
     private Integer paginationSize;
     private MultipartFile image;
     private byte[] file;
@@ -21,22 +19,6 @@ public class User implements Serializable {
 
     public void setUsername(String username) {
 	this.username = username;
-    }
-
-    public String getPassword() {
-	return this.password;
-    }
-
-    public void setPassword(String password) {
-	this.password = password;
-    }
-
-    public boolean isRemember() {
-	return this.remember;
-    }
-
-    public void setRemember(boolean remember) {
-	this.remember = remember;
     }
 
     public String getfName() {

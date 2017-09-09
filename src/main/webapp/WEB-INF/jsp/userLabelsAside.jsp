@@ -11,7 +11,7 @@
 <aside class="sm-side">
     <div class="user-head">
         <a class="inbox-avatar">
-            <img width="64" height="60" src='${param.userPhotoView}'>
+            <img class="modal-image" width="64" height="60" src="${userPhotoView}" alt="${sessionScope.user.username}'s Account Photo">
         </a>
         <div class="user-name">
             <h5>Welcome ${sessionScope.user.username}!</h5>
@@ -31,7 +31,7 @@
                         <h4 class="modal-title">Add Receipt</h4>
                     </div>
                     <div class="modal-body">
-                        <form:form autocomplete="false" modelAttribute="newReceipt" method="post" action="${createReceiptUrl}" class="form-horizontal" enctype="multipart/form-data">
+                        <form:form autocomplete="false" modelAttribute="newReceipt" method="post" action="${createReceiptUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
                             <div class="form-group alert alert-danger center-full-width error-container" id="receiptErrorContainer">
                                 <div class="col-lg-10" id="receiptErrors"></div>
                             </div>
@@ -108,6 +108,7 @@
                         <c:forEach items="${labels}" var="label" varStatus="i">
                             <div class="form-group row">
                                 <form id="editLabelForm${label.name.replaceAll("\\s+","")}" action="${updateLabelUrl}" method="post" class="col-lg-10 form-horizontal">
+                                    <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
                                     <label class="col-lg-4 control-name">${label.name}</label>
                                     <div class="col-lg-5">
                                         <input name="oldLabelName" value="${label.name}" type="hidden">
@@ -119,6 +120,7 @@
                                 </form>
                                 <div class="col-lg-2">
                                     <form action="${deleteLabelUrl}" method="post" class="form-horizontal">
+                                        <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
                                         <input type="hidden" name="labelName" value="${label.name}">
                                         <button class="btn btn-send">Delete</button>
                                     </form>
@@ -132,7 +134,7 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-        <li class="nav-item"><a class="nav-link" href="${param.baseHomeUrl}"><i class="fa fa-sign-blank text-info"></i>Show All Receipts</a></li>
+        <li class="nav-item"><a class="nav-link" href="${param.baseHomeUrl}"><i class="fa fa-sign-blank text-info"></i>All Receipts</a></li>
         <c:forEach items="${labels}" var="label" varStatus="i">
             <li class="nav-item"><a class="nav-link" href="${param.baseHomeUrl}?label=${label.name}"><i class="fa fa-sign-blank text-info"></i>${label.name}</a></li>
         </c:forEach>
@@ -146,6 +148,7 @@
                     </div>
                     <div class="modal-body">
                         <form:form autocomplete="false" action="${createLabelUrl}" modelAttribute="newLabel" method="post" class="form-horizontal">
+                            <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
                             <div class="form-group alert alert-danger center-full-width" hidden="true" id="labelErrorContainer">
                                 <div class="col-lg-10" id="labelErrors"></div>
                             </div>
