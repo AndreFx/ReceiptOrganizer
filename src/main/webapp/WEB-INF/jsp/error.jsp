@@ -48,21 +48,7 @@
 <body>
     <div class="mail-box">
         <aside class="lg-side">
-            <div class="inbox-head">
-                <h3><a href="${baseHomeUrl}" class="home-link">ReceiptOrganizer</a></h3>
-                <form class="pull-right position" action="${settingsUrl}" id="settings-form">
-                    <button class="btn settings-button"><i class="fa fa-cog"></i></button>
-                </form>
-                <form class="pull-right position" action="${logoutUrl}" method="post" id="logout-form">
-                    <button class="btn logout-button"><i class="fa fa-sign-out"></i></button>
-                </form>
-                <form action="#" class="pull-right position">
-                    <div class="input-append">
-                        <input class="sr-input" placeholder="Search Receipts">
-                        <button class="btn sr-btn"><i class="fa fa-search"></i></button>
-                    </div>
-                </form>
-            </div>
+            <jsp:include page="rightNavbar.jsp"/>
             <div class="inbox-body">
                 <img class="error-image" src="${errorImage}" alt="System Error">
                 <p class="text-center">${errorMessage}</p>

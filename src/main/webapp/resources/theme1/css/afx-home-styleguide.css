@@ -7,6 +7,12 @@ div.inline {
     margin-right: auto !important;
     margin-left: auto !important;
 }
+.full-width {
+    width: 100%;
+}
+a.full-width {
+    display:inline-block;
+}
 .vertical-align-text {
     vertical-align: middle !important;
 }
@@ -259,6 +265,17 @@ ul.inbox-nav li a span.label {
     width: auto;
     height: 400px;
 }
+
+/**
+User Labels Styles
+ */
+.label-name {
+    width: 90%;
+}
+.menu {
+    text-align: right;
+    padding: 0 !important;
+}
 .labels-title-container {
     display: flex;
     justify-content: space-between;
@@ -270,6 +287,18 @@ ul.inbox-nav li a span.label {
 .labels-edit:hover, .labels-edit:focus {
     background: none repeat scroll 0 0 transparent !important;
     color: #6a6a6a !important;
+}
+.table-label {
+    margin-bottom: 0;
+}
+.table-label tbody tr td {
+    border-top: 0;
+}
+.table-label tbody tr td.menu:hover {
+    cursor: pointer;
+}
+.table-label tbody tr td.label-name:hover {
+    cursor: default;
 }
 .labels-edit {
     vertical-align: middle;
@@ -283,6 +312,7 @@ ul.inbox-nav li a span.label {
     vertical-align: middle;
     padding: 0 0 0 0 !important;
 }
+
 ul.labels-info li h4 {
     color: #5c5c5e;
     font-size: 13px;
@@ -294,23 +324,32 @@ ul.labels-info li h4 {
 ul.labels-info li {
     margin: 0;
 }
-ul.labels-info li a {
+ul.labels-info li td {
     border-radius: 0;
     color: #6a6a6a;
 }
-ul.labels-info li a:hover, ul.labels-info li a:focus {
+ul.labels-info li:hover tr, ul.labels-info:focus li tr,
+ul.labels-info li:hover a.dropdown-toggle, ul.labels-info li:focus a.dropdown-toggle{
     background: none repeat scroll 0 0 #d5d7de;
     color: #6a6a6a;
 }
-ul.labels-info li a i {
+ul.labels-info .open > a.dropdown-toggle {
+    background: none repeat scroll 0 0 #e5e8ef;
+}
+.menu-icon {
+    visibility: hidden;
+}
+ul.labels-info li:hover i.menu-icon {
+    visibility: visible;
+}
+ul.labels-info li td i {
     padding-right: 10px;
 }
-.nav.nav-pills.nav-stacked.labels-info p {
-    color: #9d9f9e;
-    font-size: 11px;
-    margin-bottom: 0;
-    padding: 0 22px;
-}
+
+/**
+Inbox Styles
+ */
+
 .inbox-head {
     background: none repeat scroll 0 0 #bb0000;
     border-radius: 0 4px 0 0;
@@ -367,12 +406,6 @@ ul.labels-info li a i {
 }
 .table-inbox tr td:hover {
     cursor: pointer;
-}
-.table-inbox tr td .fa-star.inbox-started, .table-inbox tr td .fa-star:hover {
-    color: #f78a09;
-}
-.table-inbox tr td .fa-star {
-    color: #d5d5d5;
 }
 .table-inbox tr.unread td {
     background: none repeat scroll 0 0 #f7f7f7;

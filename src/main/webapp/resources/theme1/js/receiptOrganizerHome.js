@@ -37,29 +37,6 @@ $(document).ready(function() {
        return success;
     }, "Label must be unique");
 
-    //Modals and validation
-
-    $('#addReceipt').on('hidden.bs.modal', function() {
-        console.log('Receipt modal closed.');
-
-        //Hide error messages
-        $('div#receiptErrors').empty();
-        $('#receiptErrorContainer').hide();
-
-        //Clear any user input
-        $(this).find('form')[0].reset();
-    });
-
-    $('#addLabel').on('hidden.bs.modal', function() {
-        console.log('Label modal closed.');
-
-        $('div#labelErrors').empty();
-        $('#labelErrorContainer').hide();
-
-        //Clear any user input
-        $(this).find('form')[0].reset();
-    });
-
     $('#newLabel').validate({
         rules: {
             name: {
@@ -145,12 +122,159 @@ $(document).ready(function() {
     //Create datepicker
     $('#date').datepicker();
 
-    $(".clickable-row").click(function() {
-        window.location = $(this).data("href");
+    //Clickable row handler
+
+    $(".clickable-row").click(function(event) {
+        console.log("Row clicked.");
+
+        if (!$(event.target).hasClass('menu-icon') && !$(event.target).hasClass('dropdown-toggle')) {
+            console.log("Menu wasn't the target");
+            event.stopPropagation();
+            var attr = $(this).attr("data-toggle");
+
+            if (typeof attr !== typeof undefined && attr !== false) {
+                $('#addLabel').modal('show');
+            } else {
+                window.location = $(this).data("href");
+            }
+        }
     });
+
+    //Edit Functionality for Labels
+
+    $('.dropdown-item-edit').click(function(event) {
+        console.log("Dropdown edit item selected.");
+        event.stopPropagation();
+        event.preventDefault();
+
+        if ($('#editor').length) {
+            $('#editor').prev().show();
+            $('#editor').remove();
+        }
+
+        var manager = $('#editManager').clone().attr("id", "editor");
+        var labelName = $(this).parent().parent().parent().prev().contents().filter(function() {
+            return this.nodeType == 3;
+        }).text();
+
+        $(manager).find("[name='oldLabelName']").attr("value", labelName);
+        $(manager).find("[name='newLabelName']").attr("value", labelName);
+        $(manager).find("[type='button']").attr("id", "stopEdit");
+        $(this).parent().parent().parent().parent().parent().parent().parent().hide().after(manager);
+        $(manager).show();
+        $(manager).find("form").attr("id", "editLabelForm");
+        $(manager).find("[name='newLabelName']").focus();
+        $('#editLabelForm').validate({
+            rules: {
+                oldLabelName: "required",
+                newLabelName: {
+                    required: true,
+                    notAllSpace: true,
+                    uniqueLabel: true
+                }
+            },
+
+            messages: {
+                oldLabelName: "Don't mess around in the dev console",
+                newLabelName: {
+                    required: "Cannot enter empty label",
+                    notAllSpace: "Cannot enter empty label",
+                    uniqueLabel: "Label name must be unique"
+                }
+            },
+
+            onkeyup: false,
+
+            onfocusout: false,
+
+            errorContainer: "#labelEditErrorContainer",
+
+            errorLabelContainer: "#labelEditErrorContainer ul",
+
+            wrapper: "li",
+
+            submitHandler: function (form) {
+                $('#labelEditErrorContainer').hide();
+                form.submit();
+            }
+        });
+    });
+
+    $('.sm-side').on('click', "#stopEdit", function(event) {
+        //Delete form, show original li
+        console.log("Canceling edit action.");
+        event.stopPropagation();
+        $('#editor').prev().show();
+        $('#editor').remove();
+
+        //Stop the dropdown from reopening. Is there some other issue here?
+        $('body').click();
+    });
+
+
+    //Delete functionality for Labels
+
+    $(".dropdown-item-delete").click(function(event) {
+        console.log("Dropdown delete item selected.");
+        event.stopPropagation();
+        var questionText = 'Are you sure you want to delete the label: ';
+        var labelName = $(this).parent().parent().parent().prev().contents().filter(function() {
+            return this.nodeType == 3;
+        }).text();
+
+        $('#deleteLabelNameValue').val(labelName);
+        $('#deleteLabelNameText').text(questionText.concat(labelName, '?'));
+        $('#deleteLabelModal').modal('show');
+    });
+
+    /* Modals */
+
+    /* On show events */
+
+    $('#addReceipt').on('shown.bs.modal', function() {
+        $("#title").focus();
+    });
+
+    $('#addLabel').on('shown.bs.modal', function() {
+        $("#name").focus();
+    });
+
+    $('#deleteLabelModal').on('shown.bs.modal', function() {
+        $("#deleteCancelButton").focus();
+    });
+
+    $('#addReceipt').on('hidden.bs.modal', function() {
+        console.log('Receipt modal closed.');
+
+        //Hide error messages
+        $('div#receiptErrors').empty();
+        $('#receiptErrorContainer').hide();
+
+        //Clear any user input
+        $(this).find('form')[0].reset();
+    });
+
+    $('#addLabel').on('hidden.bs.modal', function() {
+        console.log('Label modal closed.');
+
+        $('div#labelErrors').empty();
+        $('#labelErrorContainer').hide();
+
+        //Clear any user input
+        $(this).find('form')[0].reset();
+    });
+
+    $('#deleteLabelModal').on('hidden.bs.modal', function() {
+        console.log('Edit Label modal closed.');
+
+        $('#deleteLabelNameText').empty();
+    });
+
+    //Image Modal functionality
 
     //Show image modal
     $(".modal-image").click(function(event) {
+        console.log("Image Modal toggled.");
         event.stopPropagation();
         $("body").addClass("image-modal-open");
         $("#imageModal").css("display", "block");
@@ -161,10 +285,9 @@ $(document).ready(function() {
 
     // When the user clicks on <span> (x), close the modal
     $(".image-modal-close").click(function() {
-        $("body").removeClass("image-modal-open")
+        $("body").removeClass("image-modal-open");
         $("#imageModal").css("display", "none");
     });
-
 
     $('#editLabel').on('hidden.bs.modal', function() {
         console.log('Edit Label modal closed.');

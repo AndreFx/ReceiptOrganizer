@@ -57,4 +57,10 @@ $(document).ready(function() {
 
     //Create datepicker
     $('#editDate').datepicker();
+
+    //Delete Modal
+    $('#deleteReceipt').on('shown.bs.modal', function() {
+        $("#cancelDeleteReceipt").focus();
+    });
+
 });

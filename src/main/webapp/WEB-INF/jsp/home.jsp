@@ -63,45 +63,10 @@
                     xhr.setRequestHeader(header, token);
                 });
             });
-
-            <c:forEach items="${labels}" var="label" varStatus="i">
-            $('#editLabelForm${label.name.replaceAll("\\s+","").replaceAll("\\W+", "")}').validate({
-                rules: {
-                    oldLabelName: "required",
-                    newLabelName: {
-                        required: true,
-                        notAllSpace: true,
-                        uniqueLabel: true
-                    }
-                },
-
-                messages: {
-                    oldLabelName: "Don't mess around in the dev console",
-                    newLabelName: {
-                        required: "Cannot enter empty label for ${label.name}",
-                        notAllSpace: "Cannot enter empty label for ${label.name}",
-                        uniqueLabel: "Label name must be unique for ${label.name}"
-                    }
-                },
-
-                onkeyup: false,
-
-                onfocusout: false,
-
-                errorContainer: "#labelEditErrorContainer",
-
-                errorLabelContainer: "#labelEditErrorContainer ul",
-
-                wrapper: "li",
-
-                submitHandler: function (form) {
-                    $('#labelEditErrorContainer').hide();
-                    form.submit();
-                }
-            });
-            </c:forEach>
         });
     </script>
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
     <title>ReceiptOrganizer</title>
 </head>
 <body>
