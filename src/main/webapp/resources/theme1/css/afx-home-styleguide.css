@@ -1,0 +1,620 @@
+/* Utilities */
+div.inline {
+    display: inline-block;
+}
+.center-full-width {
+    width: 100%;
+    margin-right: auto !important;
+    margin-left: auto !important;
+}
+.full-width {
+    width: 100%;
+}
+a.full-width {
+    display:inline-block;
+}
+.vertical-align-text {
+    vertical-align: middle !important;
+}
+.bottom-stack-order {
+    z-index: 0 !important;
+}
+
+/* Common AFX Styleguide */
+.home-link, .home-link:hover, .home-link:focus {
+    color: #fff;
+    text-decoration: none;
+}
+.error-container {
+    display: none;
+}
+body.image-modal-open {
+    overflow: hidden;
+}
+
+/* Style the Image Used to Trigger the Modal */
+.modal-image {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.modal-image:hover {
+    opacity: 0.7;
+}
+
+/* The Modal (background) */
+.image-modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+/* Modal Content (Image) */
+.image-modal-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+}
+
+/* Caption of Modal Image (Image Text) - Same Width as the Image */
+.image-modal-caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+}
+
+/* Add Animation - Zoom in the Modal */
+.image-modal-content, .image-modal-caption {
+    -webkit-animation-name: zoom;
+    -webkit-animation-duration: 0.6s;
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+@-webkit-keyframes zoom {
+    from {-webkit-transform:scale(0)}
+    to {-webkit-transform:scale(1)}
+}
+
+@keyframes zoom {
+    from {transform:scale(0)}
+    to {transform:scale(1)}
+}
+
+/* The Close Button */
+.image-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.image-modal-close:hover,
+.image-modal-close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px){
+    .image-modal-content {
+        width: 100%;
+    }
+}
+
+/* Page Specific */
+.footer {
+    padding: 50px 0;
+    margin-top: 50px;
+    text-align: left;
+    background-color: #e5e8ef;
+}
+.footer-links {
+    padding-left: 0;
+    margin-bottom: 25px;
+}
+.footer a {
+    font-weight: 500;
+    color: #464a4c;
+}
+.mail-box {
+    border-collapse: collapse;
+    border-spacing: 0;
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+}
+.mail-box aside {
+    display: table-cell;
+    float: none;
+    height: 100%;
+    padding: 0;
+    vertical-align: top;
+}
+.mail-box .sm-side {
+    background: none repeat scroll 0 0 #e5e8ef;
+    border-radius: 4px 0 0 4px;
+    width: 25%;
+}
+.mail-box .lg-side {
+    background: none repeat scroll 0 0 #fff;
+    border-radius: 0 4px 4px 0;
+    width: 75%;
+}
+.mail-box .sm-side .user-head {
+    background: none repeat scroll 0 0 #666666;
+    border-radius: 4px 0 0;
+    color: #fff;
+    min-height: 80px;
+    padding: 10px;
+}
+.user-head .inbox-avatar {
+    float: left;
+    width: 65px;
+}
+.user-head .inbox-avatar img {
+    border-radius: 4px;
+}
+.user-head .user-name {
+    display: inline-block;
+    margin: 0 0 0 10px;
+}
+.user-head .user-name h5 {
+    font-size: 14px;
+    font-weight: 300;
+    margin-bottom: 0;
+    margin-top: 15px;
+}
+.user-head .user-name h5 a {
+    color: #fff;
+}
+.user-head .user-name span a {
+    color: #666666;
+    font-size: 12px;
+}
+a.mail-dropdown {
+    background: none repeat scroll 0 0 #bb0000;
+    border-radius: 2px;
+    color: #ffffff;
+    font-size: 10px;
+    margin-top: 20px;
+    padding: 3px 5px;
+}
+.inbox-body {
+    padding: 20px;
+}
+.btn-compose {
+    background: none repeat scroll 0 0 #bb0000;
+    color: #fff;
+    padding: 12px 0;
+    text-align: center;
+    width: 100%;
+}
+.btn-compose:hover {
+    background: none repeat scroll 0 0 #bb0000;
+    color: #fff;
+}
+ul.inbox-nav {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.inbox-divider {
+    border-bottom: 1px solid #d5d8df;
+}
+ul.inbox-nav li {
+    display: inline-block;
+    line-height: 45px;
+    width: 100%;
+}
+ul.inbox-nav li a {
+    color: #6a6a6a;
+    display: inline-block;
+    line-height: 45px;
+    padding: 0 20px;
+    width: 100%;
+}
+ul.inbox-nav li a:hover, ul.inbox-nav li.active a, ul.inbox-nav li a:focus {
+    background: none repeat scroll 0 0 #d5d7de;
+    color: #6a6a6a;
+}
+ul.inbox-nav li a i {
+    color: #6a6a6a;
+    font-size: 16px;
+    padding-right: 10px;
+}
+ul.inbox-nav li a span.label {
+    margin-top: 13px;
+}
+.receipt-thumbnail {
+    max-width: 175px;
+    width: auto;
+    height: 84px;
+}
+.receipt-edit-image {
+    display: block;
+    margin: auto;
+    padding-bottom: 20px;
+    max-width: 1200px;
+    width: auto;
+    height: 400px;
+}
+.error-image {
+    display: block;
+    margin: auto;
+    padding-bottom: 20px;
+    width: auto;
+    height: 400px;
+}
+
+/**
+User Labels Styles
+ */
+.label-name {
+    width: 90%;
+}
+.menu {
+    text-align: right;
+    padding: 0 !important;
+}
+.labels-title-container {
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+}
+.labels-title {
+    display: inline-block;
+}
+.labels-edit:hover, .labels-edit:focus {
+    background: none repeat scroll 0 0 transparent !important;
+    color: #6a6a6a !important;
+}
+.table-label {
+    margin-bottom: 0;
+}
+.table-label tbody tr td {
+    border-top: 0;
+}
+.table-label tbody tr td.menu:hover {
+    cursor: pointer;
+}
+.table-label tbody tr td.label-name:hover {
+    cursor: default;
+}
+.labels-edit {
+    vertical-align: middle;
+    display: inline-block !important;
+    padding: 0 0 0 0 !important;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    margin-right: 10px;
+}
+.labels-edit i {
+    vertical-align: middle;
+    padding: 0 0 0 0 !important;
+}
+
+ul.labels-info li h4 {
+    color: #5c5c5e;
+    font-size: 13px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    text-transform: uppercase;
+}
+ul.labels-info li {
+    margin: 0;
+}
+ul.labels-info li td {
+    border-radius: 0;
+    color: #6a6a6a;
+}
+ul.labels-info li:hover tr, ul.labels-info:focus li tr,
+ul.labels-info li:hover a.dropdown-toggle, ul.labels-info li:focus a.dropdown-toggle{
+    background: none repeat scroll 0 0 #d5d7de;
+    color: #6a6a6a;
+}
+ul.labels-info .open > a.dropdown-toggle {
+    background: none repeat scroll 0 0 #e5e8ef;
+}
+.menu-icon {
+    visibility: hidden;
+}
+ul.labels-info li:hover i.menu-icon {
+    visibility: visible;
+}
+ul.labels-info li td i {
+    padding-right: 10px;
+}
+
+/**
+Inbox Styles
+ */
+
+.inbox-head {
+    background: none repeat scroll 0 0 #bb0000;
+    border-radius: 0 4px 0 0;
+    color: #fff;
+    min-height: 80px;
+    padding: 20px;
+}
+.inbox-head h3 {
+    display: inline-block;
+    font-weight: 300;
+    margin: 0;
+    padding-top: 6px;
+}
+.inbox-head .sr-input {
+    border: medium none;
+    border-radius: 4px 0 0 4px;
+    box-shadow: none;
+    color: #8a8a8a;
+    float: left;
+    height: 40px;
+    padding: 0 10px;
+}
+.inbox-head .sr-btn {
+    background: none repeat scroll 0 0 #666666;
+    border: medium none;
+    border-radius: 0 0 0 0;
+    color: #fff;
+    height: 40px;
+    padding: 0 20px;
+}
+.inbox-head .logout-button {
+    background: none repeat scroll 0 0 #666666;
+    border: medium none;
+    border-radius: 0 0 0 0;
+    color: #fff;
+    height: 40px;
+    padding: 0 20px;
+}
+.inbox-head .settings-button {
+    background: none repeat scroll 0 0 #666666;
+    border: medium none;
+    border-radius: 0 4px 4px 0;
+    color: #fff;
+    height: 40px;
+    padding: 0 20px;
+}
+.table-inbox {
+    border: 1px solid #d3d3d3;
+    text-align: center;
+    margin-bottom: 0;
+}
+.table-inbox tr td {
+    padding: 12px !important;
+}
+.table-inbox tr td:hover {
+    cursor: pointer;
+}
+.table-inbox tr.unread td {
+    background: none repeat scroll 0 0 #f7f7f7;
+    font-weight: 600;
+}
+.btn-group-container {
+    display: inline-block;
+    line-height: 35px;
+}
+.receipt-edit-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.form-save {
+    margin-left: 10px;
+}
+.file-input-container {
+    display: inline-block;
+    line-height: 35px;
+    vertical-align: middle;
+}
+.receipt-submit-container {
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+}
+.pagination-number {
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.pagination-nav {
+    display: inline-block;
+    vertical-align: middle;
+}
+.mail-option {
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.mail-option .chk-all, .mail-option .btn-group {
+    margin-right: 5px;
+}
+.mail-option .chk-all, .mail-option .btn-group a.btn {
+    background: none repeat scroll 0 0 #fcfcfc;
+    border: 1px solid #e7e7e7;
+    border-radius: 3px !important;
+    color: #afafaf;
+    display: inline-block;
+    padding: 5px 10px;
+}
+.mail-option .chk-all input[type="checkbox"] {
+    margin-top: 0;
+}
+.mail-option .btn-group a.all {
+    border: medium none;
+    padding: 0;
+}
+.fileinput-button {
+    background: none repeat scroll 0 0 #eeeeee;
+    border: 1px solid #e6e6e6;
+}
+.inbox-body .modal .modal-body input, .inbox-body .modal .modal-body textarea {
+    border: 1px solid #e6e6e6;
+    box-shadow: none;
+}
+.btn-send, .btn-send:hover {
+    background: none repeat scroll 0 0 #bb0000;
+    color: #fff;
+}
+.btn-send:hover {
+    background: none repeat scroll 0 0 #bb0000;
+}
+.modal-header h4.modal-title {
+    font-family: "Open Sans",sans-serif;
+    font-weight: 300;
+}
+.modal-body label {
+    font-family: "Open Sans",sans-serif;
+    font-weight: 400;
+}
+.heading-inbox h4 {
+    border-bottom: 1px solid #ddd;
+    color: #444;
+    font-size: 18px;
+    margin-top: 20px;
+    padding-bottom: 10px;
+}
+.sender-info {
+    margin-bottom: 20px;
+}
+.sender-info img {
+    height: 30px;
+    width: 30px;
+}
+.sender-dropdown {
+    background: none repeat scroll 0 0 #eaeaea;
+    color: #777;
+    font-size: 10px;
+    padding: 0 3px;
+}
+.view-mail a {
+    color: #ff6c60;
+}
+.attachment-mail {
+    margin-top: 30px;
+}
+.attachment-mail ul {
+    display: inline-block;
+    margin-bottom: 30px;
+    width: 100%;
+}
+.attachment-mail ul li {
+    float: left;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    width: 150px;
+}
+.attachment-mail ul li img {
+    width: 100%;
+}
+.attachment-mail ul li span {
+    float: right;
+}
+.attachment-mail .file-name {
+    float: left;
+}
+.attachment-mail .links {
+    display: inline-block;
+    width: 100%;
+}
+
+.fileinput-button {
+    float: left;
+    margin-right: 10px;
+    overflow: hidden;
+    position: relative;
+}
+.fileinput-button input {
+    cursor: pointer;
+    direction: ltr;
+    font-size: 23px;
+    margin: 0;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate(-300px, 0px) scale(4);
+}
+.fileupload-buttonbar .btn, .fileupload-buttonbar .toggle {
+    margin-bottom: 5px;
+}
+.files .progress {
+    width: 200px;
+}
+.fileupload-processing .fileupload-loading {
+    display: block;
+}
+* html .fileinput-button {
+    line-height: 24px;
+    margin: 1px -3px 0 0;
+}
+* + html .fileinput-button {
+    margin: 1px 0 0;
+    padding: 2px 15px;
+}
+@media (max-width: 767px) {
+    .files .btn span {
+        display: none;
+    }
+    .files .preview * {
+        width: 40px;
+    }
+    .files .name * {
+        display: inline-block;
+        width: 80px;
+        word-wrap: break-word;
+    }
+    .files .progress {
+        width: 20px;
+    }
+    .files .delete {
+        width: 60px;
+    }
+}
+h4.footer-text {
+    color: #9d9f9e;
+    font-size: 12px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0 22px;
+}
+ul {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+/* Bootstrap overrides */
+
+.pagination {
+   margin: 0 !important;
+}
+.pagination > li.active > a, .pagination > li.active > a:hover {
+    background: #bb0000;
+    border-color: #bb0000;
+}
+.pagination > li:not(.active):not(.disabled) > a {
+    color: #bb0000;
+}

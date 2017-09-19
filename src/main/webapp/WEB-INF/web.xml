@@ -10,4 +10,24 @@
     <servlet-name>ReceiptOrganizer</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
+
+  <!-- Exception Handling -->
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/internalerror</location>
+  </error-page>
+
+  <!-- Security -->
+  <session-config>
+    <session-timeout>30</session-timeout>
+  </session-config>
+
+  <filter>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+  <filter-mapping>
+      <filter-name>springSecurityFilterChain</filter-name>
+      <url-pattern>/*</url-pattern>
+  </filter-mapping>
 </web-app>
