@@ -39,6 +39,7 @@
     <spring:url value="/resources/js/jquery-ui.min.js" var="ui"/>
     <spring:url value="/resources/js/receiptOrganizerCommon.js" var="receiptCommon"/>
     <spring:url value="/resources/js/receiptOrganizerHome.js" var="receiptHome"/>
+    <spring:url value="/resources/js/receiptOrganizerSidebar.js" var="sidebar"/>
     <link rel="stylesheet" href="${fontawesomecss}"/>
     <link rel="stylesheet" href="${bootstrap}"/>
     <link rel="stylesheet" href="${multiselectcss}"/>
@@ -54,6 +55,7 @@
     <script src="${ui}"></script>
     <script src="${receiptCommon}"></script>
     <script src="${receiptHome}"></script>
+    <script src="${sidebar}"></script>
     <script>
         $(document).ready(function() {
             $(function () {

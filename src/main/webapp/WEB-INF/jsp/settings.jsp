@@ -30,8 +30,8 @@
     <spring:url value="/resources/js/jquery.validate.min.js" var="validate"/>
     <spring:url value="/resources/js/jquery-ui.min.js" var="ui"/>
     <spring:url value="/resources/js/receiptOrganizerCommon.js" var="receiptCommon"/>
-    <spring:url value="/resources/js/receiptOrganizerHome.js" var="receiptHome"/>
     <spring:url value="/resources/js/userSettings.js" var="userSettings"/>
+    <spring:url value="/resources/js/receiptOrganizerSidebar.js" var="sidebar"/>
     <link rel="stylesheet" href="${fontawesomecss}"/>
     <link rel="stylesheet" href="${bootstrap}"/>
     <link rel="stylesheet" href="${multiselectcss}"/>
@@ -46,7 +46,7 @@
     <script src="${validate}"></script>
     <script src="${ui}"></script>
     <script src="${receiptCommon}"></script>
-    <script src="${receiptHome}"></script>
+    <script src="${sidebar}"></script>
     <script src="${userSettings}"></script>
     <script>
         $(document).ready(function() {
@@ -96,14 +96,21 @@
                     </div>
                     <div class="form-group">
                         <div class="col-lg-offset-2 col-lg-10">
-                            <div class="receiptEditButtons">
+                            <div class="receipt-edit-buttons">
                                 <div class="btn-group-container">
-                                        <span class="btn green fileinput-button">
-                                                    <i class="fa fa-plus fa fa-white"></i>
-                                                    <span>Change your photo</span>
-                                                    <form:input path="image" id="editMultipartFile" type="file" accept=".png,.jpg"/>
-                                                </span>
-                                    <form:button id="userSettingsSubmit" class="btn btn-send">Save Changes</form:button>
+                                    <div class="receipt-submit-container">
+                                        <div class="file-input-container">
+                                            <span class="btn green fileinput-button">
+                                                <i class="fa fa-plus fa fa-white"></i>
+                                                <span>Change your photo</span>
+                                                <form:input class="multipart-input" path="image" id="editMultipartFile" type="file" accept=".png,.jpg"/>
+                                            </span>
+                                            <form:label path="image">No file chosen</form:label>
+                                        </div>
+                                        <div>
+                                            <form:button id="userSettingsSubmit" class="btn btn-send form-save">Save Changes</form:button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

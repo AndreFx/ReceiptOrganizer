@@ -153,12 +153,19 @@
                         </div>
                         <div class="form-group">
                             <div class="col-lg-offset-2 col-lg-10">
-                                            <span class="btn green fileinput-button">
-                                                <i class="fa fa-plus fa fa-white"></i>
-                                                <span>Receipt</span>
-                                                <form:input path="multipartFile" type="file" accept=".png,.jpg"/>
-                                            </span>
-                                <form:button id="receiptCreateSubmit" class="btn btn-send">Create</form:button>
+                                <div class="receipt-submit-container">
+                                    <div class="file-input-container">
+                                        <span class="btn green fileinput-button">
+                                            <i class="fa fa-plus fa fa-white"></i>
+                                            <span>Receipt</span>
+                                            <form:input class="multipart-input" path="multipartFile" type="file" accept=".png,.jpg"/>
+                                        </span>
+                                        <form:label path="multipartFile">No file chosen</form:label>
+                                    </div>
+                                    <div>
+                                        <form:button id="receiptCreateSubmit" class="btn btn-send">Create</form:button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form:form>

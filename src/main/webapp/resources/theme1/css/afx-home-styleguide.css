@@ -415,10 +415,23 @@ Inbox Styles
     display: inline-block;
     line-height: 35px;
 }
-.receiptEditButtons {
+.receipt-edit-buttons {
     display: flex;
     justify-content: space-between;
     width: 100%;
+}
+.form-save {
+    margin-left: 10px;
+}
+.file-input-container {
+    display: inline-block;
+    line-height: 35px;
+    vertical-align: middle;
+}
+.receipt-submit-container {
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
 }
 .pagination-number {
     vertical-align: middle;
@@ -529,7 +542,7 @@ Inbox Styles
 
 .fileinput-button {
     float: left;
-    margin-right: 4px;
+    margin-right: 10px;
     overflow: hidden;
     position: relative;
 }

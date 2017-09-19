@@ -33,8 +33,8 @@
     <spring:url value="/resources/js/jquery.validate.min.js" var="validate"/>
     <spring:url value="/resources/js/jquery-ui.min.js" var="ui"/>
     <spring:url value="/resources/js/receiptOrganizerCommon.js" var="receiptCommon"/>
-    <spring:url value="/resources/js/receiptOrganizerHome.js" var="receiptHome"/>
     <spring:url value="/resources/js/receiptEdit.js" var="receiptEdit"/>
+    <spring:url value="/resources/js/receiptOrganizerSidebar.js" var="sidebar"/>
     <link rel="stylesheet" href="${fontawesomecss}"/>
     <link rel="stylesheet" href="${bootstrap}"/>
     <link rel="stylesheet" href="${multiselectcss}"/>
@@ -49,7 +49,7 @@
     <script src="${validate}"></script>
     <script src="${ui}"></script>
     <script src="${receiptCommon}"></script>
-    <script src="${receiptHome}"></script>
+    <script src="${sidebar}"></script>
     <script src="${receiptEdit}"></script>
     <script>
         $(document).ready(function() {
@@ -119,14 +119,21 @@
                     </div>
                     <div class="form-group">
                         <div class="col-lg-offset-2 col-lg-10">
-                            <div class="receiptEditButtons">
+                            <div class="receipt-edit-buttons">
                                 <div class="btn-group-container">
-                                    <span class="btn green fileinput-button">
+                                    <div class="receipt-submit-container">
+                                        <div class="file-input-container">
+                                            <span class="btn green fileinput-button">
                                                 <i class="fa fa-plus fa fa-white"></i>
                                                 <span>Change Receipt Image</span>
-                                                <form:input path="multipartFile" id="editMultipartFile" type="file" accept=".png,.jpg"/>
+                                                <form:input path="multipartFile" id="editMultipartFile" class="multipart-input" type="file" accept=".png,.jpg"/>
                                             </span>
-                                    <form:button id="receiptEditSubmit" class="btn btn-send">Save Changes</form:button>
+                                            <form:label path="multipartFile">No file chosen</form:label>
+                                        </div>
+                                        <div>
+                                            <form:button id="receiptEditSubmit" class="btn btn-send form-save">Save Changes</form:button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="btn-group-container">
                                     <a href="#deleteReceipt" data-toggle="modal"  title="Delete Receipt" class="btn btn-send">
