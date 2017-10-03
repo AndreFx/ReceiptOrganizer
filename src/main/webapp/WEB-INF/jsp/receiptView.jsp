@@ -167,6 +167,7 @@
                 </div><!-- /.modal -->
             </div>
         </aside>
+        <div class="snackbar"></div>
         <jsp:include page="/WEB-INF/jsp/imageModal.jsp"/>
     </div>
     <jsp:include page="/WEB-INF/jsp/footer.jsp"/>

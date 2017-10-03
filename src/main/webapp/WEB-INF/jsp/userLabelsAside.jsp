@@ -23,7 +23,7 @@
             Add Receipt
         </a>
     </div>
-    <ul class="nav-stacked labels-info nav nav-pills inbox-divider">
+    <ul class="nav-stacked labels-info nav nav-pills inbox-divider" id="labelList">
         <li><div class="labels-title-container"><h4 class="labels-title">Labels</h4></div></li>
         <li class="nav-item">
             <table class="table table-label table-hover">
@@ -73,7 +73,6 @@
                     <tbody>
                         <tr>
                             <td>
-                                <input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                 <input name="oldLabelName" type="hidden">
                                 <input name="newLabelName" class="form-control"/>
                             </td>
@@ -188,8 +187,7 @@
                     <p class="text-center" id="deleteLabelNameText"></p>
                 </div>
                 <div class="modal-footer">
-                    <form:form autocomplete="false" action="${deleteLabelUrl}" method="post" class="form-horizontal">
-                        <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+                    <form:form id="deleteLabel" autocomplete="false" action="${deleteLabelUrl}" method="post" class="form-horizontal">
                         <input type="hidden" name="labelName" id="deleteLabelNameValue">
                         <button class="btn btn-secondary">Yes</button>
                         <button id="deleteCancelButton" aria-hidden="true" data-dismiss="modal" class="btn btn-send" type="button">No</button>
@@ -206,7 +204,7 @@
                     <h4 class="modal-title">Add Label</h4>
                 </div>
                 <div class="modal-body">
-                    <form:form autocomplete="false" action="${createLabelUrl}" modelAttribute="newLabel" method="post" class="form-horizontal">
+                    <form:form id="createLabel" autocomplete="false" action="${createLabelUrl}" modelAttribute="newLabel" method="post" class="form-horizontal">
                         <div class="form-group alert alert-danger center-full-width" hidden="true" id="labelErrorContainer">
                             <div class="col-lg-10" id="labelErrors"></div>
                         </div>

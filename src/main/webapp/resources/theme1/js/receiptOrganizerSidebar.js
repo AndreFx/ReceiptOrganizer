@@ -1,47 +1,15 @@
 $(document).ready(function() {
-    //TODO Find a better way to do this. Shouldnt make synchronous Ajax call
-    jQuery.validator.addMethod("uniqueLabel", function(value, element) {
-        var success = false;
-
-        var fd = new FormData();
-        fd.append("labelName", value);
-
-        $.ajax({
-            url : '/ReceiptOrganizer/labels/validate',
-            type: "POST",
-            data : fd,
-            processData: false,
-            contentType: false,
-            async: false,
-            success : function(res) {
-
-                if(res.validated){
-                    //Submit to real service
-                    //$('#receiptCreateSubmit').submit();
-                    console.log("Valid label submission attempt.");
-                    success = true;
-                } else {
-                    //Set error messages
-                    console.log("Invalid label submission attempt.");
-                    success = false;
-                }
-            }
-        });
-        return success;
-    }, "Label must be unique");
 
     $('#newLabel').validate({
         rules: {
             name: {
-                required: true,
-                uniqueLabel: true
+                required: true
             }
         },
 
         messages: {
             name: {
-                required: "Label name is required",
-                uniqueLabel: "Label name must be unique"
+                required: "Label name is required"
             }
         },
 
@@ -55,11 +23,6 @@ $(document).ready(function() {
             console.log("Placing newLabel form errors.");
             error.appendTo('div#labelErrors');
             $('#labelErrorContainer').show();
-        },
-
-        submitHandler: function(form) {
-            $('#labelErrorContainer').hide();
-            form.submit();
         }
     });
 
@@ -115,7 +78,6 @@ $(document).ready(function() {
     //Create datepicker
     $('#date').datepicker();
 
-
     //Edit Functionality for Labels
 
     $('.dropdown-item-edit').click(function(event) {
@@ -136,6 +98,7 @@ $(document).ready(function() {
         $(manager).find("[name='oldLabelName']").attr("value", labelName);
         $(manager).find("[name='newLabelName']").attr("value", labelName);
         $(manager).find("[type='button']").attr("id", "stopEdit");
+        $(manager).find(".btn.btn-send").attr("id", "submitEdit");
         $(this).parent().parent().parent().parent().parent().parent().parent().hide().after(manager);
         $(manager).show();
         $(manager).find("form").attr("id", "editLabelForm");
@@ -145,8 +108,7 @@ $(document).ready(function() {
                 oldLabelName: "required",
                 newLabelName: {
                     required: true,
-                    notAllSpace: true,
-                    uniqueLabel: true
+                    notAllSpace: true
                 }
             },
 
@@ -154,8 +116,7 @@ $(document).ready(function() {
                 oldLabelName: "Don't mess around in the dev console",
                 newLabelName: {
                     required: "Cannot enter empty label",
-                    notAllSpace: "Cannot enter empty label",
-                    uniqueLabel: "Label name must be unique"
+                    notAllSpace: "Cannot enter empty label"
                 }
             },
 
@@ -167,12 +128,7 @@ $(document).ready(function() {
 
             errorLabelContainer: "#labelEditErrorContainer ul",
 
-            wrapper: "li",
-
-            submitHandler: function (form) {
-                $('#labelEditErrorContainer').hide();
-                form.submit();
-            }
+            wrapper: "li"
         });
     });
 
@@ -187,8 +143,124 @@ $(document).ready(function() {
         $('body').click();
     });
 
+    //AJAX Submission for creating a label
+    $('#createLabel').submit(function(event) {
+        event.preventDefault();
+        var success = false;
+        var fd = $(this).serialize();
 
-    //Delete functionality for Labels
+        $.ajax({
+            url : '/ReceiptOrganizer/labels/create',
+            type: "POST",
+            data : $(this).serialize(),
+            success : function(res) {
+
+                if(res.success){
+                    //TODO Add new li
+                    $('#labelErrorContainer').hide();
+                    $('#addLabel').modal('hide');
+                    $('.snackbar').addClass('show').text('Label successfully created.');
+                    setTimeout(function(){
+                        $('.snackbar').removeClass('show').text('');
+                    }, 5000);
+                    success = true;
+                } else {
+                    //Set error messages
+                    $('.snackbar').addClass('show').text(res.errorMessage);
+                    setTimeout(function(){
+                        $('.snackbar').removeClass('show').text('');
+                    }, 5000);
+                    success = false;
+                }
+
+                return success;
+            }
+        });
+    });
+
+    //AJAX Submission for editing a label
+    $('.sm-side').on('submit', "#editor", function(event) {
+        event.preventDefault();
+        var success = false;
+
+        $.ajax({
+            url : '/ReceiptOrganizer/labels/update',
+            type: "POST",
+            data : {
+                oldLabelName: $('#editor').find("input[name='oldLabelName']").val(),
+                newLabelName: $('#editor').find("input[name='newLabelName']").val()
+            },
+            success : function(res) {
+
+                if(res.success){
+                    $('#labelEditErrorContainer').hide();
+                    //Update text
+                    $('#editor').prev().show().find('.label-name').contents().filter(function() {
+                        return this.nodeType == 3;
+                    }).each(function(){
+                        this.textContent = $('#editor').find('input[name="newLabelName"]').val();
+                    });
+                    $('#editor').remove();
+
+                    $('.snackbar').addClass('show').text('Label successfully changed.');
+                    setTimeout(function(){
+                            $('.snackbar').removeClass('show').text('');
+                        }, 5000);
+                    success = true;
+                } else {
+                    //Set error messages
+                    $('.snackbar').addClass('show').text(res.errorMessage);
+                    setTimeout(function(){
+                        $('.snackbar').removeClass('show').text('');
+                    }, 5000);
+                    success = false;
+                }
+
+                return success;
+            }
+        });
+    });
+
+    //AJAX Delete for Labels
+    $('#deleteLabel').submit(function(event) {
+        event.preventDefault();
+        var success = false;
+        var labelName = $(this).find('input[name="labelName"]').val();
+
+        $.ajax({
+            url : '/ReceiptOrganizer/labels/delete',
+            type: "POST",
+            data : $(this).serialize(),
+            success : function(res) {
+
+                if(res.success){
+                    $('.label-name').contents().filter(function() {
+                        return this.nodeType == 3;
+                    }).each(function() {
+                        if (this.textContent === labelName) {
+                            $(this).parent().parent().parent().parent().remove();
+                        }
+                    });
+                    $('#deleteLabelModal').modal('hide');
+
+                    $('.snackbar').addClass('show').text('Label successfully deleted.');
+                    setTimeout(function(){
+                        $('.snackbar').removeClass('show').text('');
+                    }, 5000);
+                    success = true;
+                } else {
+                    //Set error messages
+                    $('.snackbar').addClass('show').text(res.errorMessage);
+                    setTimeout(function(){
+                        $('.snackbar').removeClass('show').text('');
+                    }, 5000);
+                    success = false;
+                }
+
+                return success;
+            }
+        });
+    });
 
     $(".dropdown-item-delete").click(function(event) {
         console.log("Dropdown delete item selected.");

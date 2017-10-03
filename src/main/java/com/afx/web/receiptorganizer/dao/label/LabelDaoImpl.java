@@ -1,6 +1,5 @@
 package com.afx.web.receiptorganizer.dao.label;
 
-import com.afx.web.receiptorganizer.dao.receipt.ReceiptDaoImpl;
 import com.afx.web.receiptorganizer.types.Label;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +27,7 @@ import java.util.Map;
 @Qualifier("categoryDao")
 public class LabelDaoImpl implements LabelDao {
 
-    private static Logger logger = LogManager.getLogger(ReceiptDaoImpl.class);
+    private static Logger logger = LogManager.getLogger(LabelDaoImpl.class);
 
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
@@ -110,6 +109,7 @@ public class LabelDaoImpl implements LabelDao {
         });
     }
 
+    //TODO Needs to be fixed
     public boolean isLabelUnique(String username, Label label) {
         String labelName = "";
         try {
