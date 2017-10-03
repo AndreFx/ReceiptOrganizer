@@ -1,5 +1,15 @@
 $(document).ready(function() {
 
+    /* Snackbar notifications */
+
+    function showSnackbarMessage(message, snackbarTimeout, dismissible) {
+        $('.snackbar').addClass('show').text(message);
+        //TODO Implement dismissible
+        setTimeout(function(){
+            $('.snackbar').removeClass('show').text('');
+        }, snackbarTimeout);
+    }
+
     /* Custom validators */
 
     jQuery.validator.addMethod("notAllSpace", function(value, element) {
