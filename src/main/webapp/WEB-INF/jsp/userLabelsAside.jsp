@@ -29,7 +29,7 @@
             <table class="table table-label table-hover">
                 <tbody>
                     <tr class="clickable-row" data-href="${param.baseHomeUrl}">
-                        <td class="vertical-align-text label-name"><i class="fa fa-sign-blank text-info"></i>All Receipts</td>
+                        <td class="vertical-align-text label-name"><i class="fa fa-sign-blank text-info"></i><span>All Receipts</span></td>
                     </tr>
                 </tbody>
             </table>
@@ -39,7 +39,7 @@
                 <table class="table table-label table-hover">
                     <tbody>
                         <tr class="clickable-row" data-href="${param.baseHomeUrl}?label=${label.name}">
-                            <td class="vertical-align-text label-name"><i class="fa fa-sign-blank text-info"></i>${label.name}</td>
+                            <td class="vertical-align-text label-name"><i class="fa fa-sign-blank text-info"></i><span>${label.name}</span></td>
                             <td class="vertical-align-text menu">
                                 <div class="dropdown">
                                     <a class="dropdown-toggle full-width" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -57,7 +57,7 @@
             </li>
         </c:forEach>
         <li id="editManager" class="nav-item" style="display: none">
-            <form:form autocomplete="false" action="${updateLabelUrl}" method="post">
+            <form:form autocomplete="off" action="${updateLabelUrl}" method="post">
                 <table class="table table-label">
                     <tbody>
                         <tr>
@@ -108,7 +108,7 @@
                     <h4 class="modal-title">Add Receipt</h4>
                 </div>
                 <div class="modal-body">
-                    <form:form autocomplete="false" modelAttribute="newReceipt" method="post" action="${createReceiptUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
+                    <form:form autocomplete="off" modelAttribute="newReceipt" method="post" action="${createReceiptUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
                         <div class="form-group alert alert-danger center-full-width error-container" id="receiptErrorContainer">
                             <div class="col-lg-10" id="receiptErrors"></div>
                         </div>
@@ -187,7 +187,7 @@
                     <p class="text-center" id="deleteLabelNameText"></p>
                 </div>
                 <div class="modal-footer">
-                    <form:form id="deleteLabel" autocomplete="false" action="${deleteLabelUrl}" method="post" class="form-horizontal">
+                    <form:form id="deleteLabel" autocomplete="off" action="${deleteLabelUrl}" method="post" class="form-horizontal">
                         <input type="hidden" name="labelName" id="deleteLabelNameValue">
                         <button class="btn btn-secondary">Yes</button>
                         <button id="deleteCancelButton" aria-hidden="true" data-dismiss="modal" class="btn btn-send" type="button">No</button>
@@ -204,7 +204,7 @@
                     <h4 class="modal-title">Add Label</h4>
                 </div>
                 <div class="modal-body">
-                    <form:form id="createLabel" autocomplete="false" action="${createLabelUrl}" modelAttribute="newLabel" method="post" class="form-horizontal">
+                    <form:form id="createLabel" autocomplete="off" action="${createLabelUrl}" modelAttribute="newLabel" method="post" class="form-horizontal">
                         <div class="form-group alert alert-danger center-full-width" hidden="true" id="labelErrorContainer">
                             <div class="col-lg-10" id="labelErrors"></div>
                         </div>

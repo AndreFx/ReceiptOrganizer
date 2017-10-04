@@ -75,7 +75,7 @@
             <jsp:include page="rightNavbar.jsp"/>
             <div class="inbox-body">
                 <img class="receipt-edit-image modal-image" alt="${receipt.title} Image" src='<c:out value="${receiptViewImageUrl}"/>'>
-                <form:form autocomplete="false" modelAttribute="receipt" method="post" action="${editReceiptUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
+                <form:form autocomplete="off" modelAttribute="receipt" method="post" action="${editReceiptUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-group alert alert-danger center-full-width error-container" id="editReceiptErrorContainer">
                         <div class="col-lg-10" id="editReceiptErrors"></div>
                     </div>
@@ -156,7 +156,7 @@
                                 <p class="text-center">Are you sure you want to delete the receipt: ${receipt.title}?</p>
                             </div>
                             <div class="modal-footer">
-                                <form:form id="deleteReceiptForm" autocomplete="false" action="${deleteReceiptUrl}" method="post" class="form-horizontal">
+                                <form:form id="deleteReceiptForm" autocomplete="off" action="${deleteReceiptUrl}" method="post" class="form-horizontal">
                                     <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
                                     <button class="btn btn-secondary">Yes</button>
                                     <button id="cancelDeleteReceipt" aria-hidden="true" data-dismiss="modal" class="btn btn-send" type="button">No</button>

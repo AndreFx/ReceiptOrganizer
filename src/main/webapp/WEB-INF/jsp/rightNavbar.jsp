@@ -16,7 +16,7 @@
         <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
         <button class="btn logout-button"><i class="fa fa-sign-out"></i></button>
     </form>
-    <form action="${searchUrl}" method="get" class="pull-right position">
+    <form action="${searchUrl}" autocomplete="off" method="get" class="pull-right position">
         <div class="input-append">
             <input name="searchString" class="sr-input" placeholder="Search Receipts">
             <button class="btn sr-btn"><i class="fa fa-search"></i></button>

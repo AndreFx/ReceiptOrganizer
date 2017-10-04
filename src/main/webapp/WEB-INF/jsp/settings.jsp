@@ -72,7 +72,7 @@
             <jsp:include page="rightNavbar.jsp"/>
             <div class="inbox-body">
                 <img class="receipt-edit-image modal-image" alt="${sessionScope.user.username} Image" src='<c:out value="${userPhotoView}"/>'>
-                <form:form autocomplete="false" modelAttribute="user" method="post" action="${settingsUpdateUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
+                <form:form autocomplete="off" modelAttribute="user" method="post" action="${settingsUpdateUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-group alert alert-danger center-full-width error-container" id="userSettingsErrorContainer">
                         <div class="col-lg-10" id="userSettingsErrors"></div>
                     </div>

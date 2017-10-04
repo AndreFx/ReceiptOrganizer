@@ -183,7 +183,9 @@
                 </c:choose>
             </div>
         </aside>
-        <div class="snackbar"></div>
+        <div class="snackbar">
+            <span id="snackbarText"></span>
+        </div>
         <jsp:include page="/WEB-INF/jsp/imageModal.jsp"/>
     </div>
     <jsp:include page="/WEB-INF/jsp/footer.jsp"/>

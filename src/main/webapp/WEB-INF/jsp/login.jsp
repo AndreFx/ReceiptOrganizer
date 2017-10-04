@@ -33,8 +33,7 @@
 		<div class="logo">login</div>
 		<!-- Main Form -->
 		<div class="login-form-1">
-			<form method="post" action="${loginUrl}" id="loginForm"
-				class="text-left">
+			<form method="post" action="${loginUrl}" id="loginForm" class="text-left" autocomplete="off">
 				<c:choose>
 					<c:when test="${param.error != null}">
 						<div class="login-form-main-message show invalid" id="form-errors-container">

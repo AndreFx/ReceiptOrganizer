@@ -1,5 +1,19 @@
 $(document).ready(function() {
 
+    var defaultLabelNotifTimeout = 10000;
+
+    /* Snackbar notifications */
+
+    function showSnackbarMessage(message, snackbarTimeout) {
+        $('.snackbar').addClass('show');
+        $('#snackbarText').text(message);
+
+        setTimeout(function(){
+            $('.snackbar').removeClass('show');
+            $('#snackbarText').text('');
+        }, snackbarTimeout);
+    }
+
     /* Validators */
 
     $('#newLabel').validate({
@@ -81,14 +95,64 @@ $(document).ready(function() {
 
     /* Edit functionality for labels */
 
-    var defaultLabelNotifTimeout = 1000;
-
     function insertLabelListSorted(labelName) {
+        console.log('Inserting list item: ' + labelName);
 
+        //Find position to insert into current ul
+        var labelNameList = [];
+        var liIndex = 0;
+        $('.label-name').find('span').each(function() {
+            //Ignore 'All Receipts'
+            if (liIndex != 0) {
+                labelNameList.push($(this).text());
+            }
+            liIndex++;
+        });
+
+        var index = 0;
+        while (index < labelNameList.length && labelName.toLowerCase() > labelNameList[index].toLowerCase()) {
+            index++;
+        }
+
+        //Insert and show
+        $('#labelList > li:eq(' + (index + 1) + ')').after("<li class=\"nav-item\">\n" +
+            "                <table class=\"table table-label table-hover\">\n" +
+            "                    <tbody>\n" +
+            "                        <tr class=\"clickable-row\" data-href=\"/ReceiptOrganizer/home/?label=" + labelName + "\">\n" +
+            "                            <td class=\"vertical-align-text label-name\"><i class=\"fa fa-sign-blank text-info\"></i><span>" + labelName + "</span></td>\n" +
+            "                            <td class=\"vertical-align-text menu\">\n" +
+            "                                <div class=\"dropdown\">\n" +
+            "                                    <a class=\"dropdown-toggle full-width\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
+            "                                        <i class=\"fa fa-ellipsis-v menu-icon\" aria-hidden=\"true\"></i>\n" +
+            "                                    </a>\n" +
+            "                                    <ul class=\"dropdown-menu dropdown-menu-right\">\n" +
+            "                                        <li class=\"dropdown-item-edit\"><a href=\"#\">Edit Label</a></li>\n" +
+            "                                        <li class=\"dropdown-item-delete\"><!-- TODO Remove anchors --><a href=\"#deleteLabelModal\" data-toggle=\"modal\"  title=\"Delete Label\">Delete Label</a></li>\n" +
+            "                                    </ul>\n" +
+            "                                </div>\n" +
+            "                            </td>\n" +
+            "                        </tr>\n" +
+            "                    </tbody>\n" +
+            "                </table>\n" +
+            "            </li>");
+
+        //Re register click events.
+        $('.dropdown-item-edit').click(editClickEvent);
+        $('.dropdown-item-delete').click(deleteClickEvent);
     }
 
-    //Create editor and hide and li for the selected label.
-    $('.dropdown-item-edit').click(function(event) {
+    function deleteClickEvent(event) {
+        console.log("Dropdown delete item selected.");
+        event.stopPropagation();
+        var questionText = 'Are you sure you want to delete the label: ';
+        var labelName = $(this).parent().parent().parent().prev().find('span').text();
+
+        $('#deleteLabelNameValue').val(labelName);
+        $('#deleteLabelNameText').text(questionText.concat(labelName, '?'));
+        $('#deleteLabelModal').modal('show');
+    }
+
+    function editClickEvent(event) {
         console.log("Dropdown edit item selected.");
         event.stopPropagation();
         event.preventDefault();
@@ -99,9 +163,7 @@ $(document).ready(function() {
         }
 
         var manager = $('#editManager').clone().attr("id", "editor");
-        var labelName = $(this).parent().parent().parent().prev().contents().filter(function() {
-            return this.nodeType == 3;
-        }).text();
+        var labelName = $(this).parent().parent().parent().prev().find('span').text();
 
         $(manager).find("[name='oldLabelName']").attr("value", labelName);
         $(manager).find("[name='newLabelName']").attr("value", labelName);
@@ -138,7 +200,10 @@ $(document).ready(function() {
 
             wrapper: "li"
         });
-    });
+    }
+
+    //Create editor and hide and li for the selected label.
+    $('.dropdown-item-edit').click(editClickEvent);
 
     //Cancel edit button functionality. Must use .on because the button is dynamically created.
     $('.sm-side').on('click', "#stopEdit", function(event) {
@@ -165,14 +230,14 @@ $(document).ready(function() {
             success : function(res) {
 
                 if(res.success){
-                    //TODO Add new li
+                    insertLabelListSorted($('#createLabel').find("input[name='name']").val());
                     $('#labelErrorContainer').hide();
                     $('#addLabel').modal('hide');
-                    showSnackbarMessage('Label successfully created.', defaultLabelNotifTimeout, false);
+                    showSnackbarMessage('Label successfully created.', defaultLabelNotifTimeout);
                     success = true;
                 } else {
                     //Set error messages
-                    showSnackbarMessage(res.errorMessage, defaultLabelNotifTimeout, false);
+                    showSnackbarMessage(res.errorMessage, defaultLabelNotifTimeout);
                     success = false;
                 }
 
@@ -198,18 +263,17 @@ $(document).ready(function() {
                 if(res.success){
                     $('#labelEditErrorContainer').hide();
                     //Update text
-                    $('#editor').prev().show().find('.label-name').contents().filter(function() {
-                        return this.nodeType == 3;
-                    }).each(function(){
-                        this.textContent = $('#editor').find('input[name="newLabelName"]').val();
-                    });
-                    $('#editor').remove();
+                    var editor = $('#editor');
+                    var labelName = $(editor).find('input[name="newLabelName"]').val()
+                    $(editor).prev().remove();
+                    $(editor).remove();
+                    insertLabelListSorted(labelName);
 
-                    showSnackbarMessage('Label successfully changed.', defaultLabelNotifTimeout, false);
+                    showSnackbarMessage('Label successfully changed.', defaultLabelNotifTimeout);
                     success = true;
                 } else {
                     //Set error messages
-                    showSnackbarMessage(res.errorMessage, defaultLabelNotifTimeout, false);
+                    showSnackbarMessage(res.errorMessage, defaultLabelNotifTimeout);
                     success = false;
                 }
 
@@ -231,19 +295,17 @@ $(document).ready(function() {
             success : function(res) {
 
                 if(res.success){
-                    $('.label-name').contents().filter(function() {
-                        return this.nodeType == 3;
-                    }).each(function() {
+                    $('.label-name').find('span').each(function() {
                         if (this.textContent === labelName) {
-                            $(this).parent().parent().parent().parent().remove();
+                            $(this).parent().parent().parent().parent().parent().remove();
                         }
                     });
                     $('#deleteLabelModal').modal('hide');
 
-                    showSnackbarMessage('Label successfully deleted.', defaultLabelNotifTimeout, false);
+                    showSnackbarMessage('Label successfully deleted.', defaultLabelNotifTimeout);
                     success = true;
                 } else {
-                    showSnackbarMessage(res.errorMessage, defaultLabelNotifTimeout, false);
+                    showSnackbarMessage(res.errorMessage, defaultLabelNotifTimeout);
                     success = false;
                 }
 
@@ -253,18 +315,7 @@ $(document).ready(function() {
     });
 
     //Delete the selected label, but first bring up a modal box to ensure this selection was desired.
-    $(".dropdown-item-delete").click(function(event) {
-        console.log("Dropdown delete item selected.");
-        event.stopPropagation();
-        var questionText = 'Are you sure you want to delete the label: ';
-        var labelName = $(this).parent().parent().parent().prev().contents().filter(function() {
-            return this.nodeType == 3;
-        }).text();
-
-        $('#deleteLabelNameValue').val(labelName);
-        $('#deleteLabelNameText').text(questionText.concat(labelName, '?'));
-        $('#deleteLabelModal').modal('show');
-    });
+    $(".dropdown-item-delete").click(deleteClickEvent);
 
     /* Modals */
 
