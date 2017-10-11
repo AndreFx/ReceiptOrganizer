@@ -31,6 +31,7 @@
     <spring:url value="/resources/js/jquery-3.2.1.min.js" var="jquery"/>
     <spring:url value="/resources/js/bootstrap-multiselect.js" var="multiselectjs"/>
     <spring:url value="/resources/js/jquery.validate.min.js" var="validate"/>
+    <spring:url value="/resources/js/additional-methods.min.js" var="addvalidate"/>
     <spring:url value="/resources/js/jquery-ui.min.js" var="ui"/>
     <spring:url value="/resources/js/receiptOrganizerCommon.js" var="receiptCommon"/>
     <spring:url value="/resources/js/receiptEdit.js" var="receiptEdit"/>
@@ -47,6 +48,7 @@
     <script src="${bootstrapjs}"></script>
     <script src="${multiselectjs}"></script>
     <script src="${validate}"></script>
+    <script src="${addvalidate}"></script>
     <script src="${ui}"></script>
     <script src="${receiptCommon}"></script>
     <script src="${sidebar}"></script>
@@ -167,7 +169,9 @@
                 </div><!-- /.modal -->
             </div>
         </aside>
-        <div class="snackbar"></div>
+        <div class="snackbar">
+            <span id="snackbarText"></span>
+        </div>
         <jsp:include page="/WEB-INF/jsp/imageModal.jsp"/>
     </div>
     <jsp:include page="/WEB-INF/jsp/footer.jsp"/>

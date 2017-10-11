@@ -10,8 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
+
 
 @Controller
 @RequestMapping("labels")
@@ -25,16 +29,23 @@ public class LabelController {
 
     @RequestMapping(value="/create", produces={MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
     @ResponseBody
-    public LabelJsonResponse createLabel(@ModelAttribute("user") User user, @ModelAttribute Label newLabel, RedirectAttributes ra) {
+    public LabelJsonResponse createLabel(@ModelAttribute("user") User user, @Valid @ModelAttribute Label newLabel, BindingResult result, RedirectAttributes ra) {
         logger.debug("User: " + user.getUsername() + " creating new label: " + newLabel.getName());
         LabelJsonResponse response = new LabelJsonResponse();
+        newLabel.setName(newLabel.getName().trim());
 
-        try {
-            this.labelDao.addLabel(user.getUsername(), newLabel);
-            response.setSuccess(true);
-        } catch (DataAccessException e) {
+        if (!result.hasErrors()) {
+            try {
+                this.labelDao.addLabel(user.getUsername(), newLabel);
+                response.setSuccess(true);
+                logger.debug("User: " + user.getUsername() + " created new label: " + newLabel.getName());
+            } catch (DataAccessException e) {
+                response.setSuccess(false);
+                response.setErrorMessage("Label name is not unique");
+            }
+        } else {
             response.setSuccess(false);
-            response.setErrorMessage("Label name is not unique.");
+            response.setErrorMessage("Invalid label name");
         }
 
         return response;
@@ -53,7 +64,7 @@ public class LabelController {
             response.setSuccess(true);
         } catch (DataAccessException e) {
             response.setSuccess(false);
-            response.setErrorMessage("Unable to delete label. Label may not exist in database.");
+            response.setErrorMessage("Unable to delete label. Label may not exist in database");
         }
 
         return response;
@@ -63,20 +74,22 @@ public class LabelController {
     @ResponseBody
     public LabelJsonResponse editLabel(@ModelAttribute("user") User user, @RequestParam String oldLabelName, @RequestParam String newLabelName, RedirectAttributes ra) {
         logger.debug("User: " + user.getUsername() + " editing label from name: " + oldLabelName + " to name: " + newLabelName);
-        Label oldLabel = new Label();
-        oldLabel.setName(oldLabelName);
-        Label newLabel = new Label();
-        newLabel.setName(newLabelName);
 
         LabelJsonResponse response = new LabelJsonResponse();
-        if (this.labelDao.isLabelUnique(user.getUsername(), newLabel)) {
-            response.setSuccess(false);
-            response.setErrorMessage("Label name is not unique");
-            logger.debug("User submitted non-unique request to create label");
-        } else {
+        Label newLabel = new Label();
+        newLabel.setName(newLabelName.trim());
+
+        if (!newLabel.getName().equals("") && !newLabel.getName().equals("All Receipts") && this.labelDao.isLabelUnique(user.getUsername(), newLabel)) {
+            Label oldLabel = new Label();
+            oldLabel.setName(oldLabelName);
+
             logger.debug("User submitted valid request to create new label.");
             response.setSuccess(true);
             this.labelDao.editLabel(user.getUsername(), oldLabel, newLabel);
+        } else {
+            response.setSuccess(false);
+            response.setErrorMessage("Label name is not unique or invalid");
+            logger.debug("User submitted non-unique request to create label");
         }
 
         return response;

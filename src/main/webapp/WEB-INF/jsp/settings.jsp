@@ -28,6 +28,7 @@
     <spring:url value="/resources/js/jquery-3.2.1.min.js" var="jquery"/>
     <spring:url value="/resources/js/bootstrap-multiselect.js" var="multiselectjs"/>
     <spring:url value="/resources/js/jquery.validate.min.js" var="validate"/>
+    <spring:url value="/resources/js/additional-methods.min.js" var="addvalidate"/>
     <spring:url value="/resources/js/jquery-ui.min.js" var="ui"/>
     <spring:url value="/resources/js/receiptOrganizerCommon.js" var="receiptCommon"/>
     <spring:url value="/resources/js/userSettings.js" var="userSettings"/>
@@ -44,6 +45,7 @@
     <script src="${bootstrapjs}"></script>
     <script src="${multiselectjs}"></script>
     <script src="${validate}"></script>
+    <script src="${addvalidate}"></script>
     <script src="${ui}"></script>
     <script src="${receiptCommon}"></script>
     <script src="${sidebar}"></script>
@@ -74,7 +76,11 @@
                 <img class="receipt-edit-image modal-image" alt="${sessionScope.user.username} Image" src='<c:out value="${userPhotoView}"/>'>
                 <form:form autocomplete="off" modelAttribute="user" method="post" action="${settingsUpdateUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-group alert alert-danger center-full-width error-container" id="userSettingsErrorContainer">
-                        <div class="col-lg-10" id="userSettingsErrors"></div>
+                        <div class="col-lg-10" id="userSettingsErrors">
+                            <form:errors path="fName"/>
+                            <form:errors path="lName"/>
+                            <form:errors path="paginationSize"/>
+                        </div>
                     </div>
                     <div class="form-group">
                         <form:label path="fName" class="col-lg-2 control-name">First Name</form:label>
@@ -118,7 +124,9 @@
                 </form:form>
             </div>
         </aside>
-        <div class="snackbar"></div>
+        <div class="snackbar">
+            <span id="snackbarText"></span>
+        </div>
         <jsp:include page="/WEB-INF/jsp/imageModal.jsp"/>
     </div>
     <jsp:include page="/WEB-INF/jsp/footer.jsp"/>

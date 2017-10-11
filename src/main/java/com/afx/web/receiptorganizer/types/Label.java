@@ -1,7 +1,12 @@
 package com.afx.web.receiptorganizer.types;
 
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 public class Label {
 
+    @Size(max = 50)
+    @Pattern(regexp = "[^(?=\\s*\\S).*$][^(?!All Receipts$)]")
     private String name;
 
     public String getName() {

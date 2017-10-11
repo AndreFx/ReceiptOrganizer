@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.List;
@@ -69,30 +71,35 @@ public class UserController {
     }
 
     @RequestMapping(value = "/settings/update", method = RequestMethod.POST)
-    public String changeUserSettings(@ModelAttribute("user") User user, RedirectAttributes ra) {
+    public String changeUserSettings(@Valid @ModelAttribute("user") User user, BindingResult result, RedirectAttributes ra) {
 
-        try {
-            //Create byte array for transfer to database.
-            if (user.getImage() != null && !user.getImage().isEmpty()) {
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                BufferedImage image = ImageIO.read(user.getImage().getInputStream());
-                ImageIO.write(image, "png", outputStream);
-                outputStream.flush();
-                byte[] imageAsBytes = outputStream.toByteArray();
-                outputStream.close();
-                user.setFile(imageAsBytes);
+        if (!result.hasErrors()) {
+            try {
+                //Create byte array for transfer to database.
+                if (user.getImage() != null && !user.getImage().isEmpty()) {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    BufferedImage image = ImageIO.read(user.getImage().getInputStream());
+                    ImageIO.write(image, "png", outputStream);
+                    outputStream.flush();
+                    byte[] imageAsBytes = outputStream.toByteArray();
+                    outputStream.close();
+                    user.setFile(imageAsBytes);
+                }
+
+                this.userDao.changeUserSettings(user);
+
+                logger.debug("User: " + user.getUsername() + " successfully changed user settings");
+            } catch (DataAccessException e) {
+                logger.error("User: " + user.getUsername() + " failed to upload new user photo");
+                logger.error("Error description: " + e.getMessage());
+                throw e;
+            } catch (IOException iox) {
+                logger.error("Failed to convert user: " + user.getUsername() + " image for storage on database.");
+                throw new RuntimeException(iox.getMessage());
             }
-
-            this.userDao.changeUserSettings(user);
-
-            logger.debug("User: " + user.getUsername() + " successfully changed user settings");
-        } catch (DataAccessException e) {
-            logger.error("User: " + user.getUsername() + " failed to upload new user photo");
-            logger.error("Error description: " + e.getMessage());
-            throw e;
-        } catch (IOException iox) {
-            logger.error("Failed to convert user: " + user.getUsername() + " image for storage on database.");
-            throw new RuntimeException(iox.getMessage());
+        } else {
+            //Shouldn't occur unless jquery validation is broken.
+            return "settings";
         }
 
         return "redirect:/home/";

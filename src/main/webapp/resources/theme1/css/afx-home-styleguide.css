@@ -301,6 +301,10 @@ User Labels Styles
 .table-label tbody tr td.label-name:hover {
     cursor: default;
 }
+div#labelEditErrorContainer {
+    font-size: 14px;
+    margin-bottom: 0;
+}
 .labels-edit {
     vertical-align: middle;
     display: inline-block !important;

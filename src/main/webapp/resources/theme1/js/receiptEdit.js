@@ -11,19 +11,43 @@ $(document).ready(function() {
     //Validator for editReceipt form.
     $('#receipt').validate({
         rules: {
-            title: "required",
-            numItems: "digits",
-            receiptAmount: {
-                number: true
+            title: {
+                required: true,
+                notAllSpace: true,
+                maxlength: 50
             },
-            date: "validUSDate"
+            numItems: {
+                integer: true,
+                min: 0
+            },
+            receiptAmount: {
+                number: true,
+                min: 0.0
+            },
+            date: "validUSDate",
+            description: {
+                maxlength: 500
+            }
         },
 
         messages: {
-            title: "Title is required",
-            numItems: "# of Items must be a whole number",
-            receiptAmount: "Receipt Amount must be a valid number",
-            date: "Please enter a date in the format of MM/dd/yyyy"
+            title: {
+                required: "Title is required",
+                notAllSpace: "Title is required",
+                maxlength: "Title must be under 50 characters"
+            },
+            numItems: {
+                integer: "# of Items must be a whole number",
+                min: "# of Items cannot be negative"
+            },
+            receiptAmount: {
+                number: "Receipt Amount must be a valid number",
+                min: "Receipt Amount cannot be negative"
+            },
+            date: "Please enter a date in the format of MM/dd/yyyy",
+            description: {
+                maxlength: "Description must be under 500 characters"
+            }
         },
 
         onkeyup: false,

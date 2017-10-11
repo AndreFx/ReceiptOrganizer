@@ -109,7 +109,6 @@ public class LabelDaoImpl implements LabelDao {
         });
     }
 
-    //TODO Needs to be fixed
     public boolean isLabelUnique(String username, Label label) {
         String labelName = "";
         try {
@@ -122,9 +121,9 @@ public class LabelDaoImpl implements LabelDao {
                     "AND LabelName = :labelName";
             labelName = this.jdbcTemplate.queryForObject(query, parameters, String.class);
         } catch (EmptyResultDataAccessException e) {
-            logger.info("User : " + username + " attempted to add a non-unique label.");
+            logger.info("User: " + username + " attempted to add a non-unique label.");
         }
 
-        return !labelName.equals("");
+        return labelName.equals("");
     }
 }

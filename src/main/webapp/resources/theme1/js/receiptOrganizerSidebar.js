@@ -16,16 +16,20 @@ $(document).ready(function() {
 
     /* Validators */
 
-    $('#newLabel').validate({
+    $('#createLabel').validate({
         rules: {
             name: {
-                required: true
+                required: true,
+                notAllSpace: true,
+                maxlength: 50
             }
         },
 
         messages: {
             name: {
-                required: "Label name is required"
+                required: "Label name is required",
+                notAllSpace: "Label name is required",
+                maxlength: "Label name must be under 50 characters"
             }
         },
 
@@ -36,30 +40,84 @@ $(document).ready(function() {
         errorElement: 'div',
 
         errorPlacement: function(error, element) {
+            //Remove any errors set by  Ajax call. Only works because there is only one jquery validation rule.
+            $('#labelErrors').empty();
             console.log("Placing newLabel form errors.");
             error.appendTo('div#labelErrors');
             $('#labelErrorContainer').show();
+        },
+
+        submitHandler: function(form) {
+            $.ajax({
+                url : '/ReceiptOrganizer/labels/create',
+                type: "POST",
+                data : $(form).serialize(),
+                success : function(res) {
+                    var success = false;
+                    if(res.success){
+                        insertLabelListSorted($('#createLabel').find("input[name='name']").val().trim());
+                        $('#labelErrorContainer').hide();
+                        $('#addLabel').modal('hide');
+                        showSnackbarMessage('Label successfully created.', defaultLabelNotifTimeout);
+                        success = true;
+                    } else {
+                        //Set error messages
+                        $('#labelErrors').empty().append("<div id=\"name-error\" class=\"error\">" + res.errorMessage + "</div>");
+                        $('#labelErrorContainer').show();
+                        success = false;
+                    }
+
+                    return success;
+                }
+            });
+
+            //Prevent default
+            return false;
         }
     });
 
     //Validator for newReceipt form.
     $('#newReceipt').validate({
         rules: {
-            title: "required",
-            multipartFile: "required",
-            numItems: "digits",
-            receiptAmount: {
-                number: true
+            title: {
+                required: true,
+                notAllSpace: true,
+                maxlength: 50
             },
-            date: "validUSDate"
+            numItems: {
+                integer: true,
+                min: 0
+            },
+            receiptAmount: {
+                number: true,
+                min: 0.0
+            },
+            date: "validUSDate",
+            multipartFile: "required",
+            description: {
+                maxlength: 500
+            }
         },
 
         messages: {
-            title: "Title is required",
             multipartFile: "Receipt upload is required",
-            numItems: "# of Items must be a whole number",
-            receiptAmount: "Receipt Amount must be a valid number",
-            date: "Please enter a date in the format of MM/dd/yyyy"
+            title: {
+                required: "Title is required",
+                notAllSpace: "Title is required",
+                maxlength: "Title must be under 50 characters"
+            },
+            numItems: {
+                integer: "# of Items must be a whole number",
+                min: "# of Items cannot be negative"
+            },
+            receiptAmount: {
+                number: "Receipt Amount must be a valid number",
+                min: "Receipt Amount cannot be negative"
+            },
+            date: "Please enter a date in the format of MM/dd/yyyy",
+            description: {
+                maxlength: "Description must be under 500 characters"
+            }
         },
 
         onkeyup: false,
@@ -178,15 +236,17 @@ $(document).ready(function() {
                 oldLabelName: "required",
                 newLabelName: {
                     required: true,
-                    notAllSpace: true
+                    notAllSpace: true,
+                    maxlength: 50
                 }
             },
 
             messages: {
                 oldLabelName: "Don't mess around in the dev console",
                 newLabelName: {
-                    required: "Cannot enter empty label",
-                    notAllSpace: "Cannot enter empty label"
+                    required: "Label name is required",
+                    notAllSpace: "Label name is required",
+                    maxlength: "Label name must be under 50 characters"
                 }
             },
 
@@ -196,9 +256,9 @@ $(document).ready(function() {
 
             errorContainer: "#labelEditErrorContainer",
 
-            errorLabelContainer: "#labelEditErrorContainer ul",
+            errorLabelContainer: "#labelEditErrorContainer div",
 
-            wrapper: "li"
+            errorElement: 'div'
         });
     }
 
@@ -215,35 +275,6 @@ $(document).ready(function() {
 
         //Stop the dropdown from reopening. Is there some other issue here?
         $('body').click();
-    });
-
-    //AJAX Submission for creating a label
-    $('#createLabel').submit(function(event) {
-        event.preventDefault();
-        var success = false;
-        var fd = $(this).serialize();
-
-        $.ajax({
-            url : '/ReceiptOrganizer/labels/create',
-            type: "POST",
-            data : $(this).serialize(),
-            success : function(res) {
-
-                if(res.success){
-                    insertLabelListSorted($('#createLabel').find("input[name='name']").val());
-                    $('#labelErrorContainer').hide();
-                    $('#addLabel').modal('hide');
-                    showSnackbarMessage('Label successfully created.', defaultLabelNotifTimeout);
-                    success = true;
-                } else {
-                    //Set error messages
-                    showSnackbarMessage(res.errorMessage, defaultLabelNotifTimeout);
-                    success = false;
-                }
-
-                return success;
-            }
-        });
     });
 
     //AJAX Submission for editing a label
@@ -264,12 +295,12 @@ $(document).ready(function() {
                     $('#labelEditErrorContainer').hide();
                     //Update text
                     var editor = $('#editor');
-                    var labelName = $(editor).find('input[name="newLabelName"]').val()
+                    var labelName = $(editor).find('input[name="newLabelName"]').val().trim();
                     $(editor).prev().remove();
                     $(editor).remove();
                     insertLabelListSorted(labelName);
 
-                    showSnackbarMessage('Label successfully changed.', defaultLabelNotifTimeout);
+                    showSnackbarMessage('Label successfully changed', defaultLabelNotifTimeout);
                     success = true;
                 } else {
                     //Set error messages
@@ -302,7 +333,7 @@ $(document).ready(function() {
                     });
                     $('#deleteLabelModal').modal('hide');
 
-                    showSnackbarMessage('Label successfully deleted.', defaultLabelNotifTimeout);
+                    showSnackbarMessage('Label successfully deleted', defaultLabelNotifTimeout);
                     success = true;
                 } else {
                     showSnackbarMessage(res.errorMessage, defaultLabelNotifTimeout);

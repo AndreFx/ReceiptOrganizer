@@ -62,8 +62,8 @@
                     <tbody>
                         <tr>
                             <td>
-                                <div class="form-group alert alert-danger row center-full-width" id="labelEditErrorContainer" style="display: none">
-                                    <ul></ul>
+                                <div class="alert alert-danger row center-full-width" id="labelEditErrorContainer" style="display: none">
+                                    <div></div>
                                 </div>
                             </td>
                         </tr>
