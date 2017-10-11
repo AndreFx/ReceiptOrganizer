@@ -20,6 +20,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 //TODO Validations of Data
@@ -35,6 +38,8 @@ import java.util.List;
 @SessionAttributes(value={"user"})
 public class ReceiptController {
 
+    private static final int THUMBNAIL_HEIGHT = 84;
+
     private static Logger logger = LogManager.getLogger(ReceiptController.class);
 
     @Autowired
@@ -42,6 +47,14 @@ public class ReceiptController {
 
     @Autowired
     private LabelDao labelDao;
+
+    //TODO Instead of keeping this in the session, convert the images to thumbnails at runtime.
+    private HashMap<Integer, BufferedImage> receiptThumbnailCache = new HashMap<>();
+
+    //TODO Put into session at login time, getting all images from the database at once asynchronously. Need to continue to check
+    //in the get receipt method if the specific image exists in the map.
+    private HashMap<Integer, BufferedImage> receiptImageCache = new HashMap<>();
+
 
     @InitBinder("newReceipt")
     public void newReceiptInitBinder(WebDataBinder binder) {
@@ -74,20 +87,109 @@ public class ReceiptController {
     }
 
     @RequestMapping(value = "/{receiptId}/image", method = RequestMethod.GET)
-    public void getReceiptImage(@PathVariable(value = "receiptId") int id, @ModelAttribute("user") User user, HttpServletResponse response) {
-        byte[] receiptImage = this.receiptDao.getReceiptImage(user.getUsername(), id);
-        if (receiptImage == null) {
-            throw new ReceiptNotFoundException(id);
-        }
+    public void getReceiptImage(@PathVariable(value = "receiptId") int id, @RequestParam("thumbnail") boolean scale, @ModelAttribute("user") User user, HttpServletResponse response) {
 
         try {
-            InputStream in = new ByteArrayInputStream(receiptImage);
+            byte[] receiptImage;
+            InputStream in;
+            if (scale) {
+                //Request for thumbnail of image
+                BufferedImage thumbnail;
+                if (receiptThumbnailCache.containsKey(id)) {
+                    thumbnail = receiptThumbnailCache.get(id);
+                } else {
+                    receiptImage = this.receiptDao.getReceiptImage(user.getUsername(), id);
+                    if (receiptImage == null) {
+                        throw new ReceiptNotFoundException(id);
+                    }
+                    in = new ByteArrayInputStream(receiptImage);
+
+                    BufferedImage source = ImageIO.read(in);
+                    double ratio = THUMBNAIL_HEIGHT / (double) source.getHeight();
+                    double width = ratio * source.getWidth();
+
+                    long startTime = System.nanoTime();
+                    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                    GraphicsDevice gd = ge.getDefaultScreenDevice();
+                    GraphicsConfiguration gc = gd.getDefaultConfiguration();
+                    thumbnail = gc.createCompatibleImage((int) width, THUMBNAIL_HEIGHT);
+                    Graphics2D g2d = thumbnail.createGraphics();
+                    double xScale = width / source.getWidth();
+                    double yScale = (double) THUMBNAIL_HEIGHT / source.getHeight();
+                    AffineTransform at = AffineTransform.getScaleInstance(xScale,yScale);
+                    g2d.drawRenderedImage(source, at);
+                    g2d.dispose();
+                    long endTime = System.nanoTime();
+                    long duration = (endTime - startTime) / 1000000;
+                    System.out.println(duration);
+
+                    receiptThumbnailCache.put(id, thumbnail);
+                }
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(thumbnail, "jpg", baos);
+                baos.flush();
+                receiptImage = baos.toByteArray();
+                baos.close();
+
+                in = new ByteArrayInputStream(receiptImage);
+            } else {
+                BufferedImage image;
+                if (!receiptImageCache.containsKey(id)) {
+                    receiptImage = this.receiptDao.getReceiptImage(user.getUsername(), id);
+                    if (receiptImage == null) {
+                        throw new ReceiptNotFoundException(id);
+                    }
+                    in = new ByteArrayInputStream(receiptImage);
+                    image = ImageIO.read(in);
+                    receiptImageCache.put(id, image);
+                } else {
+                    image = receiptImageCache.get(id);
+                }
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(image, "jpg", baos);
+                baos.flush();
+                receiptImage = baos.toByteArray();
+                baos.close();
+
+                in = new ByteArrayInputStream(receiptImage);
+            }
+
             response.setContentType("image/jpeg");
             response.setHeader("content-Disposition", "inline; filename=" + id + "image.jpeg");
             response.setContentLength(receiptImage.length);
             IOUtils.copy(in, response.getOutputStream());
             response.flushBuffer();
             in.close();
+
+            //Method 1
+//            if (scale) {
+//                //Request for thumbnail of image
+//                BufferedImage source = ImageIO.read(in);
+//                double ratio = THUMBNAIL_HEIGHT / (double) source.getHeight();
+//                double width = ratio * source.getWidth();
+//                BufferedImage thumbnail;
+//                if ((int) width > 175) {
+//                    thumbnail = new BufferedImage(175, THUMBNAIL_HEIGHT, BufferedImage.TYPE_INT_RGB);
+//                    thumbnail.createGraphics().drawImage(source.getScaledInstance(175, THUMBNAIL_HEIGHT, Image.SCALE_SMOOTH), 0, 0, null);
+//                } else {
+//                    //Includes time to convert
+//                    thumbnail = new BufferedImage((int) width, THUMBNAIL_HEIGHT, BufferedImage.TYPE_INT_RGB);
+//                    long startTime = System.nanoTime();
+//                    thumbnail.createGraphics().drawImage(source.getScaledInstance((int) width, THUMBNAIL_HEIGHT, Image.SCALE_SMOOTH), 0, 0, null);
+//                    long endTime = System.nanoTime();
+//                    long duration = (endTime - startTime) / 1000000;
+//                    System.out.println(duration);
+//                }
+//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                ImageIO.write(thumbnail, "jpg", baos);
+//                baos.flush();
+//                receiptImage = baos.toByteArray();
+//                baos.close();
+//
+//                in = new ByteArrayInputStream(receiptImage);
+//            }
+
+
         } catch(IOException e) {
             logger.error("Unable to send image id: " + id + " response to user: " + user.getUsername());
         }

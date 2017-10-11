@@ -19,7 +19,7 @@
     <spring:url var="settingsUrl" value="/users/settings"/>
     <spring:url value="/users/getUserPhoto" var="userPhotoView"/>
 
-    <spring:url value="/receipts/${receipt.receiptId}/image" var="receiptViewImageUrl"/>
+    <spring:url value="/receipts/${receipt.receiptId}/image?thumbnail=false" var="receiptViewImageUrl"/>
 
     <spring:url value="/resources/css/afx-home-styleguide.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>

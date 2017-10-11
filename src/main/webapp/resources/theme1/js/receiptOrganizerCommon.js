@@ -36,13 +36,18 @@ $(document).ready(function() {
     /* Image Modal functionality */
 
     //Show image modal
+    //TODO Fix for user photo
     $(".modal-image").click(function(event) {
         console.log("Image Modal toggled.");
         event.stopPropagation();
         $("body").addClass("image-modal-open");
         $("#imageModal").css("display", "block");
 
-        $("#modalImage").attr("src", $(this).attr("src"));
+        var src = $(this).attr("src");
+        var noQryStr = src.substring(0, src.indexOf('?'));
+        var crtString = noQryStr + "?thumbnail=false";
+
+        $("#modalImage").attr("src", crtString);
         $("#modalCaption").text($(this).attr("alt"));
     });
 

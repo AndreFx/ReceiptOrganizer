@@ -167,7 +167,7 @@
                             <tbody>
                             <c:forEach items="${receipts}" var="receipt" varStatus="i">
                                 <spring:url value="/receipts/${receipt.receiptId}" var="receiptViewUrl"/>
-                                <spring:url value="/receipts/${receipt.receiptId}/image" var="receiptViewImageUrl"/>
+                                <spring:url value="/receipts/${receipt.receiptId}/image?thumbnail=true" var="receiptViewImageUrl"/>
                                 <tr class="clickable-row" data-href="<c:out value="${receiptViewUrl}"/>">
                                     <td class="view-message vertical-align-text"><img class="receipt-thumbnail modal-image" alt="${receipt.title}" src='<c:out value="${receiptViewImageUrl}"/>'></td>
                                     <td class="view-message dont-show vertical-align-text">${receipt.title}</td>

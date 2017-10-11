@@ -55,6 +55,8 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler {
         //Add user info to session
         httpServletRequest.getSession().setAttribute("user", user);
 
+        //TODO Add user images to session here.
+
         //Redirect user
         if (httpServletResponse.isCommitted()) {
             logger.error("Response already committed, unable to redirect to home page for: " + user.getUsername());
