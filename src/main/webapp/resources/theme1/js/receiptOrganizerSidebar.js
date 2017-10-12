@@ -33,6 +33,13 @@ $(document).ready(function() {
             }
         },
 
+        highlight: function(element) {
+            $(element).closest('.form-group').addClass('has-error');
+        },
+        unhighlight: function(element) {
+            $(element).closest('.form-group').removeClass('has-error');
+        },
+
         onkeyup: false,
 
         onfocusout: false,
@@ -93,14 +100,20 @@ $(document).ready(function() {
                 min: 0.0
             },
             date: "validUSDate",
-            multipartFile: "required",
+            multipartFile: {
+                required: true,
+                accept: "image/*"
+            },
             description: {
                 maxlength: 500
             }
         },
 
         messages: {
-            multipartFile: "Receipt upload is required",
+            multipartFile: {
+                required: "Receipt upload is required",
+                accept: "File must be an image"
+            },
             title: {
                 required: "Title is required",
                 notAllSpace: "Title is required",
@@ -118,6 +131,14 @@ $(document).ready(function() {
             description: {
                 maxlength: "Description must be under 500 characters"
             }
+        },
+
+        highlight: function(element) {
+            $(element).closest('.form-group').addClass('has-error');
+        },
+
+        unhighlight: function(element) {
+            $(element).closest('.form-group').removeClass('has-error');
         },
 
         onkeyup: false,

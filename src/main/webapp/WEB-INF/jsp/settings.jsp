@@ -16,7 +16,7 @@
     <spring:url var="logoutUrl" value="/logout"/>
     <spring:url var="settingsUrl" value="/users/settings"/>
     <spring:url var="settingsUpdateUrl" value="/users/settings/update"/>
-    <spring:url value="/users/getUserPhoto" var="userPhotoView"/>
+    <spring:url value="/users/getUserPhoto?thumbnail=false" var="userPhotoView"/>
 
     <spring:url value="/resources/css/afx-home-styleguide.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
@@ -83,19 +83,19 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="fName" class="col-lg-2 control-name">First Name</form:label>
+                        <form:label path="fName" class="col-lg-2 control-label">First Name</form:label>
                         <div class="col-lg-10">
                             <form:input path="fName" type="text" placeholder="" value="" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="lName" class="col-lg-2 control-name">Last Name</form:label>
+                        <form:label path="lName" class="col-lg-2 control-label">Last Name</form:label>
                         <div class="col-lg-10">
                             <form:input path="lName" type="text" placeholder="" value="" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="paginationSize" class="col-lg-2 control-name">Page Size (5 - 25)</form:label>
+                        <form:label path="paginationSize" class="col-lg-2 control-label">Page Size (5 - 25)</form:label>
                         <div class="col-lg-10">
                             <form:input path="paginationSize" type="text" placeholder="" value="" class="form-control"/>
                         </div>
@@ -109,7 +109,7 @@
                                             <span class="btn green fileinput-button">
                                                 <i class="fa fa-plus fa fa-white"></i>
                                                 <span>Change your photo</span>
-                                                <form:input class="multipart-input" path="image" id="editMultipartFile" type="file" accept=".png,.jpg"/>
+                                                <form:input class="multipart-input" path="image" id="editMultipartFile" type="file" accept="image/*"/>
                                             </span>
                                             <form:label path="image">No file chosen</form:label>
                                         </div>

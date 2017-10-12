@@ -23,15 +23,25 @@ import java.io.IOException;
 @Component
 public class AuthenticationSuccess implements AuthenticationSuccessHandler {
 
+    /*
+    Logger
+     */
     private static Logger logger = LogManager.getLogger(AuthenticationSuccess.class);
+
+    /*
+    Private fields
+     */
 
     @Value("${defaultPaginationSize}")
     private String DEFAULT_PAGE_SIZE;
 
     @Autowired
     private UserDao userDao;
-
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
+    /*
+    Override methods
+     */
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
@@ -44,6 +54,7 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler {
                 user = this.userDao.getUser(authentication.getName());
             }
 
+            logger.debug("Retrieved user thumbnail of: " + user.getUserPhotoThumbnail().length + " bytes");
         } catch (EmptyResultDataAccessException e) {
             //First time user, add user to database
             user = new User();
@@ -54,8 +65,6 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler {
 
         //Add user info to session
         httpServletRequest.getSession().setAttribute("user", user);
-
-        //TODO Add user images to session here.
 
         //Redirect user
         if (httpServletResponse.isCommitted()) {
@@ -69,6 +78,10 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler {
 
         logger.debug("Login action performed for: " + user.getUsername());
     }
+
+    /*
+    Private helpers
+     */
 
     private void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
 

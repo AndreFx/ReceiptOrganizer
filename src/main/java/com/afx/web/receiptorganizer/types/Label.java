@@ -5,9 +5,17 @@ import javax.validation.constraints.Size;
 
 public class Label {
 
+    /*
+    Private fields
+     */
+
     @Size(max = 50)
-    @Pattern(regexp = "[^(?=\\s*\\S).*$][^(?!All Receipts$)]")
+    @Pattern(regexp = "^(?!All Receipts$)^(.*)|(?!\\S+)")
     private String name;
+
+    /*
+    Getters and setters
+     */
 
     public String getName() {
         return name;

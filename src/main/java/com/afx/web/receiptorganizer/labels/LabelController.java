@@ -11,6 +11,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -22,10 +24,22 @@ import javax.validation.Valid;
 @SessionAttributes("user")
 public class LabelController {
 
+    /*
+    Logger
+     */
+
     private static Logger logger = LogManager.getLogger(LabelController.class);
+
+    /*
+    Private fields
+     */
 
     @Autowired
     private LabelDao labelDao;
+
+    /*
+    Controller methods
+     */
 
     @RequestMapping(value="/create", produces={MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
     @ResponseBody

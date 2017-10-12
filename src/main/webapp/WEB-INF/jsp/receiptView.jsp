@@ -82,31 +82,31 @@
                         <div class="col-lg-10" id="editReceiptErrors"></div>
                     </div>
                     <div class="form-group">
-                        <form:label path="title" class="col-lg-2 control-name">Title</form:label>
+                        <form:label path="title" class="col-lg-2 control-label">Title</form:label>
                         <div class="col-lg-10">
                             <form:input path="title" id="editTitle" type="text" placeholder="" value="" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="date" class="col-lg-2 control-name">Date</form:label>
+                        <form:label path="date" class="col-lg-2 control-label">Date</form:label>
                         <div class="col-lg-10">
                             <form:input path="date" id="editDate" type="text" placeholder="MM/dd/yyyy" value="" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="numItems" class="col-lg-2 control-name"># of Items</form:label>
+                        <form:label path="numItems" class="col-lg-2 control-label"># of Items</form:label>
                         <div class="col-lg-10">
                             <form:input path="numItems" id="editNumItems" type="text" placeholder="" value="" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="receiptAmount" class="col-lg-2 control-name">Receipt Amount</form:label>
+                        <form:label path="receiptAmount" class="col-lg-2 control-label">Receipt Amount</form:label>
                         <div class="col-lg-10">
                             <form:input path="receiptAmount" id="editReceiptAmount" type="text" placeholder="" value="" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="labels" class="col-lg-2 control-name">Labels</form:label>
+                        <form:label path="labels" class="col-lg-2 control-label">Labels</form:label>
                         <div class="col-lg-10">
                             <form:select multiple="true" path="labels" id="editLabels" placeholder="" value="" class="form-control">
                                 <form:options items="${labels}" itemLabel="name" itemValue="name"/>
@@ -114,7 +114,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="description" class="col-lg-2 control-name">Description</form:label>
+                        <form:label path="description" class="col-lg-2 control-label">Description</form:label>
                         <div class="col-lg-10">
                             <form:textarea path="description" id="editDescription" rows="10" cols="30" value="" class="form-control"/>
                         </div>
@@ -128,7 +128,7 @@
                                             <span class="btn green fileinput-button">
                                                 <i class="fa fa-plus fa fa-white"></i>
                                                 <span>Change Receipt Image</span>
-                                                <form:input path="multipartFile" id="editMultipartFile" class="multipart-input" type="file" accept=".png,.jpg"/>
+                                                <form:input path="multipartFile" id="editMultipartFile" class="multipart-input" type="file" accept="image/*"/>
                                             </span>
                                             <form:label path="multipartFile">No file chosen</form:label>
                                         </div>

@@ -23,7 +23,7 @@
     </database>
     <schema id="7" parent="2" name="dbo">
       <ObjectId>1</ObjectId>
-      <IntrospectionTimestamp>2017-09-03.00:45:01.903</IntrospectionTimestamp>
+      <IntrospectionTimestamp>2017-10-12.15:29:56.097</IntrospectionTimestamp>
       <Current>1</Current>
       <Visible>1</Visible>
     </schema>
@@ -64,19 +64,19 @@
       <ObjectId>16393</ObjectId>
     </schema>
     <table id="20" parent="7" name="RECEIPT">
-      <ObjectId>1589580701</ObjectId>
-      <CreatedTimestamp>2017-08-15.17:46:41.717</CreatedTimestamp>
-      <ModifiedTimestamp>2017-08-26.03:23:02.790</ModifiedTimestamp>
+      <ObjectId>338100245</ObjectId>
+      <CreatedTimestamp>2017-10-12.14:52:22.777</CreatedTimestamp>
+      <ModifiedTimestamp>2017-10-12.14:52:23.220</ModifiedTimestamp>
     </table>
     <table id="21" parent="7" name="RECEIPT_LABELS">
       <ObjectId>1525580473</ObjectId>
       <CreatedTimestamp>2017-08-15.15:21:27.203</CreatedTimestamp>
-      <ModifiedTimestamp>2017-08-26.03:23:02.793</ModifiedTimestamp>
+      <ModifiedTimestamp>2017-10-12.14:52:23.160</ModifiedTimestamp>
     </table>
     <table id="22" parent="7" name="USER">
-      <ObjectId>581577110</ObjectId>
-      <CreatedTimestamp>2017-08-14.02:02:15.793</CreatedTimestamp>
-      <ModifiedTimestamp>2017-09-03.00:44:39.627</ModifiedTimestamp>
+      <ObjectId>402100473</ObjectId>
+      <CreatedTimestamp>2017-10-12.15:20:38.523</CreatedTimestamp>
+      <ModifiedTimestamp>2017-10-12.15:20:38.660</ModifiedTimestamp>
     </table>
     <table id="23" parent="7" name="USER_LABELS">
       <ObjectId>1221579390</ObjectId>
@@ -86,7 +86,7 @@
     <table id="24" parent="7" name="USER_RECEIPTS">
       <ObjectId>1461580245</ObjectId>
       <CreatedTimestamp>2017-08-15.15:21:20.533</CreatedTimestamp>
-      <ModifiedTimestamp>2017-08-26.03:22:27.080</ModifiedTimestamp>
+      <ModifiedTimestamp>2017-10-12.15:20:38.663</ModifiedTimestamp>
     </table>
     <column id="25" parent="20" name="ReceiptId">
       <Position>1</Position>
@@ -100,7 +100,7 @@
     </column>
     <column id="27" parent="20" name="Description">
       <Position>3</Position>
-      <DataType>varchar(100)|0</DataType>
+      <DataType>varchar(500)|0</DataType>
     </column>
     <column id="28" parent="20" name="Date">
       <Position>4</Position>
@@ -118,36 +118,40 @@
       <Position>7</Position>
       <DataType>varbinary(max)|0</DataType>
     </column>
-    <index id="32" parent="20" name="PK_RECIEPT">
+    <column id="32" parent="20" name="ImageThumbnail">
+      <Position>8</Position>
+      <DataType>varbinary(max)|0</DataType>
+    </column>
+    <index id="33" parent="20" name="PK_RECIEPT">
       <Position>1</Position>
       <ColNames>ReceiptId</ColNames>
       <Clustering>1</Clustering>
       <Unique>1</Unique>
     </index>
-    <key id="33" parent="20" name="PK_RECIEPT">
-      <ObjectId>1605580758</ObjectId>
-      <CreatedTimestamp>2017-08-15.17:46:41.807</CreatedTimestamp>
-      <ModifiedTimestamp>2017-08-15.17:46:41.807</ModifiedTimestamp>
+    <key id="34" parent="20" name="PK_RECIEPT">
+      <ObjectId>354100302</ObjectId>
+      <CreatedTimestamp>2017-10-12.14:52:23.030</CreatedTimestamp>
+      <ModifiedTimestamp>2017-10-12.14:52:23.030</ModifiedTimestamp>
       <ColNames>ReceiptId</ColNames>
       <UnderlyingIndexName>PK_RECIEPT</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <column id="34" parent="21" name="ReceiptId">
+    <column id="35" parent="21" name="ReceiptId">
       <Position>1</Position>
       <DataType>int|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="35" parent="21" name="Username">
+    <column id="36" parent="21" name="Username">
       <Position>2</Position>
       <DataType>varchar(50)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="36" parent="21" name="LabelName">
+    <column id="37" parent="21" name="LabelName">
       <Position>3</Position>
       <DataType>varchar(50)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="37" parent="21" name="PK_RECEIPT_LABELS">
+    <index id="38" parent="21" name="PK_RECEIPT_LABELS">
       <Position>1</Position>
       <ColNames>ReceiptId
 Username
@@ -155,7 +159,7 @@ LabelName</ColNames>
       <Clustering>1</Clustering>
       <Unique>1</Unique>
     </index>
-    <key id="38" parent="21" name="PK_RECEIPT_LABELS">
+    <key id="39" parent="21" name="PK_RECEIPT_LABELS">
       <ObjectId>1541580530</ObjectId>
       <CreatedTimestamp>2017-08-15.15:21:27.203</CreatedTimestamp>
       <ModifiedTimestamp>2017-08-15.15:21:27.203</ModifiedTimestamp>
@@ -165,18 +169,18 @@ LabelName</ColNames>
       <UnderlyingIndexName>PK_RECEIPT_LABELS</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="39" parent="21" name="FK_RECEIPT_LABELS_RECIEPT">
-      <ObjectId>1877581727</ObjectId>
-      <CreatedTimestamp>2017-08-26.03:23:02.790</CreatedTimestamp>
-      <ModifiedTimestamp>2017-08-26.03:23:02.790</ModifiedTimestamp>
+    <foreign-key id="40" parent="21" name="FK_RECEIPT_LABELS_RECIEPT">
+      <ObjectId>370100359</ObjectId>
+      <CreatedTimestamp>2017-10-12.14:52:23.157</CreatedTimestamp>
+      <ModifiedTimestamp>2017-10-12.14:52:23.157</ModifiedTimestamp>
       <ColNames>ReceiptId</ColNames>
-      <RefTableId>1589580701</RefTableId>
+      <RefTableId>338100245</RefTableId>
       <RefSchemaName>dbo</RefSchemaName>
       <RefTableName>RECEIPT</RefTableName>
       <RefKeyName>PK_RECIEPT</RefKeyName>
       <RefColNames>ReceiptId</RefColNames>
     </foreign-key>
-    <foreign-key id="40" parent="21" name="FK_RECEIPT_LABELS_USER_LABELS">
+    <foreign-key id="41" parent="21" name="FK_RECEIPT_LABELS_USER_LABELS">
       <ObjectId>1845581613</ObjectId>
       <CreatedTimestamp>2017-08-25.18:36:36.230</CreatedTimestamp>
       <ModifiedTimestamp>2017-08-25.18:36:36.230</ModifiedTimestamp>
@@ -189,59 +193,63 @@ LabelName</ColNames>
       <RefColNames>Username
 LabelName</RefColNames>
     </foreign-key>
-    <column id="41" parent="22" name="Username">
+    <column id="42" parent="22" name="Username">
       <Position>1</Position>
       <DataType>varchar(50)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="42" parent="22" name="fName">
+    <column id="43" parent="22" name="fName">
       <Position>2</Position>
       <DataType>varchar(50)|0</DataType>
     </column>
-    <column id="43" parent="22" name="lName">
+    <column id="44" parent="22" name="lName">
       <Position>3</Position>
       <DataType>varchar(50)|0</DataType>
     </column>
-    <column id="44" parent="22" name="UserPhoto">
+    <column id="45" parent="22" name="UserPhoto">
       <Position>4</Position>
       <DataType>varbinary(max)|0</DataType>
     </column>
-    <column id="45" parent="22" name="PaginationSize">
+    <column id="46" parent="22" name="UserPhotoThumbnail">
       <Position>5</Position>
+      <DataType>varbinary(max)|0</DataType>
+    </column>
+    <column id="47" parent="22" name="PaginationSize">
+      <Position>6</Position>
       <DataType>int|0</DataType>
     </column>
-    <index id="46" parent="22" name="PK_User">
+    <index id="48" parent="22" name="PK_User">
       <Position>1</Position>
       <ColNames>Username</ColNames>
       <Clustering>1</Clustering>
       <Unique>1</Unique>
     </index>
-    <key id="47" parent="22" name="PK_User">
-      <ObjectId>597577167</ObjectId>
-      <CreatedTimestamp>2017-08-14.02:02:15.800</CreatedTimestamp>
-      <ModifiedTimestamp>2017-08-14.02:02:15.800</ModifiedTimestamp>
+    <key id="49" parent="22" name="PK_User">
+      <ObjectId>418100530</ObjectId>
+      <CreatedTimestamp>2017-10-12.15:20:38.540</CreatedTimestamp>
+      <ModifiedTimestamp>2017-10-12.15:20:38.540</ModifiedTimestamp>
       <ColNames>Username</ColNames>
       <UnderlyingIndexName>PK_User</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <column id="48" parent="23" name="Username">
+    <column id="50" parent="23" name="Username">
       <Position>1</Position>
       <DataType>varchar(50)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="49" parent="23" name="LabelName">
+    <column id="51" parent="23" name="LabelName">
       <Position>2</Position>
       <DataType>varchar(50)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="50" parent="23" name="PK_USER_CATEGORIES">
+    <index id="52" parent="23" name="PK_USER_CATEGORIES">
       <Position>1</Position>
       <ColNames>Username
 LabelName</ColNames>
       <Clustering>1</Clustering>
       <Unique>1</Unique>
     </index>
-    <key id="51" parent="23" name="PK_USER_CATEGORIES">
+    <key id="53" parent="23" name="PK_USER_CATEGORIES">
       <ObjectId>1237579447</ObjectId>
       <CreatedTimestamp>2017-08-15.11:35:08.060</CreatedTimestamp>
       <ModifiedTimestamp>2017-08-15.11:35:08.060</ModifiedTimestamp>
@@ -250,24 +258,24 @@ LabelName</ColNames>
       <UnderlyingIndexName>PK_USER_CATEGORIES</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <column id="52" parent="24" name="Username">
+    <column id="54" parent="24" name="Username">
       <Position>1</Position>
       <DataType>varchar(50)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="53" parent="24" name="ReceiptId">
+    <column id="55" parent="24" name="ReceiptId">
       <Position>2</Position>
       <DataType>int|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="54" parent="24" name="PK_USER_RECEIPTS">
+    <index id="56" parent="24" name="PK_USER_RECEIPTS">
       <Position>1</Position>
       <ColNames>Username
 ReceiptId</ColNames>
       <Clustering>1</Clustering>
       <Unique>1</Unique>
     </index>
-    <key id="55" parent="24" name="PK_USER_RECEIPTS">
+    <key id="57" parent="24" name="PK_USER_RECEIPTS">
       <ObjectId>1477580302</ObjectId>
       <CreatedTimestamp>2017-08-15.15:21:20.533</CreatedTimestamp>
       <ModifiedTimestamp>2017-08-15.15:21:20.533</ModifiedTimestamp>
@@ -276,23 +284,23 @@ ReceiptId</ColNames>
       <UnderlyingIndexName>PK_USER_RECEIPTS</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="56" parent="24" name="FK_USER_RECEIPTS_USER">
-      <ObjectId>1509580416</ObjectId>
-      <CreatedTimestamp>2017-08-15.15:21:20.540</CreatedTimestamp>
-      <ModifiedTimestamp>2017-08-15.15:21:20.540</ModifiedTimestamp>
+    <foreign-key id="58" parent="24" name="FK_USER_RECEIPTS_USER">
+      <ObjectId>434100587</ObjectId>
+      <CreatedTimestamp>2017-10-12.15:20:38.660</CreatedTimestamp>
+      <ModifiedTimestamp>2017-10-12.15:20:38.660</ModifiedTimestamp>
       <ColNames>Username</ColNames>
-      <RefTableId>581577110</RefTableId>
+      <RefTableId>402100473</RefTableId>
       <RefSchemaName>dbo</RefSchemaName>
       <RefTableName>USER</RefTableName>
       <RefKeyName>PK_User</RefKeyName>
       <RefColNames>Username</RefColNames>
     </foreign-key>
-    <foreign-key id="57" parent="24" name="FK_USER_RECEIPTS_RECIEPT">
-      <ObjectId>1861581670</ObjectId>
-      <CreatedTimestamp>2017-08-26.03:22:27.077</CreatedTimestamp>
-      <ModifiedTimestamp>2017-08-26.03:22:27.077</ModifiedTimestamp>
+    <foreign-key id="59" parent="24" name="FK_USER_RECEIPTS_RECIEPT">
+      <ObjectId>386100416</ObjectId>
+      <CreatedTimestamp>2017-10-12.14:52:23.220</CreatedTimestamp>
+      <ModifiedTimestamp>2017-10-12.14:52:23.220</ModifiedTimestamp>
       <ColNames>ReceiptId</ColNames>
-      <RefTableId>1589580701</RefTableId>
+      <RefTableId>338100245</RefTableId>
       <RefSchemaName>dbo</RefSchemaName>
       <RefTableName>RECEIPT</RefTableName>
       <RefKeyName>PK_RECIEPT</RefKeyName>

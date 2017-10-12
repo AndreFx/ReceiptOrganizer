@@ -27,13 +27,25 @@ import java.util.Map;
 @Qualifier("categoryDao")
 public class LabelDaoImpl implements LabelDao {
 
+    /*
+    Logger
+     */
+
     private static Logger logger = LogManager.getLogger(LabelDaoImpl.class);
+
+    /*
+    Private fields
+     */
 
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
     private PlatformTransactionManager transactionManager;
+
+    /*
+    Data access methods
+     */
 
     public void addLabel(String username, Label label) {
         TransactionDefinition def = new DefaultTransactionDefinition();

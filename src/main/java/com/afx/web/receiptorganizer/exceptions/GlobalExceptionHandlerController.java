@@ -13,8 +13,16 @@ import javax.naming.CommunicationException;
 @ControllerAdvice
 public class GlobalExceptionHandlerController {
 
+    /*
+    Constants
+     */
+
     private static final String DEFAULT_VIEW = "error";
     private static final String DEFAULT_ERROR_MESSAGE = "ReceiptOrganizer has encountered an error. Please contact your system administrator.";
+
+    /*
+    Exception handlers
+     */
 
     @ExceptionHandler(Exception.class)
     public String handleDefaultError(Exception e, Model model) throws Exception {

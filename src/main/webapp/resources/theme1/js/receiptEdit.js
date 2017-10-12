@@ -24,6 +24,9 @@ $(document).ready(function() {
                 number: true,
                 min: 0.0
             },
+            multipartFile: {
+                accept: "image/*"
+            },
             date: "validUSDate",
             description: {
                 maxlength: 500
@@ -47,7 +50,18 @@ $(document).ready(function() {
             date: "Please enter a date in the format of MM/dd/yyyy",
             description: {
                 maxlength: "Description must be under 500 characters"
+            },
+            multipartFile: {
+                accept: "File must be an image"
             }
+        },
+
+        highlight: function(element) {
+            $(element).closest('.form-group').addClass('has-error');
+        },
+
+        unhighlight: function(element) {
+            $(element).closest('.form-group').removeClass('has-error');
         },
 
         onkeyup: false,

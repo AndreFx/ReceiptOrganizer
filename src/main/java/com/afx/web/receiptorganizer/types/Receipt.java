@@ -3,6 +3,7 @@ package com.afx.web.receiptorganizer.types;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 
+
 public class Receipt {
 
     /*
@@ -15,6 +16,7 @@ public class Receipt {
     private Integer numItems;
     private String description;
     private byte[] file;
+    private byte[] receiptThumbnail;
     private MultipartFile multipartFile;
     private String[] labels;
     private Integer receiptId;
@@ -70,6 +72,14 @@ public class Receipt {
 
     public void setFile(byte[] file) {
         this.file = file;
+    }
+
+    public byte[] getReceiptThumbnail() {
+        return receiptThumbnail;
+    }
+
+    public void setReceiptThumbnail(byte[] receiptThumbnail) {
+        this.receiptThumbnail = receiptThumbnail;
     }
 
     public MultipartFile getMultipartFile() {

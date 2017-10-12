@@ -5,6 +5,7 @@ import com.afx.web.receiptorganizer.dao.user.UserDao;
 import com.afx.web.receiptorganizer.types.Label;
 import com.afx.web.receiptorganizer.types.Receipt;
 import com.afx.web.receiptorganizer.types.User;
+import com.afx.web.receiptorganizer.utilities.ImageThumbnailCreator;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -26,10 +28,25 @@ import java.util.List;
 
 @Controller
 @RequestMapping("users")
-@SessionAttributes(value={"user"})
+@SessionAttributes("user")
 public class UserController {
 
+    /*
+    Constants
+     */
+
+    private static final int THUMBNAIL_HEIGHT = 60;
+    private static final int THUMBNAIL_MAX_WIDTH = 64;
+
+    /*
+    Logger
+     */
+
     private static Logger logger = LogManager.getLogger(UserController.class);
+
+    /*
+    Private fields
+     */
 
     @Autowired
     private LabelDao labelDao;
@@ -38,18 +55,30 @@ public class UserController {
     private UserDao userDao;
 
     @Autowired
-    ServletContext context;
+    private ServletContext context;
+
+    /*
+    Controller methods
+     */
 
     @RequestMapping(value="/getUserPhoto", method = RequestMethod.GET)
-    public void getUserImage(@ModelAttribute("user") User user, HttpServletResponse response) {
+    public void getUserImage(@ModelAttribute("user") User user, @RequestParam("thumbnail") boolean scale, HttpServletResponse response) {
 
         try {
             InputStream in;
-            if (user.getFile() != null) {
-                in = new ByteArrayInputStream(user.getFile());
 
-                response.setContentLength(user.getFile().length);
+            //Check if there is a user photo. If there is, there will also be a thumbnail.
+            if (user.getUserPhotoImage() != null) {
+                if (scale) {
+                    in = new ByteArrayInputStream(user.getUserPhotoThumbnail());
+                    response.setContentLength(user.getUserPhotoThumbnail().length);
+                    logger.debug("Retrieved user thumbnail of: " + user.getUserPhotoThumbnail().length + " bytes");
+                } else {
+                    in = new ByteArrayInputStream(user.getUserPhotoImage());
+                    response.setContentLength(user.getUserPhotoImage().length);
+                }
             } else {
+                //No image scaling for this default photo, it is small enough to not matter.
                 BufferedImage img = ImageIO.read(new File(context.getRealPath("/resources/theme1/images/emptyUserPhoto.png")));
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ImageIO.write(img, "png", baos);
@@ -83,7 +112,15 @@ public class UserController {
                     outputStream.flush();
                     byte[] imageAsBytes = outputStream.toByteArray();
                     outputStream.close();
-                    user.setFile(imageAsBytes);
+                    user.setUserPhotoImage(imageAsBytes);
+
+                    //Create byte array for thumbnail
+                    long startTime = System.nanoTime();
+                    user.setUserPhotoThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_MAX_WIDTH));
+                    logger.debug("Set user thumbnail of: " + user.getUserPhotoThumbnail().length + " bytes");
+                    long endTime = System.nanoTime();
+                    long duration = (endTime - startTime) / 1000000;
+                    logger.debug("Time to scale user: " + user.getUsername() + " image of size: " + imageAsBytes.length + " into a thumbnail: " + duration + "ms");
                 }
 
                 this.userDao.changeUserSettings(user);

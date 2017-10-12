@@ -11,6 +11,9 @@ $(document).ready(function() {
             paginationSize: {
                 required: true,
                 range: [5, 25]
+            },
+            image: {
+                accept: "image/*"
             }
         },
 
@@ -24,7 +27,18 @@ $(document).ready(function() {
             paginationSize: {
                 required: "Page size required",
                 range: "Page size must be between 5 and 25"
+            },
+            image: {
+                accept: "File must be an image"
             }
+        },
+
+        highlight: function(element) {
+            $(element).closest('.form-group').addClass('has-error');
+        },
+
+        unhighlight: function(element) {
+            $(element).closest('.form-group').removeClass('has-error');
         },
 
         onkeyup: false,

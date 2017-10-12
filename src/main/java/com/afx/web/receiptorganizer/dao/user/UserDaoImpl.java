@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -20,10 +19,22 @@ import java.util.Map;
 @Qualifier("userDao")
 public class UserDaoImpl implements UserDao {
 
+    /*
+    Logger
+     */
+
     private static Logger logger = LogManager.getLogger(UserDaoImpl.class);
+
+    /*
+    Private fields
+     */
 
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
+
+    /*
+    Data access methods
+     */
 
     public User getUser(String username) {
         User user;
@@ -50,7 +61,7 @@ public class UserDaoImpl implements UserDao {
             parameters.put("paginationsize", user.getPaginationSize());
 
             String sql = "INSERT INTO [ReceiptOrganizer].[dbo].[USER] " +
-                    "VALUES (:username, :fName, :lName, NULL, :paginationsize)";
+                    "VALUES (:username, :fName, :lName, NULL, NULL, :paginationsize)";
             this.jdbcTemplate.update(sql, parameters);
 
             logger.info("New user: " + user.getUsername() + " added to database.");
@@ -58,7 +69,6 @@ public class UserDaoImpl implements UserDao {
             logger.error("Unable to add new user: " + user.getUsername() + " to the database.");
             throw e;
         }
-
     }
 
     public void changeUserSettings(User user) {
@@ -66,17 +76,18 @@ public class UserDaoImpl implements UserDao {
             Map<String, Object> parameters = new HashMap<>();
             String sql;
 
-            parameters.put("username", user.getUsername());
-            if (user.getFile() != null) {
-                parameters.put("userimage", user.getFile());
+            if (user.getUserPhotoImage() != null) {
+                parameters.put("userimage", user.getUserPhotoImage());
+                parameters.put("userthumbnail", user.getUserPhotoThumbnail());
                 sql = "UPDATE [ReceiptOrganizer].[dbo].[USER] " +
-                        "SET UserPhoto = :userimage, PaginationSize = :paginationsize, fName = :fname, lName = :lname " +
+                        "SET UserPhoto = :userimage, PaginationSize = :paginationsize, fName = :fname, lName = :lname, UserPhotoThumbnail = :userthumbnail " +
                         "WHERE Username = :username";
             } else {
                 sql = "UPDATE [ReceiptOrganizer].[dbo].[USER] " +
                         "SET PaginationSize = :paginationsize, fName = :fname, lName = :lname " +
                         "WHERE Username = :username";
             }
+            parameters.put("username", user.getUsername());
             parameters.put("paginationsize", user.getPaginationSize());
             parameters.put("fname", user.getfName());
             parameters.put("lname", user.getlName());

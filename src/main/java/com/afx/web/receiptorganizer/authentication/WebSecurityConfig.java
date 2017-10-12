@@ -20,8 +20,15 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /*
+    Private fields
+     */
+
     @Autowired
-    AuthenticationSuccess success;
+    AuthenticationSuccess authSuccess;
+
+    @Autowired
+    LogoutSuccess logoutSuccess;
 
     @Value("${ldap.domain}")
     private String DOMAIN;
@@ -41,8 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
            * Set up your spring security config here. For example...
           */
         http.authorizeRequests().antMatchers("/resources/**", "/login").permitAll().and().authorizeRequests().anyRequest().authenticated()
-                .and().formLogin().loginPage("/login").permitAll().successHandler(success)
-                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login?logout").invalidateHttpSession(true);
+                .and().formLogin().loginPage("/login").permitAll().successHandler(authSuccess)
+                .and().logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccess).logoutSuccessUrl("/login?logout").invalidateHttpSession(true);
           /*
            * Use HTTPs for ALL requests
           */

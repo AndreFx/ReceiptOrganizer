@@ -19,13 +19,25 @@ import java.util.*;
 @SessionAttributes(value={"user"})
 public class UserViewController {
 
+    /*
+    Logger
+     */
+
     private static Logger logger = LogManager.getLogger(UserViewController.class);
+
+    /*
+    Private fields
+     */
 
     @Autowired
     private LabelDao labelDao;
 
     @Autowired
     private ReceiptDao receiptDao;
+
+    /*
+    Controller methods
+     */
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String initForm(@RequestParam(value = "label", required = false) String label, @RequestParam(value = "page", required = false) Integer page,

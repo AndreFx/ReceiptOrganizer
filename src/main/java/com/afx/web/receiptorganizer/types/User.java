@@ -10,7 +10,9 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
-    private String username;
+    /*
+    Private Fields
+     */
 
     @Size(max = 50, message = "First name must be under 50 characters")
     private String fName;
@@ -22,10 +24,22 @@ public class User implements Serializable {
     @Min(value=5, message = "Page size must be between 5 and 25")
     @Max(value=25, message = "Page size must be between 5 and 25")
     private Integer paginationSize;
-
+    private String username;
     private MultipartFile image;
+    private byte[] userPhotoImage;
+    private byte[] userPhotoThumbnail;
 
-    private byte[] file;
+    /*
+    Getters and setters
+     */
+
+    public byte[] getUserPhotoThumbnail() {
+        return userPhotoThumbnail;
+    }
+
+    public void setUserPhotoThumbnail(byte[] userPhotoThumbnail) {
+        this.userPhotoThumbnail = userPhotoThumbnail;
+    }
 
     public String getUsername() {
 	    return this.username;
@@ -67,11 +81,12 @@ public class User implements Serializable {
         this.image = image;
     }
 
-    public byte[] getFile() {
-        return file;
+    public byte[] getUserPhotoImage() {
+        return userPhotoImage;
     }
 
-    public void setFile(byte[] file) {
-        this.file = file;
+    public void setUserPhotoImage(byte[] userPhotoImage) {
+        this.userPhotoImage = userPhotoImage;
     }
+
 }

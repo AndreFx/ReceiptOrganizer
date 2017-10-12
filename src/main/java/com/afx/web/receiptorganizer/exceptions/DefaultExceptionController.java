@@ -9,7 +9,15 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class DefaultExceptionController {
 
+    /*
+    Constants
+     */
+
     private static final String DEFAULT_VIEW = "error";
+
+    /*
+    Generic exception handlers
+     */
 
     @RequestMapping(value="/internalerror")
     public String handleException(HttpServletRequest req, Model model) {

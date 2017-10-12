@@ -36,7 +36,6 @@ $(document).ready(function() {
     /* Image Modal functionality */
 
     //Show image modal
-    //TODO Fix for user photo
     $(".modal-image").click(function(event) {
         console.log("Image Modal toggled.");
         event.stopPropagation();
@@ -59,7 +58,6 @@ $(document).ready(function() {
 
     /* Clickable row handler */
 
-
     $(".clickable-row").click(function(event) {
         console.log("Row clicked.");
 
@@ -75,4 +73,9 @@ $(document).ready(function() {
             }
         }
     });
+
+    /* Tooltips */
+
+    $('[data-toggle="tooltip"]').tooltip();
+
 });

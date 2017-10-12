@@ -2,8 +2,16 @@ package com.afx.web.receiptorganizer.labels.responses;
 
 public class LabelJsonResponse {
 
+    /*
+    Private fields
+     */
+
     private boolean success;
     private String errorMessage;
+
+    /*
+    Getters and setters
+     */
 
     public boolean isSuccess() {
         return success;

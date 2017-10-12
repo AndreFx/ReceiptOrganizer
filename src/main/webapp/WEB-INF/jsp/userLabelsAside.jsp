@@ -6,7 +6,7 @@
 <spring:url var="deleteLabelUrl" value="/labels/delete"/>
 <spring:url var="createLabelUrl" value="/labels/create"/>
 <spring:url var="updateLabelUrl" value="/labels/update"/>
-<spring:url value="/users/getUserPhoto" var="userPhotoView"/>
+<spring:url value="/users/getUserPhoto?thumbnail=true" var="userPhotoView"/>
 
 <aside class="sm-side">
     <div class="user-head">
@@ -113,31 +113,31 @@
                             <div class="col-lg-10" id="receiptErrors"></div>
                         </div>
                         <div class="form-group">
-                            <form:label path="title" class="col-lg-2 control-name">Title</form:label>
+                            <form:label path="title" class="col-lg-2 control-label">Title</form:label>
                             <div class="col-lg-10">
                                 <form:input path="title" type="text" placeholder="" value="" class="form-control"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <form:label path="date" class="col-lg-2 control-name">Date</form:label>
+                            <form:label path="date" class="col-lg-2 control-label">Date</form:label>
                             <div class="col-lg-10">
                                 <form:input path="date" type="text" placeholder="MM/dd/yyyy" value="" class="form-control"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <form:label path="numItems" class="col-lg-2 control-name"># of Items</form:label>
+                            <form:label path="numItems" class="col-lg-2 control-label"># of Items</form:label>
                             <div class="col-lg-10">
                                 <form:input path="numItems" type="text" placeholder="" value="" class="form-control"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <form:label path="receiptAmount" class="col-lg-2 control-name">Receipt Amount</form:label>
+                            <form:label path="receiptAmount" class="col-lg-2 control-label">Receipt Amount</form:label>
                             <div class="col-lg-10">
                                 <form:input path="receiptAmount" type="text" placeholder="" value="" class="form-control"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <form:label path="labels" class="col-lg-2 control-name">Labels</form:label>
+                            <form:label path="labels" class="col-lg-2 control-label">Labels</form:label>
                             <div class="col-lg-10">
                                 <form:select multiple="true" path="labels" placeholder="" value="" class="form-control">
                                     <form:options items="${labels}" itemLabel="name" itemValue="name"/>
@@ -145,7 +145,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <form:label path="description" class="col-lg-2 control-name">Description</form:label>
+                            <form:label path="description" class="col-lg-2 control-label">Description</form:label>
                             <div class="col-lg-10">
                                 <form:textarea path="description" rows="10" cols="30" value="" class="form-control"/>
                             </div>
@@ -157,7 +157,7 @@
                                         <span class="btn green fileinput-button">
                                             <i class="fa fa-plus fa fa-white"></i>
                                             <span>Receipt</span>
-                                            <form:input class="multipart-input" path="multipartFile" type="file" accept=".png,.jpg"/>
+                                            <form:input class="multipart-input" path="multipartFile" type="file" accept="image/*"/>
                                         </span>
                                         <form:label path="multipartFile">No file chosen</form:label>
                                     </div>
@@ -209,7 +209,7 @@
                             <div class="col-lg-10" id="labelErrors"></div>
                         </div>
                         <div class="form-group">
-                            <form:label path="name" class="col-lg-2 control-name">Label</form:label>
+                            <form:label path="name" class="col-lg-2 control-label">Label</form:label>
                             <div class="col-lg-10">
                                 <form:input path="name" placeholder="" value="" class="form-control"/>
                             </div>
