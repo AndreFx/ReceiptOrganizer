@@ -62,7 +62,10 @@ $(document).ready(function() {
                 success : function(res) {
                     var success = false;
                     if(res.success){
-                        insertLabelListSorted($('#createLabel').find("input[name='name']").val().trim());
+                        var labelName = $('#createLabel').find("input[name='name']").val().trim();
+                        insertLabelListSorted(labelName);
+                        addLabelMultiselect(labelName);
+
                         $('#labelErrorContainer').hide();
                         $('#addLabel').modal('hide');
                         showSnackbarMessage('Label successfully created.', defaultLabelNotifTimeout);
@@ -220,6 +223,101 @@ $(document).ready(function() {
         $('.dropdown-item-delete').click(deleteClickEvent);
     }
 
+    function addLabelMultiselect(labelName) {
+        console.log('Adding label multiselect for: ' + labelName);
+
+        //Find position to insert into current ul
+        var labelNameList = [];
+        var liIndex = 0;
+        $('#labels').find('option').each(function() {
+            //Ignore 'All Receipts'
+            if (liIndex != 0) {
+                labelNameList.push($(this).text());
+            }
+            liIndex++;
+        });
+
+        var index = 0;
+        while (index < labelNameList.length && labelName.toLowerCase() > labelNameList[index].toLowerCase()) {
+            index++;
+        }
+
+        //Insert and show
+        if (index === 0) {
+            $('#labels').prepend("<option value=\"" + labelName + "\">" + labelName + "</option>");
+
+            //Update receiptEdit page if open
+            if ($('#editLabels').length != 0) {
+                $('#editLabels').prepend("<option value=\"" + labelName + "\">" + labelName + "</option>");
+            }
+        } else {
+            $('#labels > option:eq(' + index + ')').after("<option value=\"" + labelName + "\">" + labelName + "</option>");
+
+            //Update receiptEdit page if open
+            if ($('#editLabels').length != 0) {
+                $('#editLabels > option:eq(' + index + ')').after("<option value=\"" + labelName + "\">" + labelName + "</option>");
+            }
+        }
+
+        refreshMultiselect();
+    }
+
+    function removeLabelMultiselect(labelName) {
+        console.log('Deleting label multiselect for: ' + labelName);
+
+        //Find label to delete
+        $('#labels').find('option').each(function() {
+            //Ignore 'All Receipts'
+            if ($(this).text() === labelName) {
+                $(this).remove();
+            }
+        });
+
+        //Update receiptEdit page as well.
+        if ($('#editLabels').length != 0) {
+            $('#editLabels').find('option').each(function() {
+                //Ignore 'All Receipts'
+                if ($(this).text() === labelName) {
+                    $(this).remove();
+                }
+            });
+        }
+
+        refreshMultiselect();
+    }
+
+    function updateLabelMultiselect(oldLabelName, newLabelName) {
+        console.log('Updating label multiselect for: ' + oldLabelName + " to: " + newLabelName);
+
+        removeLabelMultiselect(oldLabelName);
+        addLabelMultiselect(newLabelName);
+
+        refreshMultiselect();
+    }
+
+    function refreshMultiselect() {
+        //Update multiselect.
+        $('#labels').multiselect('destroy').multiselect({
+            enableFiltering: true,
+            enableCaseInsensitiveFiltering: true,
+            includeSelectAllOption: true,
+            disableIfEmpty: true,
+            disableText: 'No labels available',
+            maxHeight: 250
+        });
+
+        if ($('#editLabels').length != 0) {
+            $('#editLabels').multiselect('destroy').multiselect({
+                enableFiltering: true,
+                enableCaseInsensitiveFiltering: true,
+                includeSelectAllOption: true,
+                disableIfEmpty: true,
+                disableText: 'No labels available',
+                maxHeight: 250
+            });
+        }
+    }
+
     function deleteClickEvent(event) {
         console.log("Dropdown delete item selected.");
         event.stopPropagation();
@@ -317,9 +415,11 @@ $(document).ready(function() {
                     //Update text
                     var editor = $('#editor');
                     var labelName = $(editor).find('input[name="newLabelName"]').val().trim();
+                    var oldLabelName = $('#editor').find("input[name='oldLabelName']").val();
                     $(editor).prev().remove();
                     $(editor).remove();
                     insertLabelListSorted(labelName);
+                    updateLabelMultiselect(oldLabelName, labelName);
 
                     showSnackbarMessage('Label successfully changed', defaultLabelNotifTimeout);
                     success = true;
@@ -352,6 +452,7 @@ $(document).ready(function() {
                             $(this).parent().parent().parent().parent().parent().remove();
                         }
                     });
+                    removeLabelMultiselect(labelName);
                     $('#deleteLabelModal').modal('hide');
 
                     showSnackbarMessage('Label successfully deleted', defaultLabelNotifTimeout);
