@@ -54,7 +54,9 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler {
                 user = this.userDao.getUser(authentication.getName());
             }
 
-            logger.debug("Retrieved user thumbnail of: " + user.getUserPhotoThumbnail().length + " bytes");
+            if (user.getUserPhotoThumbnail() != null) {
+                logger.debug("Retrieved user thumbnail of: " + user.getUserPhotoThumbnail().length + " bytes");
+            }
         } catch (EmptyResultDataAccessException e) {
             //First time user, add user to database
             user = new User();
