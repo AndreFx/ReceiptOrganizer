@@ -13,6 +13,7 @@ public class ReceiptImageRowMapper implements RowMapper<ReceiptImage> {
         receiptImage.setId(rs.getInt(1));
         //Will either be the thumbnail or the source image.
         receiptImage.setReceiptImage(rs.getBytes(2));
+        receiptImage.setMIME(rs.getString(3));
 
         return receiptImage;
     }

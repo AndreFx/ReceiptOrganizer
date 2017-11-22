@@ -15,8 +15,10 @@ public class Receipt {
     private Float receiptAmount;
     private Integer numItems;
     private String description;
-    private byte[] file;
+    private byte[] receiptPDF;
+    private byte[] receiptFullImage;
     private byte[] receiptThumbnail;
+    private String MIME;
     private MultipartFile multipartFile;
     private String[] labels;
     private Integer receiptId;
@@ -66,12 +68,20 @@ public class Receipt {
         this.description = description;
     }
 
-    public byte[] getFile() {
-        return file;
+    public byte[] getReceiptPDF() {
+        return receiptPDF;
     }
 
-    public void setFile(byte[] file) {
-        this.file = file;
+    public void setReceiptPDF(byte[] receiptPDF) {
+        this.receiptPDF = receiptPDF;
+    }
+
+    public byte[] getReceiptFullImage() {
+        return receiptFullImage;
+    }
+
+    public void setReceiptFullImage(byte[] receiptFullImage) {
+        this.receiptFullImage = receiptFullImage;
     }
 
     public byte[] getReceiptThumbnail() {
@@ -80,6 +90,14 @@ public class Receipt {
 
     public void setReceiptThumbnail(byte[] receiptThumbnail) {
         this.receiptThumbnail = receiptThumbnail;
+    }
+
+    public String getMIME() {
+        return MIME;
+    }
+
+    public void setMIME(String MIME) {
+        this.MIME = MIME;
     }
 
     public MultipartFile getMultipartFile() {

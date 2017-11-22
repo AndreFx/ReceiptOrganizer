@@ -1,6 +1,8 @@
 package com.afx.web.receiptorganizer.dao.receipt;
 
 import com.afx.web.receiptorganizer.types.Receipt;
+import com.afx.web.receiptorganizer.types.ReceiptFile;
+import com.afx.web.receiptorganizer.types.ReceiptImage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,6 @@ import java.util.Map;
 @Qualifier("receiptDao")
 public class ReceiptDaoImpl implements ReceiptDao {
 
-    //TODO Make sure all of these require usernames to update sql.
     /*
     Logger
      */
@@ -56,7 +57,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
         try {
             //Insert into RECEIPT table first.
             String sql = "INSERT INTO RECEIPT " +
-                    "VALUES (:title, :description, :date, :receiptAmount, :numItems, :file, :receiptThumbnail)";
+                    "VALUES (:title, :description, :date, :receiptAmount, :numItems, :receiptFullImage, :receiptThumbnail, " +
+                    ":receiptPDF, :MIME)";
             KeyHolder keyHolder = new GeneratedKeyHolder();
 
             //BeanPropertySqlParameterSource uses reflection to map the fields to the params, make sure no other object
@@ -119,16 +121,28 @@ public class ReceiptDaoImpl implements ReceiptDao {
             parameters.put("numitems", receipt.getNumItems());
 
             //Don't update receipt image if image is null
-            if (receipt.getFile() == null) {
+            if (receipt.getReceiptFullImage() == null) {
                 sql = "UPDATE RECEIPT " +
-                        "SET Title = :title, Description = :description, Date = :date, ReceiptAmount = :receiptamount, NumItems = :numitems " +
-                        "WHERE ReceiptId = :receiptid";
+                        "SET Title = :title, Description = :description, Date = :date, ReceiptAmount = :receiptamount, " +
+                        "NumItems = :numitems WHERE ReceiptId = :receiptid";
             } else {
-                parameters.put("image", receipt.getFile());
+                parameters.put("image", receipt.getReceiptFullImage());
                 parameters.put("thumbnail", receipt.getReceiptThumbnail());
-                sql = "UPDATE RECEIPT " +
-                        "SET Title = :title, Description = :description, Date = :date, ReceiptAmount = :receiptamount, NumItems = :numitems, Image = :image, ImageThumbnail = :thumbnail " +
-                        "WHERE ReceiptId = :receiptid";
+                if (receipt.getReceiptPDF() == null) {
+                    sql = "UPDATE RECEIPT " +
+                            "SET Title = :title, Description = :description, Date = :date, ReceiptAmount = :receiptamount, " +
+                            "NumItems = :numitems, FullImage = :image, ImageThumbnail = :thumbnail " +
+                            "WHERE ReceiptId = :receiptid";
+                } else {
+                    //File upload was a pdf
+                    parameters.put("receiptPDF", receipt.getReceiptPDF());
+                    parameters.put("MIME", "application/pdf");
+                    sql = "UPDATE RECEIPT " +
+                            "SET Title = :title, Description = :description, Date = :date, ReceiptAmount = :receiptamount, " +
+                            "NumItems = :numitems, FullImage = :image, ImageThumbnail = :thumbnail, OriginalFile = :receiptPDF, " +
+                            "OriginalFileMIME = :MIME " +
+                            "WHERE ReceiptId = :receiptid";
+                }
             }
             this.jdbcTemplate.update(sql, parameters);
 
@@ -191,22 +205,22 @@ public class ReceiptDaoImpl implements ReceiptDao {
         return userReceipt;
     }
 
-    public byte[] getReceiptImage(String username, int receiptId, boolean thumbnail) {
-        byte[] receiptImage = null;
+    public ReceiptImage getReceiptImage(String username, int receiptId, boolean thumbnail) {
+        ReceiptImage receiptImage = null;
 
         try {
             SqlParameterSource parameters = new MapSqlParameterSource("receiptid", receiptId).addValue("username", username);
             String query;
 
             if (thumbnail) {
-                query = "SELECT RECEIPT.ReceiptId, ImageThumbnail " +
+                query = "SELECT RECEIPT.ReceiptId, ImageThumbnail, OriginalFileMIME " +
                         "FROM USER_RECEIPTS " +
                         "INNER JOIN RECEIPT " +
                         "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
                         "WHERE Receipt.ReceiptId = :receiptid " +
                         "AND USER_RECEIPTS.Username = :username";
             } else {
-                query = "SELECT RECEIPT.ReceiptId, Image " +
+                query = "SELECT RECEIPT.ReceiptId, FullImage, OriginalFileMIME " +
                         "FROM USER_RECEIPTS " +
                         "INNER JOIN RECEIPT " +
                         "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
@@ -214,12 +228,33 @@ public class ReceiptDaoImpl implements ReceiptDao {
                         "AND USER_RECEIPTS.Username = :username";
             }
 
-            receiptImage = this.jdbcTemplate.queryForObject(query, parameters, new ReceiptImageRowMapper()).getReceiptImage();
+            receiptImage = this.jdbcTemplate.queryForObject(query, parameters, new ReceiptImageRowMapper());
         } catch (DataAccessException e) {
             logger.error("Unable to fetch user receipt from database. Error: " + e.getMessage());
         }
 
         return receiptImage;
+    }
+
+    public ReceiptFile getReceiptFile(String username, int receiptId) {
+        ReceiptFile receiptFile = null;
+
+        try {
+            SqlParameterSource parameters = new MapSqlParameterSource("receiptid", receiptId).addValue("username", username);
+            //Selects the originalfile column if not null, or the image column if originalfile is null
+            String query = "SELECT RECEIPT.ReceiptId, ISNULL(OriginalFile, FullImage), OriginalFileMIME " +
+                        "FROM USER_RECEIPTS " +
+                        "INNER JOIN RECEIPT " +
+                        "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
+                        "WHERE Receipt.ReceiptId = :receiptid " +
+                        "AND USER_RECEIPTS.Username = :username";
+
+            receiptFile = this.jdbcTemplate.queryForObject(query, parameters, new ReceiptFileRowMapper());
+        } catch (DataAccessException e) {
+            logger.error("Unable to fetch user receipt from database. Error: " + e.getMessage());
+        }
+
+        return receiptFile;
     }
 
     public int getTotalNumUserReceiptsFromString(String username, String searchString) {

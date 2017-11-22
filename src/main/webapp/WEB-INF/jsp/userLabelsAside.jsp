@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page contentType="text/html;charset=UTF-8" language="java"%>
 <%@taglib uri = "http://www.springframework.org/tags/form" prefix = "form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix = "c"%>
@@ -157,7 +157,7 @@
                                         <span class="btn green fileinput-button">
                                             <i class="fa fa-plus fa fa-white"></i>
                                             <span>Receipt</span>
-                                            <form:input class="multipart-input" path="multipartFile" type="file" accept="image/*"/>
+                                            <form:input class="multipart-input" path="multipartFile" type="file" accept="image/*,application/pdf"/>
                                         </span>
                                         <form:label path="multipartFile">No file chosen</form:label>
                                     </div>

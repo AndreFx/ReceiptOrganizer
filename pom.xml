@@ -97,7 +97,12 @@
             <artifactId>mssql-jdbc</artifactId>
             <version>6.2.1.jre8</version>
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>org.icepdf.os</groupId>
+			<artifactId>icepdf-core</artifactId>
+			<version>6.2.2</version>
+		</dependency>
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>

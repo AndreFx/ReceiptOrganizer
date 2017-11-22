@@ -1,13 +1,13 @@
 package com.afx.web.receiptorganizer.types;
 
-public class ReceiptImage {
+public class ReceiptFile {
 
     /*
     Private fields
      */
 
     private int id;
-    private byte[] receiptImage;
+    private byte[] receiptFile;
     private String MIME;
 
     /*
@@ -22,12 +22,12 @@ public class ReceiptImage {
         this.id = id;
     }
 
-    public byte[] getReceiptImage() {
-        return receiptImage;
+    public byte[] getReceiptFile() {
+        return receiptFile;
     }
 
-    public void setReceiptImage(byte[] receiptImage) {
-        this.receiptImage = receiptImage;
+    public void setReceiptFile(byte[] receiptFile) {
+        this.receiptFile = receiptFile;
     }
 
     public String getMIME() {

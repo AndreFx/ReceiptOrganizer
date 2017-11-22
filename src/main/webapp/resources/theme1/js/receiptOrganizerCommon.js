@@ -48,6 +48,7 @@ $(document).ready(function() {
 
         $("#modalImage").attr("src", crtString);
         $("#modalCaption").text($(this).attr("alt"));
+        $("#modalDownload").attr("href", noQryStr.replace("image", "file"));
     });
 
     // When the user clicks on <span> (x), close the modal

@@ -128,7 +128,7 @@
                                             <span class="btn green fileinput-button">
                                                 <i class="fa fa-plus fa fa-white"></i>
                                                 <span>Change Receipt Image</span>
-                                                <form:input path="multipartFile" id="editMultipartFile" class="multipart-input" type="file" accept="image/*"/>
+                                                <form:input path="multipartFile" id="editMultipartFile" class="multipart-input" type="file" accept="image/*,application/pdf"/>
                                             </span>
                                             <form:label path="multipartFile">No file chosen</form:label>
                                         </div>

@@ -102,7 +102,7 @@ $(document).ready(function() {
             date: "validUSDate",
             multipartFile: {
                 required: true,
-                accept: "image/*"
+                accept: "image/*,application/pdf"
             },
             description: {
                 maxlength: 500
@@ -112,7 +112,7 @@ $(document).ready(function() {
         messages: {
             multipartFile: {
                 required: "Receipt upload is required",
-                accept: "File must be an image"
+                accept: "File must be an image or pdf"
             },
             title: {
                 required: "Title is required",

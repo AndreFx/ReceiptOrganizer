@@ -25,7 +25,7 @@ $(document).ready(function() {
                 min: 0.0
             },
             multipartFile: {
-                accept: "image/*"
+                accept: "image/*,application/pdf"
             },
             date: "validUSDate",
             description: {
@@ -52,7 +52,7 @@ $(document).ready(function() {
                 maxlength: "Description must be under 500 characters"
             },
             multipartFile: {
-                accept: "File must be an image"
+                accept: "File must be an image or pdf"
             }
         },
 
