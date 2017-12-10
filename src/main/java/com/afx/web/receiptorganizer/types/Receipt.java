@@ -1,7 +1,10 @@
 package com.afx.web.receiptorganizer.types;
 
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class Receipt {
@@ -10,23 +13,39 @@ public class Receipt {
     Private fields
      */
 
+    private Integer receiptId;
     private String title;
     private Date date;
     private Float receiptAmount;
-    private Integer numItems;
     private String description;
+    private String[] labels;
+    private List<ReceiptItem> items = new ArrayList<>();
+
+    //Receipt Upload Data
+
     private byte[] receiptPDF;
     private byte[] receiptFullImage;
     private byte[] receiptThumbnail;
     private String MIME;
     private MultipartFile multipartFile;
-    private String[] labels;
-    private Integer receiptId;
+
+    /*
+    Public methods
+     */
+
+    public void removeInvalidReceiptItems() {
+        for (int i = 0; i < items.size(); i++) {
+            ReceiptItem item = items.get(i);
+            if (item.getName().equals("") && item.getQuantity() == 0 &&
+                    item.getWarrantyLength() == 0 && item.getUnitPrice() == null) {
+                items.remove(i);
+            }
+        }
+    }
 
     /*
     Getters and setters
      */
-
 
     public String getTitle() {
         return title;
@@ -52,12 +71,12 @@ public class Receipt {
         this.receiptAmount = receiptAmount;
     }
 
-    public Integer getNumItems() {
-        return numItems;
+    public List<ReceiptItem> getItems() {
+        return items;
     }
 
-    public void setNumItems(Integer numItems) {
-        this.numItems = numItems;
+    public void setItems(List<ReceiptItem> items) {
+        this.items = items;
     }
 
     public String getDescription() {

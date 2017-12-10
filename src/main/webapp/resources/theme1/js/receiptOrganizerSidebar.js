@@ -94,10 +94,6 @@ $(document).ready(function() {
                 notAllSpace: true,
                 maxlength: 50
             },
-            numItems: {
-                integer: true,
-                min: 0
-            },
             receiptAmount: {
                 number: true,
                 min: 0.0
@@ -121,10 +117,6 @@ $(document).ready(function() {
                 required: "Title is required",
                 notAllSpace: "Title is required",
                 maxlength: "Title must be under 50 characters"
-            },
-            numItems: {
-                integer: "# of Items must be a whole number",
-                min: "# of Items cannot be negative"
             },
             receiptAmount: {
                 number: "Receipt Amount must be a valid number",
@@ -162,7 +154,41 @@ $(document).ready(function() {
         }
     });
 
+    $('input[name="items[0].name"]').rules('add', {
+        maxlength: 50,
+        messages: {
+            maxlength: "Item names must be under 50 characters"
+        }
+    });
+
+    $('input[name="items[0].quantity"]').rules('add', {
+        integer: true,
+        min: 0,
+        messages: {
+            integer: "Quantity must be a whole number",
+            min: "Quantity cannot be negative"
+        }
+    });
+
+    $('input[name="items[0].unitPrice"]').rules('add', {
+        number: true,
+        messages: {
+            number: "Unit Price must be a number"
+        }
+    });
+
+    $('input[name="items[0].warrantyLength"]').rules('add', {
+        integer: true,
+        min: 0,
+        messages: {
+            integer: "Warranty Length must be a whole number",
+            min: "Warranty Length cannot be negative"
+        }
+    });
+
     /* Multiselect and datepicker for create receipt form */
+
+    $("select[id='items0.warrantyUnit']").multiselect();
 
     $('#labels').multiselect({
         enableFiltering: true,
@@ -174,6 +200,84 @@ $(document).ready(function() {
     });
 
     $('#date').datepicker();
+
+    /* Add new item functionality for new receipt */
+
+    //TODO Validate data properly
+
+    //TODO Test with backend
+
+    //TODO Way to remove rows?
+
+    var currentRowNum = 1;
+
+    $('.sm-side').on('click', "#receiptAddItemBtn", function(event) {
+        event.stopPropagation();
+        console.log("Adding new item row in new receipt modal");
+        var row = $('#itemRow' + currentRowNum);
+        currentRowNum++;
+
+        //Create copy of row
+        var newRow = row.clone().attr("id", "itemRow" + currentRowNum);
+
+        //Clear and update values of row
+        $(newRow).find('label.control-label').text("Item #" + currentRowNum);
+        $(newRow).find("input[id='items" + (currentRowNum - 2) + ".name']").attr("id", "items" + (currentRowNum - 1) + ".name")
+            .attr("name", "items[" + (currentRowNum - 1) + "].name").val("");
+        $(newRow).find("input[id='items" + (currentRowNum - 2) + ".quantity']").attr("id", "items" + (currentRowNum - 1) + ".quantity")
+            .attr("name", "items[" + (currentRowNum - 1) + "].quantity").val("0");
+        $(newRow).find("input[id='items" + (currentRowNum - 2) + ".unitPrice']").attr("id", "items" + (currentRowNum - 1) + ".unitPrice")
+            .attr("name", "items[" + (currentRowNum - 1) + "].unitPrice").val("");
+        $(newRow).find("input[id='items" + (currentRowNum - 2) + ".warrantyLength']").attr("id", "items" + (currentRowNum - 1) + ".warrantyLength")
+            .attr("name", "items[" + (currentRowNum - 1) + "].warrantyLength").val("0");
+        $(newRow).find("select[id='items" + (currentRowNum - 2) + ".warrantyUnit']").attr("id", "items" + (currentRowNum - 1) + ".warrantyUnit")
+            .attr("name", "items[" + (currentRowNum - 1) + "].warrantyUnit").next('div').remove();
+
+        var temp = $(newRow).find("select[id='items" + (currentRowNum - 1) + ".warrantyUnit']");
+        var newParent = $(newRow).find("select[id='items" + (currentRowNum - 1) + ".warrantyUnit']").parent().parent();
+        temp.parent().remove();
+        newParent.append(temp);
+
+        //Enable multiselect
+        $(newRow).find("select[id='items" + (currentRowNum - 1) + ".warrantyUnit']").multiselect();
+
+        //Insert row
+        row.after(newRow);
+
+        //Enable validation
+        $('input[name="items[' + (currentRowNum - 1) + '].name"]').rules('add', {
+            maxlength: 50,
+            messages: {
+                maxlength: "Item names must be under 50 characters"
+            }
+        });
+
+        $('input[name="items[' + (currentRowNum - 1) + '].quantity"]').rules('add', {
+            integer: true,
+            min: 0,
+            messages: {
+                integer: "Quantity must be a whole number",
+                min: "Quantity cannot be negative"
+            }
+        });
+
+        $('input[name="items[' + (currentRowNum - 1) + '].unitPrice"]').rules('add', {
+            number: true,
+            messages: {
+                number: "Unit Price must be a number"
+            }
+        });
+
+        $('input[name="items[' + (currentRowNum - 1) + '].warrantyLength"]').rules('add', {
+            integer: true,
+            min: 0,
+            messages: {
+                integer: "Warranty Length must be a whole number",
+                min: "Warranty Length cannot be negative"
+            }
+        });
+    });
+
 
     /* Edit functionality for labels */
 
@@ -496,8 +600,21 @@ $(document).ready(function() {
         $('#receiptErrorContainer').hide();
         $('#multipartFile').parent().next().html("No file chosen");
 
+        //Clear additional rows for items
+        for (var i = 2; i <= currentRowNum; i++) {
+            $('#itemRow' + i).remove();
+        }
+
+        //Reset rowNum
+        currentRowNum = 1;
+
         //Clear any user input
         $(this).find('form')[0].reset();
+        $(this).find('.has-error').removeClass('has-error');
+        $(this).find('input').removeAttr('aria-describedby');
+
+        //Refresh multiselect
+        $("select[id='items0.warrantyUnit']").multiselect('refresh');
     });
 
     $('#addLabel').on('hidden.bs.modal', function() {
@@ -508,6 +625,8 @@ $(document).ready(function() {
 
         //Clear any user input
         $(this).find('form')[0].reset();
+        $(this).find('.has-error').removeClass('has-error');
+        $(this).find('input').removeAttr('aria-describedby');
     });
 
     $('#deleteLabelModal').on('hidden.bs.modal', function() {

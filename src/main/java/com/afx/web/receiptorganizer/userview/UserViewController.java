@@ -42,7 +42,7 @@ public class UserViewController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String initForm(@RequestParam(value = "label", required = false) String label, @RequestParam(value = "page", required = false) Integer page,
                            @ModelAttribute("user") User user, ModelMap model) {
-        logger.debug("Serving user request for home screen.");
+        logger.debug("Serving user: " + user.getUsername() + " request for home screen.");
         List<Receipt> receipts = null;
 
         //All user labels

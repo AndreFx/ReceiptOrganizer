@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-//TODO Validations of Data
 @Controller
 @RequestMapping("receipts")
 @SessionAttributes(value={"user"})
@@ -104,7 +103,7 @@ public class ReceiptController {
         logger.debug("User: " + user.getUsername() + " requesting image for receipt: " + id);
 
         try {
-            ReceiptImage receiptImage;
+            ReceiptFile receiptImage;
             InputStream in;
 
             if (scale) {
@@ -113,10 +112,10 @@ public class ReceiptController {
                 receiptImage = this.receiptDao.getReceiptImage(user.getUsername(), id, false);
             }
 
-            in = new ByteArrayInputStream(receiptImage.getReceiptImage());
+            in = new ByteArrayInputStream(receiptImage.getReceiptFile());
             response.setContentType(receiptImage.getMIME());
             response.setHeader("content-Disposition", "inline; filename=" + id + "image.jpeg");
-            response.setContentLength(receiptImage.getReceiptImage().length);
+            response.setContentLength(receiptImage.getReceiptFile().length);
             IOUtils.copy(in, response.getOutputStream());
             response.flushBuffer();
             in.close();
@@ -195,6 +194,9 @@ public class ReceiptController {
                 userReceiptImageCache.get(user.getUsername().toLowerCase()).put(id, imageAsBytes);
             }
 
+            //Remove invalid receipt item entries
+            receipt.removeInvalidReceiptItems();
+
             this.receiptDao.editReceipt(user.getUsername(), receipt);
 
             logger.debug("User: " + user.getUsername() + " successfully uploaded image.");
@@ -226,7 +228,7 @@ public class ReceiptController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public String insertReceipt(@ModelAttribute("user") User user, @ModelAttribute("newReceipt") Receipt newReceipt, RedirectAttributes ra) {
+    public String createReceipt(@ModelAttribute("user") User user, @ModelAttribute("newReceipt") Receipt newReceipt, RedirectAttributes ra) {
         logger.debug("User: " + user.getUsername() + " creating new receipt with title: " + newReceipt.getTitle());
         newReceipt.setMIME(newReceipt.getMultipartFile().getContentType());
 
@@ -255,6 +257,9 @@ public class ReceiptController {
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime) / 1000000;
                 logger.debug("Time to scale receipt image of size: " + imageAsBytes.length + " into a thumbnail: " + duration + "ms");
+
+                //Remove invalid receipt item entries
+                newReceipt.removeInvalidReceiptItems();
 
                 this.receiptDao.addReceipt(user.getUsername(), newReceipt);
 

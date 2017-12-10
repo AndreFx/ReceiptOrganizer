@@ -101,7 +101,7 @@
     </div>
     <!-- Modals -->
     <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="addReceipt" class="modal fade" style="display: none;">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
@@ -114,31 +114,62 @@
                         </div>
                         <div class="form-group">
                             <form:label path="title" class="col-lg-2 control-label">Title</form:label>
-                            <div class="col-lg-10">
-                                <form:input path="title" type="text" placeholder="" value="" class="form-control"/>
+                            <div class="col-lg-9">
+                                <form:input path="title" type="text" placeholder="" value="" maxlength="50" class="form-control"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <form:label path="date" class="col-lg-2 control-label">Date</form:label>
-                            <div class="col-lg-10">
+                            <div class="col-lg-9">
                                 <form:input path="date" type="text" placeholder="MM/dd/yyyy" value="" class="form-control"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <form:label path="numItems" class="col-lg-2 control-label"># of Items</form:label>
-                            <div class="col-lg-10">
-                                <form:input path="numItems" type="text" placeholder="" value="" class="form-control"/>
+                            <label class="col-lg-2 control-label">Receipt Items</label>
+                            <label class="col-lg-2 control-table-label">Name</label>
+                            <label class="col-lg-2 control-table-label">Quantity</label>
+                            <label class="col-lg-2 control-table-label">Unit Price</label>
+                            <label class="col-lg-4 control-table-label">Warranty Length</label>
+                        </div>
+                        <div class="form-group" id="itemRow1">
+                            <label class="col-lg-2 control-label">Item #1</label>
+                            <div class="col-lg-2">
+                                <form:input path="items[0].name" type="text" placeholder="" value="" maxlength="50" class="form-control"/>
+                            </div>
+                            <div class="col-lg-2">
+                                <form:input path="items[0].quantity" type="text" placeholder="" value="" class="form-control"/>
+                            </div>
+                            <div class="col-lg-2">
+                                <form:input path="items[0].unitPrice" type="text" placeholder="" value="" class="form-control"/>
+                            </div>
+                            <div class="col-lg-2">
+                                <form:input path="items[0].warrantyLength" type="text" placeholder="" value="" class="form-control"/>
+                            </div>
+                            <div class="col-lg-2">
+                                <form:select id="items0.warrantyUnit" path="items[0].warrantyUnit" placeholder="" value="" class="form-control">
+                                    <option selected="selected" value="d">Day(s)</option>
+                                    <option value="m">Month(s)</option>
+                                    <option value="y">Year(s)</option>
+                                </form:select>
+                            </div>
+                        </div>
+                        <div class="form-group" id="receiptAddItem">
+                            <div class="col-lg-offset-2 col-lg-10">
+                                <button id="receiptAddItemBtn" class="btn" type="button">
+                                    <i class="fa fa-plus fa-white"></i>
+                                    <span> Item</span>
+                                </button>
                             </div>
                         </div>
                         <div class="form-group">
                             <form:label path="receiptAmount" class="col-lg-2 control-label">Receipt Amount</form:label>
-                            <div class="col-lg-10">
+                            <div class="col-lg-9">
                                 <form:input path="receiptAmount" type="text" placeholder="" value="" class="form-control"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <form:label path="labels" class="col-lg-2 control-label">Labels</form:label>
-                            <div class="col-lg-10">
+                            <div class="col-lg-9">
                                 <form:select multiple="true" path="labels" placeholder="" value="" class="form-control">
                                     <form:options items="${labels}" itemLabel="name" itemValue="name"/>
                                 </form:select>
@@ -146,12 +177,12 @@
                         </div>
                         <div class="form-group">
                             <form:label path="description" class="col-lg-2 control-label">Description</form:label>
-                            <div class="col-lg-10">
-                                <form:textarea path="description" rows="10" cols="30" value="" class="form-control"/>
+                            <div class="col-lg-9">
+                                <form:textarea path="description" rows="10" cols="30" maxlength="500" value="" class="form-control"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-lg-offset-2 col-lg-10">
+                            <div class="col-lg-offset-2 col-lg-9">
                                 <div class="receipt-submit-container">
                                     <div class="file-input-container">
                                         <span class="btn green fileinput-button">

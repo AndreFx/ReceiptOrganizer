@@ -17,7 +17,6 @@ public class ReceiptRowMapper implements RowMapper<Receipt> {
         receipt.setDescription(rs.getString("Description"));
         receipt.setDate(rs.getDate("Date"));
         receipt.setReceiptAmount(rs.getFloat("ReceiptAmount"));
-        receipt.setNumItems(rs.getInt("NumItems"));
         return receipt;
     }
 }

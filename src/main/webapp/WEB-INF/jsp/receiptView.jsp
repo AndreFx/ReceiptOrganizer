@@ -51,9 +51,10 @@
     <script src="${addvalidate}"></script>
     <script src="${ui}"></script>
     <script src="${receiptCommon}"></script>
-    <script src="${sidebar}"></script>
-    <script src="${receiptEdit}"></script>
     <script>
+        //Allow receiptEdit.js to get current number of receipts
+        var editCurrentRowNum = ${receipt.items.size()};
+
         $(document).ready(function() {
             $(function () {
                 var token = $("meta[name='_csrf']").attr("content");
@@ -64,6 +65,8 @@
             });
         });
     </script>
+    <script src="${sidebar}"></script>
+    <script src="${receiptEdit}"></script>
     <meta name="_csrf" content="${_csrf.token}"/>
     <meta name="_csrf_header" content="${_csrf.headerName}"/>
     <title>${receipt.title}</title>
@@ -94,9 +97,57 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="numItems" class="col-lg-2 control-label"># of Items</form:label>
-                        <div class="col-lg-10">
-                            <form:input path="numItems" id="editNumItems" type="text" placeholder="" value="" class="form-control"/>
+                        <label class="col-lg-2 control-label">Receipt Items</label>
+                        <label class="col-lg-2 control-table-label">Name</label>
+                        <label class="col-lg-2 control-table-label">Quantity</label>
+                        <label class="col-lg-2 control-table-label">Unit Price</label>
+                        <label class="col-lg-4 control-table-label">Warranty Length</label>
+                    </div>
+                    <!-- TODO Account for empty receiptitem lists. -->
+                    <c:forEach items="${receipt.items}" var="receiptItem" varStatus="i">
+                        <div class="form-group" id="editItemRow${i.index + 1}">
+                            <label class="col-lg-2 control-label">Item #${i.index + 1}</label>
+                            <div class="col-lg-2">
+                                <form:input id="edititems${i.index}.name" path="items[${i.index}].name" type="text" placeholder="" value="${receiptItem.name}" maxlength="50" class="form-control"/>
+                            </div>
+                            <div class="col-lg-2">
+                                <form:input id="edititems${i.index}.quantity" path="items[${i.index}].quantity" type="text" placeholder="" value="${receiptItem.quantity}" class="form-control"/>
+                            </div>
+                            <div class="col-lg-2">
+                                <form:input id="edititems${i.index}.unitPrice" path="items[${i.index}].unitPrice" type="text" placeholder="" value="${receiptItem.unitPrice}" class="form-control"/>
+                            </div>
+                            <div class="col-lg-2">
+                                <form:input id="edititems${i.index}.warrantyLength" path="items[${i.index}].warrantyLength" type="text" placeholder="" value="${receiptItem.warrantyLength}" class="form-control"/>
+                            </div>
+                            <div class="col-lg-2">
+                                <form:select id="edititems${i.index}.warrantyUnit" path="items[${i.index}].warrantyUnit" placeholder="" value="" class="form-control">
+                                    <c:choose>
+                                        <c:when test='${receiptItem.warrantyUnit.equals("d")}'>
+                                            <option selected="selected" value="d">Day(s)</option>
+                                            <option value="m">Month(s)</option>
+                                            <option value="y">Year(s)</option>
+                                        </c:when>
+                                        <c:when test='${receiptItem.warrantyUnit.equals("m")}'>
+                                            <option value="d">Day(s)</option>
+                                            <option selected="selected" value="m">Month(s)</option>
+                                            <option value="y">Year(s)</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option selected="selected" value="d">Day(s)</option>
+                                            <option value="m">Month(s)</option>
+                                            <option selected="selected" value="y">Year(s)</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </form:select>
+                            </div>
+                        </div>
+                    </c:forEach>
+                    <div class="form-group" id="receiptAddItem">
+                        <div class="col-lg-offset-2 col-lg-10">
+                            <button id="editReceiptAddItemBtn" class="btn" type="button">
+                                <i class="fa fa-plus fa-white"></i>
+                                <span> Item</span>
+                            </button>
                         </div>
                     </div>
                     <div class="form-group">
