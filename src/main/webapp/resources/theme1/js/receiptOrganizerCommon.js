@@ -1,3 +1,20 @@
+//Set of common functions and document ready routines for receipt organizer
+
+function createItemDeleteButtonHandlers(parent, labelId, divId, number) {
+    console.log("Assigning delete handler to: " + "#" + labelId + number + ", " + "#" + divId + number);
+    $(parent).on("mouseenter", "#" + labelId + number + ", " + "#" + divId + number, {value: number}, function(event) {
+        //Show delete button on hover of label
+        console.log("Showing delete item button");
+        $("#" + labelId + event.data.value).hide();
+        $("#" + divId + event.data.value).show();
+    }).on("mouseleave", "#" + labelId + number + ", " + "#" + divId + number, {value: number}, function(event) {
+        //Hide delete button once user's mouse fully leaves div
+        console.log("Hiding delete item button");
+        $("#" + labelId + event.data.value).show();
+        $("#" + divId + event.data.value).hide();
+    });
+}
+
 $(document).ready(function() {
 
     /* Custom validators */

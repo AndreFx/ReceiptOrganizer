@@ -36,7 +36,7 @@ public class Receipt {
     public void removeInvalidReceiptItems() {
         for (int i = 0; i < items.size(); i++) {
             ReceiptItem item = items.get(i);
-            if (item.getName().equals("") && item.getQuantity() == 0 &&
+            if (item.getName() == null && item.getQuantity() == 0 &&
                     item.getWarrantyLength() == 0 && item.getUnitPrice() == null) {
                 items.remove(i);
             }

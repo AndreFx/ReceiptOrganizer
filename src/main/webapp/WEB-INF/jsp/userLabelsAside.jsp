@@ -124,34 +124,12 @@
                                 <form:input path="date" type="text" placeholder="MM/dd/yyyy" value="" class="form-control"/>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="itemRowNames">
                             <label class="col-lg-2 control-label">Receipt Items</label>
                             <label class="col-lg-2 control-table-label">Name</label>
                             <label class="col-lg-2 control-table-label">Quantity</label>
                             <label class="col-lg-2 control-table-label">Unit Price</label>
                             <label class="col-lg-4 control-table-label">Warranty Length</label>
-                        </div>
-                        <div class="form-group" id="itemRow1">
-                            <label class="col-lg-2 control-label">Item #1</label>
-                            <div class="col-lg-2">
-                                <form:input path="items[0].name" type="text" placeholder="" value="" maxlength="50" class="form-control"/>
-                            </div>
-                            <div class="col-lg-2">
-                                <form:input path="items[0].quantity" type="text" placeholder="" value="" class="form-control"/>
-                            </div>
-                            <div class="col-lg-2">
-                                <form:input path="items[0].unitPrice" type="text" placeholder="" value="" class="form-control"/>
-                            </div>
-                            <div class="col-lg-2">
-                                <form:input path="items[0].warrantyLength" type="text" placeholder="" value="" class="form-control"/>
-                            </div>
-                            <div class="col-lg-2">
-                                <form:select id="items0.warrantyUnit" path="items[0].warrantyUnit" placeholder="" value="" class="form-control">
-                                    <option selected="selected" value="d">Day(s)</option>
-                                    <option value="m">Month(s)</option>
-                                    <option value="y">Year(s)</option>
-                                </form:select>
-                            </div>
                         </div>
                         <div class="form-group" id="receiptAddItem">
                             <div class="col-lg-offset-2 col-lg-10">

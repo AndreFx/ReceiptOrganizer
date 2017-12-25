@@ -316,11 +316,13 @@ public class ReceiptDaoImpl implements ReceiptDao {
         try {
             //Get all user receipts
             SqlParameterSource parameters = new MapSqlParameterSource("username", username).addValue("searchstring", searchString);
-            String countQuery = "SELECT COUNT(*) As Count " +
+            String countQuery = "SELECT COUNT(DISTINCT RECEIPT.ReceiptId) As Count " +
                     "FROM USER_RECEIPTS " +
                     "INNER JOIN RECEIPT " +
                     "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
-                    "WHERE Username = :username AND RECEIPT.Title LIKE :searchstring ";
+                    "INNER JOIN RECEIPT_ITEM " +
+                    "ON RECEIPT.ReceiptId = RECEIPT_ITEM.ReceiptId " +
+                    "WHERE Username = :username AND RECEIPT.Title LIKE :searchstring OR RECEIPT_ITEM.Name LIKE :searchstring ";
             result = this.jdbcTemplate.queryForObject(countQuery, parameters, new ReceiptCountRowMapper());
         } catch (DataAccessException e) {
             logger.error("Unable to get result size of search: " + e.getMessage());
@@ -374,11 +376,14 @@ public class ReceiptDaoImpl implements ReceiptDao {
             //Get all user receipts
             SqlParameterSource parameters = new MapSqlParameterSource("username", username).addValue("searchstring", searchString)
                     .addValue("startrow", start).addValue("numrows", numRows);
-            String query = "SELECT RECEIPT.ReceiptId, Title, Description, Date, ReceiptAmount " +
+
+            String query = "SELECT DISTINCT RECEIPT.ReceiptId, Title, Description, Date, ReceiptAmount " +
                     "FROM USER_RECEIPTS " +
                     "INNER JOIN RECEIPT " +
                     "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
-                    "WHERE Username = :username AND RECEIPT.Title LIKE :searchstring " +
+                    "LEFT OUTER JOIN RECEIPT_ITEM " +
+                    "ON RECEIPT.ReceiptId = RECEIPT_ITEM.ReceiptId " +
+                    "WHERE Username = :username AND RECEIPT.Title LIKE :searchstring OR RECEIPT_ITEM.Name LIKE :searchstring " +
                     "ORDER BY RECEIPT.Title " +
                     "OFFSET :startrow ROWS " +
                     "FETCH NEXT :numrows ROWS ONLY ";

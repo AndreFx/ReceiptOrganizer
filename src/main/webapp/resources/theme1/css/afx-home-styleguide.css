@@ -32,6 +32,15 @@ body.image-modal-open {
     overflow: hidden;
 }
 
+/* Styles for New Receipt Modal */
+.edit-item-delete-button, .new-item-delete-button {
+    float: right;
+}
+.delete-icon {
+    color: #f1f1f1;
+    font-weight: bold;
+}
+
 /* Style the Image Used to Trigger the Modal */
 .modal-image {
     border-radius: 5px;

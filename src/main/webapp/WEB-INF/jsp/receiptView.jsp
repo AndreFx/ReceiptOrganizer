@@ -53,7 +53,7 @@
     <script src="${receiptCommon}"></script>
     <script>
         //Allow receiptEdit.js to get current number of receipts
-        var editCurrentRowNum = ${receipt.items.size()};
+        var editCurrentRowNum = ${receipt.items.size()} + 1;
 
         $(document).ready(function() {
             $(function () {
@@ -96,17 +96,19 @@
                             <form:input path="date" id="editDate" type="text" placeholder="MM/dd/yyyy" value="" class="form-control"/>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="editItemRowNames">
                         <label class="col-lg-2 control-label">Receipt Items</label>
                         <label class="col-lg-2 control-table-label">Name</label>
                         <label class="col-lg-2 control-table-label">Quantity</label>
                         <label class="col-lg-2 control-table-label">Unit Price</label>
                         <label class="col-lg-4 control-table-label">Warranty Length</label>
                     </div>
-                    <!-- TODO Account for empty receiptitem lists. -->
                     <c:forEach items="${receipt.items}" var="receiptItem" varStatus="i">
                         <div class="form-group" id="editItemRow${i.index + 1}">
-                            <label class="col-lg-2 control-label">Item #${i.index + 1}</label>
+                            <label id="editItemDeleteLabel${i.index + 1}" class="col-lg-2 control-label item-label">Item #${i.index + 1}</label>
+                            <div id="editItemDeleteDiv${i.index + 1}" class="col-lg-2" style="display: none;">
+                                <button type="button" class="btn btn-danger edit-item-delete-button"><span id="close" class="delete-icon">&times;</span> Delete</button>
+                            </div>
                             <div class="col-lg-2">
                                 <form:input id="edititems${i.index}.name" path="items[${i.index}].name" type="text" placeholder="" value="${receiptItem.name}" maxlength="50" class="form-control"/>
                             </div>

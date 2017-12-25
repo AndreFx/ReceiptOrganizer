@@ -154,41 +154,7 @@ $(document).ready(function() {
         }
     });
 
-    $('input[name="items[0].name"]').rules('add', {
-        maxlength: 50,
-        messages: {
-            maxlength: "Item names must be under 50 characters"
-        }
-    });
-
-    $('input[name="items[0].quantity"]').rules('add', {
-        integer: true,
-        min: 0,
-        messages: {
-            integer: "Quantity must be a whole number",
-            min: "Quantity cannot be negative"
-        }
-    });
-
-    $('input[name="items[0].unitPrice"]').rules('add', {
-        number: true,
-        messages: {
-            number: "Unit Price must be a number"
-        }
-    });
-
-    $('input[name="items[0].warrantyLength"]').rules('add', {
-        integer: true,
-        min: 0,
-        messages: {
-            integer: "Warranty Length must be a whole number",
-            min: "Warranty Length cannot be negative"
-        }
-    });
-
     /* Multiselect and datepicker for create receipt form */
-
-    $("select[id='items0.warrantyUnit']").multiselect();
 
     $('#labels').multiselect({
         enableFiltering: true,
@@ -203,46 +169,65 @@ $(document).ready(function() {
 
     /* Add new item functionality for new receipt */
 
-    //TODO Validate data properly
-
-    //TODO Test with backend
-
-    //TODO Way to remove rows?
-
     var currentRowNum = 1;
+    var maxRowNum = 0;
 
     $('.sm-side').on('click', "#receiptAddItemBtn", function(event) {
         event.stopPropagation();
         console.log("Adding new item row in new receipt modal");
-        var row = $('#itemRow' + currentRowNum);
-        currentRowNum++;
 
         //Create copy of row
-        var newRow = row.clone().attr("id", "itemRow" + currentRowNum);
+        var newRow = $("<div class=\"form-group\" id=\"itemRow1\">\n" +
+            "        <label id=\"itemDeleteLabel1\" class=\"col-lg-2 control-label item-label\">Item #1</label>\n" +
+            "        <div id=\"itemDeleteDiv1\" class=\"col-lg-2\" style=\"display: none;\">\n" +
+            "            <button type=\"button\" class=\"btn btn-danger new-item-delete-button\"><span id=\"close\" class=\"delete-icon\">&times;</span> Delete</button>\n" +
+            "        </div>\n" +
+            "        <div class=\"col-lg-2\">\n" +
+            "            <input id=\"items0.name\" name=\"items[0].name\" type=\"text\" placeholder=\"\" value=\"\" maxlength=\"50\" class=\"form-control\"/>\n" +
+            "        </div>\n" +
+            "        <div class=\"col-lg-2\">\n" +
+            "            <input id=\"items0.quantity\" name=\"items[0].quantity\" type=\"text\" placeholder=\"\" value=\"0\" class=\"form-control\"/>\n" +
+            "        </div>\n" +
+            "        <div class=\"col-lg-2\">\n" +
+            "            <input id=\"items0.unitPrice\" name=\"items[0].unitPrice\" type=\"text\" placeholder=\"\" value=\"0.00\" class=\"form-control\"/>\n" +
+            "        </div>\n" +
+            "        <div class=\"col-lg-2\">\n" +
+            "            <input id=\"items0.warrantyLength\" name=\"items[0].warrantyLength\" type=\"text\" placeholder=\"\" value=\"0\" class=\"form-control\"/>\n" +
+            "        </div>\n" +
+            "        <div class=\"col-lg-2\">\n" +
+            "            <select id=\"items0.warrantyUnit\" name=\"items[0].warrantyUnit\" placeholder=\"\" value=\"\" class=\"form-control\">\n" +
+            "                <option selected=\"selected\" value=\"d\">Day(s)</option>\n" +
+            "                <option value=\"m\">Month(s)</option>\n" +
+            "                <option value=\"y\">Year(s)</option>\n" +
+            "            </select>\n" +
+            "        </div>\n" +
+            "    </div>");
 
         //Clear and update values of row
+        $(newRow).attr("id", "itemRow" + currentRowNum);
+        $(newRow).find("#itemDeleteLabel1").attr("id", "itemDeleteLabel" + currentRowNum);
+        $(newRow).find("#itemDeleteDiv1").attr("id", "itemDeleteDiv" + currentRowNum);
         $(newRow).find('label.control-label').text("Item #" + currentRowNum);
-        $(newRow).find("input[id='items" + (currentRowNum - 2) + ".name']").attr("id", "items" + (currentRowNum - 1) + ".name")
-            .attr("name", "items[" + (currentRowNum - 1) + "].name").val("");
-        $(newRow).find("input[id='items" + (currentRowNum - 2) + ".quantity']").attr("id", "items" + (currentRowNum - 1) + ".quantity")
-            .attr("name", "items[" + (currentRowNum - 1) + "].quantity").val("0");
-        $(newRow).find("input[id='items" + (currentRowNum - 2) + ".unitPrice']").attr("id", "items" + (currentRowNum - 1) + ".unitPrice")
-            .attr("name", "items[" + (currentRowNum - 1) + "].unitPrice").val("");
-        $(newRow).find("input[id='items" + (currentRowNum - 2) + ".warrantyLength']").attr("id", "items" + (currentRowNum - 1) + ".warrantyLength")
-            .attr("name", "items[" + (currentRowNum - 1) + "].warrantyLength").val("0");
-        $(newRow).find("select[id='items" + (currentRowNum - 2) + ".warrantyUnit']").attr("id", "items" + (currentRowNum - 1) + ".warrantyUnit")
-            .attr("name", "items[" + (currentRowNum - 1) + "].warrantyUnit").next('div').remove();
-
-        var temp = $(newRow).find("select[id='items" + (currentRowNum - 1) + ".warrantyUnit']");
-        var newParent = $(newRow).find("select[id='items" + (currentRowNum - 1) + ".warrantyUnit']").parent().parent();
-        temp.parent().remove();
-        newParent.append(temp);
+        $(newRow).find("input[id='items0.name']").attr("id", "items" + (currentRowNum - 1) + ".name")
+            .attr("name", "items[" + (currentRowNum - 1) + "].name");
+        $(newRow).find("input[id='items0.quantity']").attr("id", "items" + (currentRowNum - 1) + ".quantity")
+            .attr("name", "items[" + (currentRowNum - 1)+ "].quantity");
+        $(newRow).find("input[id='items0.unitPrice']").attr("id", "items" + (currentRowNum - 1) + ".unitPrice")
+            .attr("name", "items[" + (currentRowNum - 1) + "].unitPrice");
+        $(newRow).find("input[id='items0.warrantyLength']").attr("id", "items" + (currentRowNum - 1) + ".warrantyLength")
+            .attr("name", "items[" + (currentRowNum - 1) + "].warrantyLength");
+        $(newRow).find("select[id='items0.warrantyUnit']").attr("id", "items" + (currentRowNum - 1) + ".warrantyUnit")
+            .attr("name", "items[" + (currentRowNum - 1) + "].warrantyUnit");
 
         //Enable multiselect
         $(newRow).find("select[id='items" + (currentRowNum - 1) + ".warrantyUnit']").multiselect();
 
         //Insert row
-        row.after(newRow);
+        if (currentRowNum == 1) {
+            $(newRow).insertAfter("#itemRowNames");
+        } else {
+            $(newRow).insertAfter("#itemRow" + (currentRowNum - 1));
+        }
 
         //Enable validation
         $('input[name="items[' + (currentRowNum - 1) + '].name"]').rules('add', {
@@ -276,8 +261,48 @@ $(document).ready(function() {
                 min: "Warranty Length cannot be negative"
             }
         });
+
+        //Only bind delete button hovers once
+        //This works becuase it will never create handlers for a currentRowNum more than once.
+        if (currentRowNum > maxRowNum) {
+            createItemDeleteButtonHandlers(".sm-side", "itemDeleteLabel", "itemDeleteDiv", currentRowNum);
+            maxRowNum = currentRowNum;
+        }
+
+        currentRowNum++;
     });
 
+    /* Delete item functionality */
+
+    //Delete button functionality
+    $('body').on("click", ".new-item-delete-button", function(event) {
+        var rowNum = Number($(this).parent().parent().attr('id').slice(-1));
+        console.log("Deleting item row " + rowNum);
+
+        //delete row
+        $(this).parent().parent().remove();
+
+        //Update rows after rowNum
+        decrementItemRowAttributes(rowNum + 1);
+        currentRowNum--;
+    });
+
+    function decrementItemRowAttributes(rowNumStart) {
+        var i = rowNumStart;
+
+        //Start after deleted row
+        for (i; i < currentRowNum; i++) {
+            var row = $("#itemRow" + i);
+
+            //Decrease the value of all attributes of the rows
+            $(row).attr('id', "itemRow" + (i - 1));
+            $(row).find("label.control-label").text("Item #" + (i - 1));
+
+            //reassign id
+            $(row).find("#itemDeleteLabel" + i).attr("id", "itemDeleteLabel" + (i - 1));
+            $(row).find("#itemDeleteDiv" + i).attr("id", "itemDeleteDiv" + (i - 1));
+        }
+    }
 
     /* Edit functionality for labels */
 
@@ -601,12 +626,12 @@ $(document).ready(function() {
         $('#multipartFile').parent().next().html("No file chosen");
 
         //Clear additional rows for items
-        for (var i = 2; i <= currentRowNum; i++) {
+        for (var i = 0; i <= currentRowNum; i++) {
             $('#itemRow' + i).remove();
         }
 
         //Reset rowNum
-        currentRowNum = 1;
+        currentRowNum = 0;
 
         //Clear any user input
         $(this).find('form')[0].reset();
