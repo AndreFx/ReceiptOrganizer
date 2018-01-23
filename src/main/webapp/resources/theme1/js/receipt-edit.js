@@ -89,7 +89,7 @@ $(document).ready(function() {
     for (var i = 0; i < editCurrentRowNum; i++) {
         $("select[id='edititems" + i + ".warrantyUnit']").multiselect();
 
-        createItemDeleteButtonHandlers(".inbox-body", "editItemDeleteLabel", "editItemDeleteDiv", i);
+        createItemDeleteButtonHandlers("body", "editItemDeleteLabel", "editItemDeleteDiv", i);
 
         $('input[name="edititems[' + i + '].name"]').rules('add', {
             maxlength: 50,
@@ -128,7 +128,7 @@ $(document).ready(function() {
 
     var maxRowNum = editCurrentRowNum - 1;
 
-    $('.inbox-body').on('click', "#editReceiptAddItemBtn", function(event) {
+    $('.content-body').on('click', "#editReceiptAddItemBtn", function(event) {
         event.stopPropagation();
         console.log("Adding new item row " + editCurrentRowNum + " in edit receipt view");
 
@@ -136,7 +136,7 @@ $(document).ready(function() {
         var newRow = $("<div class=\"form-group\" id=\"editItemRow0\">\n" +
             "        <label id=\"editItemDeleteLabel1\" class=\"col-lg-2 control-label item-label\">Item #1</label>\n" +
             "        <div id=\"editItemDeleteDiv1\" class=\"col-lg-2\" style=\"display: none;\">\n" +
-            "            <button type=\"button\" class=\"btn btn-danger edit-item-delete-button\"><span id=\"close\" class=\"delete-icon\">&times;</span> Delete</button>\n" +
+            "            <button type=\"button\" class=\"btn btn-send edit-item-delete-button\"><span id=\"close\" class=\"delete-icon\">&times;</span> Delete</button>\n" +
             "        </div>\n" +
             "        <div class=\"col-lg-2\">\n" +
             "            <input id=\"edititems0.name\" name=\"items[0].name\" type=\"text\" placeholder=\"\" value=\"\" maxlength=\"50\" class=\"form-control\"/>\n" +
@@ -221,7 +221,7 @@ $(document).ready(function() {
         //Only bind delete button hovers once
         //This works becuase it will never create handlers for a currentRowNum more than once.
         if (editCurrentRowNum > maxRowNum) {
-            createItemDeleteButtonHandlers(".inbox-body", "editItemDeleteLabel", "editItemDeleteDiv", editCurrentRowNum);
+            createItemDeleteButtonHandlers("body", "editItemDeleteLabel", "editItemDeleteDiv", editCurrentRowNum);
             maxRowNum = editCurrentRowNum;
         }
 
@@ -231,7 +231,7 @@ $(document).ready(function() {
     /* Delete item functionality */
 
     //Delete button functionality
-    $('body').on("click", ".edit-item-delete-button", function(event) {
+    $('.content-body').on("click", ".edit-item-delete-button", function(event) {
         var rowNum = Number($(this).parent().parent().attr('id').slice(-1));
         console.log("Deleting item row " + rowNum);
 

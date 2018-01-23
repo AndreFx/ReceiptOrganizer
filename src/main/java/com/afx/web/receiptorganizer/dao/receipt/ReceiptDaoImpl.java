@@ -21,6 +21,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -54,6 +55,10 @@ public class ReceiptDaoImpl implements ReceiptDao {
     public void addReceipt(String username, Receipt receipt) {
         TransactionDefinition def = new DefaultTransactionDefinition();
         TransactionStatus status = transactionManager.getTransaction(def);
+
+        if (receipt.getReceiptAmount() == null) {
+            receipt.setReceiptAmount(new BigDecimal(0.00));
+        }
 
         try {
             //Insert into RECEIPT table first.
@@ -119,6 +124,10 @@ public class ReceiptDaoImpl implements ReceiptDao {
     public void editReceipt(String username, Receipt receipt) {
         TransactionDefinition def = new DefaultTransactionDefinition();
         TransactionStatus status = transactionManager.getTransaction(def);
+
+        if (receipt.getReceiptAmount() == null) {
+            receipt.setReceiptAmount(new BigDecimal(0.00));
+        }
 
         try {
             String sql;
@@ -235,7 +244,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
                     item.setItemNumber(rs.getInt(1));
                     item.setName(rs.getString(2));
                     item.setQuantity(rs.getInt(3));
-                    item.setUnitPrice(rs.getFloat(4));
+                    item.setUnitPrice(rs.getBigDecimal(4));
                     item.setWarrantyLength(rs.getInt(5));
                     item.setWarrantyUnit(rs.getString(6));
                     return item;
@@ -320,7 +329,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
                     "FROM USER_RECEIPTS " +
                     "INNER JOIN RECEIPT " +
                     "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
-                    "INNER JOIN RECEIPT_ITEM " +
+                    "LEFT OUTER JOIN RECEIPT_ITEM " +
                     "ON RECEIPT.ReceiptId = RECEIPT_ITEM.ReceiptId " +
                     "WHERE Username = :username AND RECEIPT.Title LIKE :searchstring OR RECEIPT_ITEM.Name LIKE :searchstring ";
             result = this.jdbcTemplate.queryForObject(countQuery, parameters, new ReceiptCountRowMapper());
@@ -332,14 +341,14 @@ public class ReceiptDaoImpl implements ReceiptDao {
         return result;
     }
 
-    public int getTotalNumUserReceiptsForLabel(String username, String label) {
+    public int getTotalNumUserReceiptsForLabels(String username, List<String> labels) {
         int result;
 
         try {
             SqlParameterSource parameters;
             String countQuery;
 
-            if (label == null) {
+            if (labels.size() == 0) {
                 //Get all user receipts
                 parameters = new MapSqlParameterSource("username", username);
                 countQuery = "SELECT Count(*) As Count " +
@@ -348,16 +357,16 @@ public class ReceiptDaoImpl implements ReceiptDao {
                         "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
                         "WHERE Username = :username ";
             } else {
-                //Get receipts for specifc label
-                parameters = new MapSqlParameterSource("username", username).addValue("labelname", label);
-                countQuery = "SELECT COUNT(*) As Count " +
+                //Get receipts for specifc labels
+                parameters = new MapSqlParameterSource("username", username).addValue("labelnames", labels);
+                countQuery = "SELECT COUNT(DISTINCT RECEIPT.ReceiptId) As Count " +
                         "FROM USER_RECEIPTS " +
                         "INNER JOIN RECEIPT " +
                         "ON USER_RECEIPTS.ReceiptId = RECEIPT.[ReceiptId] " +
                         "INNER JOIN RECEIPT_LABELS " +
                         "ON RECEIPT.ReceiptId = RECEIPT_LABELS.ReceiptId " +
                         "WHERE RECEIPT_LABELS.Username = :username " +
-                        "AND LabelName = :labelname ";
+                        "AND LabelName IN (:labelnames) ";
             }
             result = this.jdbcTemplate.queryForObject(countQuery, parameters, new ReceiptCountRowMapper());
         } catch(DataAccessException e) {
@@ -398,13 +407,13 @@ public class ReceiptDaoImpl implements ReceiptDao {
     }
 
     //TODO Add items to show on home screen.
-    public List<Receipt> getRangeUserReceiptsForLabel(String username, String label, int start, int numRows) {
+    public List<Receipt> getRangeUserReceiptsForLabels(String username, List<String> labels, int start, int numRows) {
         List<Receipt> receipts;
 
         try {
             SqlParameterSource parameters;
             String query;
-            if (label == null) {
+            if (labels.size() == 0) {
                 //Get all user receipts
                 parameters = new MapSqlParameterSource("username", username)
                         .addValue("startrow", start).addValue("numrows", numRows);
@@ -419,16 +428,16 @@ public class ReceiptDaoImpl implements ReceiptDao {
             } else {
                 //Get receipts for specifc label
                 parameters = new MapSqlParameterSource("username", username)
-                        .addValue("labelname", label).addValue("startrow", start)
+                        .addValue("labelnames", labels).addValue("startrow", start)
                         .addValue("numrows", numRows);
-                query = "SELECT RECEIPT.ReceiptId, Title, Description, Date, ReceiptAmount  " +
+                query = "SELECT DISTINCT RECEIPT.ReceiptId, Title, Description, Date, ReceiptAmount  " +
                         "FROM USER_RECEIPTS " +
                         "INNER JOIN RECEIPT " +
                         "ON USER_RECEIPTS.ReceiptId = RECEIPT.[ReceiptId] " +
                         "INNER JOIN RECEIPT_LABELS " +
                         "ON RECEIPT.ReceiptId = RECEIPT_LABELS.ReceiptId " +
                         "WHERE RECEIPT_LABELS.Username = :username " +
-                        "AND LabelName = :labelname " +
+                        "AND LabelName IN (:labelnames) " +
                         "ORDER BY RECEIPT.Title " +
                         "OFFSET :startrow ROWS " +
                         "FETCH NEXT :numrows ROWS ONLY ";

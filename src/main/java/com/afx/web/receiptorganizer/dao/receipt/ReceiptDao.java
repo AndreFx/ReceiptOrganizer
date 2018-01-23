@@ -21,10 +21,10 @@ public interface ReceiptDao {
 
     int getTotalNumUserReceiptsFromString(String username, String searchString);
 
-    int getTotalNumUserReceiptsForLabel(String username, String label);
+    int getTotalNumUserReceiptsForLabels(String username, List<String> labels);
 
     List<Receipt> findRangeUserReceiptsFromString(String username, String searchString, int start, int numRows);
 
-    List<Receipt> getRangeUserReceiptsForLabel(String username, String label, int start, int numRows);
+    List<Receipt> getRangeUserReceiptsForLabels(String username, List<String> labels, int start, int numRows);
 
 }

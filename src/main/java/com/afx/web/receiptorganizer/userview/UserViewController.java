@@ -26,6 +26,11 @@ public class UserViewController {
     private static Logger logger = LogManager.getLogger(UserViewController.class);
 
     /*
+    Constants
+     */
+    private static final int MAX_ACTIVE_LABELS = 5;
+
+    /*
     Private fields
      */
 
@@ -40,28 +45,34 @@ public class UserViewController {
      */
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String initForm(@RequestParam(value = "label", required = false) String label, @RequestParam(value = "page", required = false) Integer page,
+    public String initForm(@RequestParam(value = "requestLabels", required = false) List<String> requestLabels, @RequestParam(value = "page", required = false) Integer page,
                            @ModelAttribute("user") User user, ModelMap model) {
         logger.debug("Serving user: " + user.getUsername() + " request for home screen.");
-        List<Receipt> receipts = null;
+        List<Receipt> receipts = new ArrayList<>();
+        if (requestLabels == null) {
+            requestLabels = new ArrayList<>();
+        } else if (requestLabels.size() > MAX_ACTIVE_LABELS) {
+            //TODO Send user message about max number of active labels
+            requestLabels.remove(MAX_ACTIVE_LABELS);
+        }
 
-        //All user labels
-        List<Label> labels = this.labelDao.getAllUserLabels(user.getUsername());
-        int totalNumReceipts = this.receiptDao.getTotalNumUserReceiptsForLabel(user.getUsername(), label);
+        //Get all user labels and receipts associated with requestLabels
+        List<Label> userLabels = this.labelDao.getAllUserLabels(user.getUsername());
+        int totalNumReceipts = this.receiptDao.getTotalNumUserReceiptsForLabels(user.getUsername(), requestLabels);
         if (page == null || page < 1 || page > Math.ceil(totalNumReceipts / (float) user.getPaginationSize())) {
             page = 1;
         }
         if (totalNumReceipts != 0) {
-            receipts = this.receiptDao.getRangeUserReceiptsForLabel(user.getUsername(), label,
+            receipts = this.receiptDao.getRangeUserReceiptsForLabels(user.getUsername(), requestLabels,
                     user.getPaginationSize() * (page - 1), user.getPaginationSize());
         }
 
-        model.addAttribute("labels", labels);
+        model.addAttribute("userLabels", userLabels);
         model.addAttribute("receipts", receipts);
         model.addAttribute("newReceipt", new Receipt());
         model.addAttribute("newLabel", new Label());
-        model.addAttribute("currentLabel", label);
-        model.addAttribute("searchString", null);
+        model.addAttribute("activeLabels", requestLabels);
+        model.addAttribute("searchString", "");
         model.addAttribute("numPages", Math.ceil(totalNumReceipts / (float) user.getPaginationSize()));
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", user.getPaginationSize());
@@ -75,7 +86,7 @@ public class UserViewController {
                                  @ModelAttribute("user") User user, ModelMap model) {
         logger.debug("User sent search string: " + searchString);
 
-        List<Receipt> receipts = null;
+        List<Receipt> receipts = new ArrayList<>();
         StringBuilder temp = new StringBuilder(searchString);
         temp.insert(0, '%');
         temp.append('%');
@@ -91,11 +102,11 @@ public class UserViewController {
                     temp.toString(), user.getPaginationSize() * (page - 1), user.getPaginationSize());
         }
 
-        model.addAttribute("labels", labels);
+        model.addAttribute("userLabels", labels);
         model.addAttribute("receipts", receipts);
         model.addAttribute("newReceipt", new Receipt());
         model.addAttribute("newLabel", new Label());
-        model.addAttribute("currentLabel", null);
+        model.addAttribute("activeLabels", new ArrayList<String>());
         model.addAttribute("numPages", Math.ceil(totalNumReceipts / (float) user.getPaginationSize()));
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", user.getPaginationSize());

@@ -2,6 +2,7 @@ package com.afx.web.receiptorganizer.types;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,8 @@ public class Receipt {
     private Integer receiptId;
     private String title;
     private Date date;
-    private Float receiptAmount;
+    private BigDecimal receiptAmount;
+    private String receiptAmountCurrency;
     private String description;
     private String[] labels;
     private List<ReceiptItem> items = new ArrayList<>();
@@ -28,6 +30,14 @@ public class Receipt {
     private byte[] receiptThumbnail;
     private String MIME;
     private MultipartFile multipartFile;
+
+    /*
+    Constructors
+     */
+
+    public Receipt() {
+        receiptAmount = new BigDecimal(0.00);
+    }
 
     /*
     Public methods
@@ -63,12 +73,20 @@ public class Receipt {
         this.date = date;
     }
 
-    public Float getReceiptAmount() {
+    public BigDecimal getReceiptAmount() {
         return receiptAmount;
     }
 
-    public void setReceiptAmount(Float receiptAmount) {
+    public void setReceiptAmount(BigDecimal receiptAmount) {
         this.receiptAmount = receiptAmount;
+    }
+
+    public String getReceiptAmountCurrency() {
+        return receiptAmountCurrency;
+    }
+
+    public void setReceiptAmountCurrency(String receiptAmountCurrency) {
+        this.receiptAmountCurrency = receiptAmountCurrency;
     }
 
     public List<ReceiptItem> getItems() {

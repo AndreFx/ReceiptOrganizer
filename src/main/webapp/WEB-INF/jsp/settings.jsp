@@ -11,6 +11,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix = "c"%>
 <html>
 <head>
+    <!-- SITE URLS -->
     <spring:url var="baseHomeUrl" value="/home/"/>
     <spring:url var="searchUrl" value="/home/search"/>
     <spring:url var="logoutUrl" value="/logout"/>
@@ -18,27 +19,34 @@
     <spring:url var="settingsUpdateUrl" value="/users/settings/update"/>
     <spring:url value="/users/getUserPhoto?thumbnail=false" var="userPhotoView"/>
 
+    <!-- FONTS -->
+    <spring:url value="http://fonts.googleapis.com/css?family=Varela+Round" var="googlefonts"/>
+
+    <!-- STYLESHEETS -->
     <spring:url value="/resources/css/afx-home-styleguide.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
     <spring:url value="/resources/css/bootstrap-multiselect.css" var="multiselectcss"/>
     <spring:url value="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" var="fontawesomecss"/>
     <spring:url value="/resources/css/jquery-ui.css" var="uicss"/>
+    <spring:url value="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css" var="sidebarScrollCss"/>
 
+    <!-- JAVASCRIPT -->
     <spring:url value="/resources/js/bootstrap.min.js" var="bootstrapjs"/>
     <spring:url value="/resources/js/jquery-3.2.1.min.js" var="jquery"/>
     <spring:url value="/resources/js/bootstrap-multiselect.js" var="multiselectjs"/>
     <spring:url value="/resources/js/jquery.validate.min.js" var="validate"/>
     <spring:url value="/resources/js/additional-methods.min.js" var="addvalidate"/>
     <spring:url value="/resources/js/jquery-ui.min.js" var="ui"/>
-    <spring:url value="/resources/js/receiptOrganizerCommon.js" var="receiptCommon"/>
-    <spring:url value="/resources/js/userSettings.js" var="userSettings"/>
-    <spring:url value="/resources/js/receiptOrganizerSidebar.js" var="sidebar"/>
+    <spring:url value="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js" var="sidebarScroll"/>
+    <spring:url value="/resources/js/common.js" var="receiptCommon"/>
+    <spring:url value="/resources/js/settings.js" var="userSettings"/>
+    <spring:url value="/resources/js/sidebar.js" var="sidebar"/>
     <link rel="stylesheet" href="${fontawesomecss}"/>
+    <link rel="stylesheet" type="text/css" href="${googlefonts}">
     <link rel="stylesheet" href="${bootstrap}"/>
     <link rel="stylesheet" href="${multiselectcss}"/>
     <link rel="stylesheet" href="${uicss}"/>
-
-    <!-- My stylesheet last -->
+    <link rel="stylesheet" href="${sidebarScrollCss}"/>
     <link rel="stylesheet" href="${styleguide}">
 
     <script src="${jquery}"></script>
@@ -48,6 +56,7 @@
     <script src="${addvalidate}"></script>
     <script src="${ui}"></script>
     <script src="${receiptCommon}"></script>
+    <script src="${sidebarScroll}"></script>
     <script src="${sidebar}"></script>
     <script src="${userSettings}"></script>
     <script>
@@ -66,13 +75,13 @@
     <title>User Settings</title>
 </head>
 <body>
-    <div class="mail-box">
-        <jsp:include page="/WEB-INF/jsp/userLabelsAside.jsp">
+    <div class="wrapper">
+        <jsp:include page="/WEB-INF/jsp/sidebar.jsp">
             <jsp:param name="baseHomeUrl" value="${baseHomeUrl}"/>
         </jsp:include>
-        <aside class="lg-side">
-            <jsp:include page="rightNavbar.jsp"/>
-            <div class="inbox-body">
+        <div id="content">
+            <jsp:include page="navbar.jsp"/>
+            <div class="content-body">
                 <img class="receipt-edit-image modal-image" alt="${sessionScope.user.username} Image" src='<c:out value="${userPhotoView}"/>'>
                 <form:form autocomplete="off" modelAttribute="user" method="post" action="${settingsUpdateUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-group alert alert-danger center-full-width error-container" id="userSettingsErrorContainer">
@@ -123,13 +132,13 @@
                     </div>
                 </form:form>
             </div>
-        </aside>
-        <div class="snackbar">
-            <span id="snackbarText"></span>
+            <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
         </div>
-        <jsp:include page="/WEB-INF/jsp/imageModal.jsp"/>
     </div>
-    <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
+    <div class="snackbar">
+        <span id="snackbarText"></span>
+    </div>
+    <jsp:include page="/WEB-INF/jsp/image-modal.jsp"/>
 </body>
 </html>
 

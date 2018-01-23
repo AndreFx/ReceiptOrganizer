@@ -1,5 +1,10 @@
 $(document).ready(function() {
 
+    /* Sidebar scrolling */
+    $("#sidebar").mCustomScrollbar({
+        theme: "minimal"
+    });
+
     var defaultLabelNotifTimeout = 10000;
 
     /* Snackbar notifications */
@@ -172,7 +177,7 @@ $(document).ready(function() {
     var currentRowNum = 1;
     var maxRowNum = 0;
 
-    $('.sm-side').on('click', "#receiptAddItemBtn", function(event) {
+    $('body').on('click', "#receiptAddItemBtn", function(event) {
         event.stopPropagation();
         console.log("Adding new item row in new receipt modal");
 
@@ -180,7 +185,7 @@ $(document).ready(function() {
         var newRow = $("<div class=\"form-group\" id=\"itemRow1\">\n" +
             "        <label id=\"itemDeleteLabel1\" class=\"col-lg-2 control-label item-label\">Item #1</label>\n" +
             "        <div id=\"itemDeleteDiv1\" class=\"col-lg-2\" style=\"display: none;\">\n" +
-            "            <button type=\"button\" class=\"btn btn-danger new-item-delete-button\"><span id=\"close\" class=\"delete-icon\">&times;</span> Delete</button>\n" +
+            "            <button type=\"button\" class=\"btn btn-send new-item-delete-button\"><span id=\"close\" class=\"delete-icon\">&times;</span> Delete</button>\n" +
             "        </div>\n" +
             "        <div class=\"col-lg-2\">\n" +
             "            <input id=\"items0.name\" name=\"items[0].name\" type=\"text\" placeholder=\"\" value=\"\" maxlength=\"50\" class=\"form-control\"/>\n" +
@@ -265,7 +270,7 @@ $(document).ready(function() {
         //Only bind delete button hovers once
         //This works becuase it will never create handlers for a currentRowNum more than once.
         if (currentRowNum > maxRowNum) {
-            createItemDeleteButtonHandlers(".sm-side", "itemDeleteLabel", "itemDeleteDiv", currentRowNum);
+            createItemDeleteButtonHandlers("body", "itemDeleteLabel", "itemDeleteDiv", currentRowNum);
             maxRowNum = currentRowNum;
         }
 
@@ -333,7 +338,7 @@ $(document).ready(function() {
             "                            <td class=\"vertical-align-text label-name\"><i class=\"fa fa-sign-blank text-info\"></i><span>" + labelName + "</span></td>\n" +
             "                            <td class=\"vertical-align-text menu\">\n" +
             "                                <div class=\"dropdown\">\n" +
-            "                                    <a class=\"dropdown-toggle full-width\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
+            "                                    <a class=\"dropdown-toggle label-dropdown-toggle full-width\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
             "                                        <i class=\"fa fa-ellipsis-v menu-icon\" aria-hidden=\"true\"></i>\n" +
             "                                    </a>\n" +
             "                                    <ul class=\"dropdown-menu dropdown-menu-right\">\n" +
@@ -514,7 +519,7 @@ $(document).ready(function() {
     $('.dropdown-item-edit').click(editClickEvent);
 
     //Cancel edit button functionality. Must use .on because the button is dynamically created.
-    $('.sm-side').on('click', "#stopEdit", function(event) {
+    $('#sidebar').on('click', "#stopEdit", function(event) {
         //Delete form, show original li
         console.log("Canceling edit action.");
         event.stopPropagation();
@@ -526,7 +531,7 @@ $(document).ready(function() {
     });
 
     //AJAX Submission for editing a label
-    $('.sm-side').on('submit', "#editor", function(event) {
+    $('#sidebar').on('submit', "#editor", function(event) {
         event.preventDefault();
         var success = false;
 

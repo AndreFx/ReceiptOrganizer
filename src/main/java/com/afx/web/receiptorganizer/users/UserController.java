@@ -20,7 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -149,7 +148,7 @@ public class UserController {
         //All user labels
         List<Label> labels = this.labelDao.getAllUserLabels(user.getUsername());
 
-        model.addAttribute("labels", labels);
+        model.addAttribute("userLabels", labels);
         model.addAttribute("newReceipt", new Receipt());
         model.addAttribute("newLabel", new Label());
 

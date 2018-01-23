@@ -1,4 +1,757 @@
-/* Utilities */
+/*------------------------------------------------------------------
+[Main Stylesheet]
+
+Project     : AFX
+Version     : 1.0
+-------------------------------------------------------------------*/
+/*------------------------------------------------------------------
+[Table of contents]
+
+1. Wrapper Styles
+2. Navbar Styles
+3. Sidebar Styles
+4. Content
+5. Form
+6. Footer
+7. Modal
+8. Snackbar
+9. MediaQueries
+10.Misc
+-------------------------------------------------------------------*/
+
+/* ---------------------------------------------------
+    WRAPPER STYLES
+----------------------------------------------------- */
+.wrapper {
+    display: flex;
+}
+
+/* ---------------------------------------------------
+    NAVBAR STYLES
+----------------------------------------------------- */
+.navbar {
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+.navbar h3 {
+    display: inline-block;
+    font-weight: 300;
+    margin: 0;
+    padding-top: 6px;
+}
+.hamburger-icon {
+    padding-right: 5px;
+}
+ul.nav li form {
+    margin-bottom: 0;
+}
+.navbar-ctl {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+#sidebarCollapse {
+    background-color: #bb0000;
+    color: #fff;
+    height: 40px;
+    padding: 0 20px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+#sr-input {
+    background-color: #bb0000;
+    border: medium none;
+    border-radius: 4px 0 0 4px;
+    box-shadow: none;
+    color: #ffffff;
+    float: left;
+    height: 40px;
+    padding: 0 10px;
+}
+#sr-input::placeholder {
+    color: #ffffff;
+}
+#sr-btn {
+    background-color: #bb0000;
+    border: medium none;
+    border-radius: 0 0 0 0;
+    color: #fff;
+    height: 40px;
+    padding: 0 20px;
+}
+#logout-btn {
+    background-color: #bb0000;
+    border: medium none;
+    border-radius: 0 0 0 0;
+    color: #fff;
+    height: 40px;
+    padding: 0 20px;
+}
+#settings-btn {
+    background-color: #bb0000;
+    border: medium none;
+    border-radius: 0 4px 4px 0;
+    color: #fff;
+    height: 40px;
+    padding: 0 20px;
+}
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+/**
+Sidebar Collapsing support
+ */
+#sidebar {
+    background: #bb0000;
+    color: #ffffff;
+    border-radius: 4px 0 0 4px;
+    width: 300px;
+    height: 100vh;
+    transition: all 0.3s;
+    position: fixed;
+    z-index: 1;
+}
+#sidebar.active {
+    margin-left: -300px;
+}
+
+/**
+Sidebar header
+ */
+#sidebar .sidebarHeader {
+    padding: 20px;
+    background: #910000;
+}
+#sidebar .sidebarHeader h3 {
+    margin-top: 0;
+}
+.home-link, .home-link:hover, .home-link:focus {
+    color: #ffffff;
+    text-decoration: none;
+    padding-left: 10px;
+}
+
+/**
+User avatar styles
+ */
+.user-head .avatar {
+    float: left;
+    width: 65px;
+}
+.user-head .avatar img {
+    border-radius: 4px;
+}
+.user-head .username {
+    display: inline-block;
+    margin: 0 0 0 10px;
+}
+.user-head .username h5 {
+    font-size: 14px;
+    font-weight: 300;
+    margin-bottom: 0;
+    margin-top: 15px;
+}
+.user-head .username h5 a {
+    color: #ffffff;
+}
+.user-head .username span a {
+    color: #ffffff;
+    font-size: 12px;
+}
+
+/**
+Buttons
+ */
+.btn-new-receipt, .btn-new-receipt:hover, .btn-new-receipt:focus {
+    background: #ffffff;
+    color: #bb0000;
+    padding: 12px 0;
+    text-align: center;
+    width: 100%;
+}
+.btn-save-label-edit, .btn-save-label-edit:hover, .btn-save-label-edit:focus {
+    background: #ffffff;
+    color: #bb0000;
+    border: solid 1px;
+    padding: 5px 11px;
+}
+.btn-cancel-label-edit, .btn-cancel-label-edit:hover, .btn-cancel-label-edit:focus {
+    color: #ffffff;
+    background: #910000;
+}
+
+/**
+Labels list
+ */
+.label-divider {
+    border-bottom: 1px solid #610000;
+}
+.label-name {
+    width: 80%;
+}
+.menu {
+    text-align: center;
+}
+.labels-title-container {
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+}
+.labels-title {
+    display: inline-block;
+}
+.table-label {
+    margin-bottom: 0;
+}
+.table-label tbody tr td {
+    border-top: 0;
+}
+div#labelEditErrorContainer {
+    font-size: 14px;
+    margin-bottom: 0;
+}
+ul.labels-info li > a[data-toggle="collapse"] {
+    position: relative;
+}
+ul.labels-info li > a[aria-expanded="false"]::before, ul.labels-info li > a[aria-expanded="true"]::before {
+    content: '\e259';
+    display: block;
+    position: absolute;
+    right: 20px;
+    font-family: 'Glyphicons Halflings';
+}
+ul.labels-info li > a[aria-expanded="true"]::before {
+    content: '\e260';
+    font-family: 'Glyphicons Halflings';
+}
+ul.labels-info li.active > a {
+    background: #910000;
+    color: #ffffff;
+    font-size: 18px;
+}
+ul.labels-info > li > a {
+    display: block;
+}
+ul.labels-info li a:hover, ul.labels-info li a:focus {
+    background: #910000;
+}
+ul.labels-info li a:focus {
+    outline: 0px;
+}
+ul.labels-info li h4 {
+    color: #ffffff;
+    font-size: 13px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    text-transform: uppercase;
+}
+ul.labels-info li {
+    margin: 0;
+}
+ul.labels-info li td i {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+.table-label tbody tr td .menu-icon:hover {
+    cursor: pointer;
+}
+.table-label tbody tr td.label-name:hover {
+    cursor: default;
+}
+/* Label row default colors */
+ul.labels-info li.nav-item tr td {
+    color: #ffffff;
+}
+ul.labels-info li.nav-item {
+    background: #bb0000;
+}
+ul.labels-info li.nav-item.active {
+    background: #910000;
+}
+ul.labels-info li.nav-item.active a.label-dropdown-toggle {
+    color: #910000;
+    background: #910000;
+}
+ul.labels-info li.nav-item a.label-dropdown-toggle {
+    color: #bb0000;
+    background: #bb0000;
+}
+li#editor tr {
+    background: #ffffff;
+}
+/* Label row hover colors */
+ul.labels-info li.nav-item:hover tr {
+     background: #ffffff;
+}
+ul.labels-info li.nav-item.active:hover tr {
+    background: #910000;
+}
+ul.labels-info li.nav-item:not(.active):hover tr td {
+    color: #bb0000;
+}
+ul.labels-info li.nav-item:hover a.label-dropdown-toggle {
+    color: #bb0000;
+    background: #ffffff;
+}
+ul.labels-info li.nav-item.active:hover a.label-dropdown-toggle {
+    background: #910000;
+    color: #ffffff;
+}
+.clickable-row, a.label-dropdown-toggle {
+    transition: all 0.3s;
+}
+
+/* ---------------------------------------------------
+    CONTENT STYLES
+----------------------------------------------------- */
+
+/**
+Styles for hiding sidebar and expanding content
+ */
+#content {
+    background: rgb(250, 250, 250);
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-height: 100vh;
+    width: calc(100% - 300px);
+    padding: 40px;
+    transition: all 0.3s
+}
+#content.active {
+    width: 100%;
+}
+.content-body {
+    padding: 20px;
+}
+
+/**
+Pagination
+ */
+.pagination {
+   margin: 0 !important;
+}
+.pagination > li.active > a, .pagination > li.active > a:hover {
+    background: #bb0000;
+    border-color: #bb0000;
+}
+.pagination > li:not(.active):not(.disabled) > a {
+    color: #bb0000;
+}
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #bb0000;
+    border-color: #bb0000;
+}
+.pagination-number {
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.pagination-nav {
+    display: inline-block;
+    vertical-align: middle;
+}
+.page-option {
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.page-option .chk-all, .page-option .btn-group {
+    margin-right: 5px;
+}
+.page-option .chk-all, .page-option .btn-group a.btn {
+    background: none repeat scroll 0 0 #fcfcfc;
+    border: 1px solid #e7e7e7;
+    border-radius: 3px !important;
+    color: #afafaf;
+    display: inline-block;
+    padding: 5px 10px;
+}
+.page-option .chk-all input[type="checkbox"] {
+    margin-top: 0;
+}
+.page-option .btn-group a.all {
+    border: medium none;
+    padding: 0;
+}
+
+/**
+Button Styles
+ */
+.modal-image {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.modal-image:hover {
+    opacity: 0.7;
+}
+
+/**
+Receipts Table
+ */
+.receipt-thumbnail {
+    max-width: 175px;
+    width: auto;
+    height: 84px;
+}
+.table-receipts {
+    border: 1px solid #d3d3d3;
+    text-align: center;
+    margin-bottom: 0;
+}
+.table-receipts tr td {
+    padding: 12px !important;
+}
+.table-receipts tr td:hover {
+    cursor: pointer;
+}
+.table-receipts tr.unread td {
+    background: none repeat scroll 0 0 #f7f7f7;
+    font-weight: 600;
+}
+
+
+/**
+Receipt Edit Styles
+ */
+.receipt-edit-image {
+    display: block;
+    margin: auto;
+    padding-bottom: 20px;
+    max-width: 1200px;
+    width: auto;
+    height: 400px;
+}
+
+/**
+Exception Page
+ */
+.error-image {
+    display: block;
+    margin: auto;
+    padding-bottom: 20px;
+    width: auto;
+    height: 400px;
+}
+
+/* ---------------------------------------------------
+    FORM STYLES
+----------------------------------------------------- */
+
+/**
+Item Styles
+ */
+.control-table-label {
+    padding-top: 7px;
+    margin: 0;
+}
+
+/**
+Error handling
+ */
+.error-container {
+    display: none;
+}
+
+/**
+Buttons
+ */
+.form-control:focus {
+    border-color: #bb0000;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(187,0,0,.6);
+}
+.edit-item-delete-button, .new-item-delete-button {
+    float: right;
+}
+.form-save {
+    margin-left: 20px;
+}
+.fileinput-button {
+    background: none repeat scroll 0 0 #eeeeee;
+    border: 1px solid #e6e6e6;
+    float: left;
+    margin-right: 10px;
+    overflow: hidden;
+    position: relative;
+}
+.fileinput-button input {
+    cursor: pointer;
+    direction: ltr;
+    font-size: 23px;
+    margin: 0;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate(-300px, 0px) scale(4);
+}
+* html .fileinput-button {
+    line-height: 24px;
+    margin: 1px -3px 0 0;
+}
+* + html .fileinput-button {
+    margin: 1px 0 0;
+    padding: 2px 15px;
+}
+.btn-group-container {
+    display: inline-block;
+    line-height: 35px;
+}
+.receipt-edit-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.file-input-container {
+    display: inline-block;
+    line-height: 35px;
+    vertical-align: middle;
+}
+.receipt-submit-container {
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+}
+.btn-send, .btn-send:hover {
+    background: none repeat scroll 0 0 #bb0000;
+    color: #fff;
+}
+.btn-send:hover {
+    background: none repeat scroll 0 0 #bb0000;
+}
+
+
+/* ---------------------------------------------------
+    FOOTER STYLES
+----------------------------------------------------- */
+.footer {
+    margin-top: 50px;
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+.footer-links {
+    padding-left: 0;
+    margin-bottom: 25px;
+}
+.footer a {
+    font-weight: 500;
+    color: #464a4c;
+}
+h4.footer-text {
+    color: #9d9f9e;
+    font-size: 12px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0 22px;
+}
+
+/* ---------------------------------------------------
+    MODAL STYLES
+----------------------------------------------------- */
+.modal-header h4.modal-title {
+    font-family: "Open Sans",sans-serif;
+    font-weight: 300;
+}
+.modal-body label {
+    font-family: "Open Sans",sans-serif;
+    font-weight: 400;
+}
+.content-body .modal .modal-body input, .content-body .modal .modal-body textarea {
+    border: 1px solid #e6e6e6;
+    box-shadow: none;
+}
+
+/**
+Buttons
+ */
+.delete-icon {
+    color: #f1f1f1;
+    font-weight: bold;
+}
+
+/**
+Image Modal
+ */
+body.image-modal-open {
+    overflow: hidden;
+}
+.image-modal-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+}
+.image-modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 2; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+.image-modal-caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+}
+.image-modal-content, .image-modal-caption {
+    -webkit-animation-name: zoom;
+    -webkit-animation-duration: 0.6s;
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+.image-modal-download {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.image-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.image-modal-close:hover,
+.image-modal-close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+.image-modal-download:hover {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+.image-modal-download:not(:hover) {
+    color: #f1f1f1;
+    text-decoration: none;
+    cursor: pointer;
+}
+@-webkit-keyframes zoom {
+    from {-webkit-transform:scale(0)}
+    to {-webkit-transform:scale(1)}
+}
+@keyframes zoom {
+    from {transform:scale(0)}
+    to {transform:scale(1)}
+}
+
+/* ---------------------------------------------------
+    SNACKBAR STYLES
+----------------------------------------------------- */
+
+.snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 3;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px;
+}
+.snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 9.5s;
+    animation: fadein 0.5s, fadeout 0.5s 9.5s;
+}
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+@media (max-width: 950px) {
+    /**
+    SIDEBAR MEDIAQUERIES
+     */
+    #sidebar {
+        margin-left: -300px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #content {
+        width: 100%;
+    }
+    #content.active {
+        width: calc(100% - 300px);
+    }
+}
+@media only screen and (max-width: 768px){
+    .image-modal-content {
+        width: 100%;
+    }
+}
+
+/* ---------------------------------------------------
+    MISC. STYLES
+----------------------------------------------------- */
+html,
+body {
+    font-family: 'Varela Round', sans-serif;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
 div.inline {
     display: inline-block;
 }
@@ -18,692 +771,4 @@ a.full-width {
 }
 .bottom-stack-order {
     z-index: 0 !important;
-}
-
-/* Common AFX Styleguide */
-.home-link, .home-link:hover, .home-link:focus {
-    color: #fff;
-    text-decoration: none;
-}
-.error-container {
-    display: none;
-}
-body.image-modal-open {
-    overflow: hidden;
-}
-
-/* Styles for New Receipt Modal */
-.edit-item-delete-button, .new-item-delete-button {
-    float: right;
-}
-.delete-icon {
-    color: #f1f1f1;
-    font-weight: bold;
-}
-
-/* Style the Image Used to Trigger the Modal */
-.modal-image {
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.modal-image:hover {
-    opacity: 0.7;
-}
-
-/* The Modal (background) */
-.image-modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
-}
-
-/* Modal Content (Image) */
-.image-modal-content {
-    margin: auto;
-    display: block;
-    width: 80%;
-    max-width: 700px;
-}
-
-/* Caption of Modal Image (Image Text) - Same Width as the Image */
-.image-modal-caption {
-    margin: auto;
-    display: block;
-    width: 80%;
-    max-width: 700px;
-    text-align: center;
-    color: #ccc;
-    padding: 10px 0;
-    height: 150px;
-}
-
-/* Add Animation - Zoom in the Modal */
-.image-modal-content, .image-modal-caption {
-    -webkit-animation-name: zoom;
-    -webkit-animation-duration: 0.6s;
-    animation-name: zoom;
-    animation-duration: 0.6s;
-}
-
-@-webkit-keyframes zoom {
-    from {-webkit-transform:scale(0)}
-    to {-webkit-transform:scale(1)}
-}
-
-@keyframes zoom {
-    from {transform:scale(0)}
-    to {transform:scale(1)}
-}
-
-/* The Close Button */
-.image-modal-close {
-    position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.image-modal-close:hover,
-.image-modal-close:focus {
-    color: #bbb;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* The Download Button */
-.image-modal-download {
-    position: absolute;
-    top: 25px;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    transform: translateX(-50%);
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.image-modal-download:hover {
-    color: #bbb;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.image-modal-download:not(:hover) {
-    color: #f1f1f1;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* 100% Image Width on Smaller Screens */
-@media only screen and (max-width: 700px){
-    .image-modal-content {
-        width: 100%;
-    }
-}
-
-/* Page Specific */
-.footer {
-    padding: 50px 0;
-    margin-top: 50px;
-    text-align: left;
-    background-color: #e5e8ef;
-}
-.footer-links {
-    padding-left: 0;
-    margin-bottom: 25px;
-}
-.footer a {
-    font-weight: 500;
-    color: #464a4c;
-}
-.mail-box {
-    border-collapse: collapse;
-    border-spacing: 0;
-    display: table;
-    table-layout: fixed;
-    width: 100%;
-}
-.mail-box aside {
-    display: table-cell;
-    float: none;
-    height: 100%;
-    padding: 0;
-    vertical-align: top;
-}
-.mail-box .sm-side {
-    background: none repeat scroll 0 0 #e5e8ef;
-    border-radius: 4px 0 0 4px;
-    width: 25%;
-}
-.mail-box .lg-side {
-    background: none repeat scroll 0 0 #fff;
-    border-radius: 0 4px 4px 0;
-    width: 75%;
-}
-.mail-box .sm-side .user-head {
-    background: none repeat scroll 0 0 #666666;
-    border-radius: 4px 0 0;
-    color: #fff;
-    min-height: 80px;
-    padding: 10px;
-}
-.user-head .inbox-avatar {
-    float: left;
-    width: 65px;
-}
-.user-head .inbox-avatar img {
-    border-radius: 4px;
-}
-.user-head .user-name {
-    display: inline-block;
-    margin: 0 0 0 10px;
-}
-.user-head .user-name h5 {
-    font-size: 14px;
-    font-weight: 300;
-    margin-bottom: 0;
-    margin-top: 15px;
-}
-.user-head .user-name h5 a {
-    color: #fff;
-}
-.user-head .user-name span a {
-    color: #666666;
-    font-size: 12px;
-}
-a.mail-dropdown {
-    background: none repeat scroll 0 0 #bb0000;
-    border-radius: 2px;
-    color: #ffffff;
-    font-size: 10px;
-    margin-top: 20px;
-    padding: 3px 5px;
-}
-.inbox-body {
-    padding: 20px;
-}
-.btn-compose {
-    background: none repeat scroll 0 0 #bb0000;
-    color: #fff;
-    padding: 12px 0;
-    text-align: center;
-    width: 100%;
-}
-.btn-compose:hover {
-    background: none repeat scroll 0 0 #bb0000;
-    color: #fff;
-}
-ul.inbox-nav {
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-.inbox-divider {
-    border-bottom: 1px solid #d5d8df;
-}
-ul.inbox-nav li {
-    display: inline-block;
-    line-height: 45px;
-    width: 100%;
-}
-ul.inbox-nav li a {
-    color: #6a6a6a;
-    display: inline-block;
-    line-height: 45px;
-    padding: 0 20px;
-    width: 100%;
-}
-ul.inbox-nav li a:hover, ul.inbox-nav li.active a, ul.inbox-nav li a:focus {
-    background: none repeat scroll 0 0 #d5d7de;
-    color: #6a6a6a;
-}
-ul.inbox-nav li a i {
-    color: #6a6a6a;
-    font-size: 16px;
-    padding-right: 10px;
-}
-ul.inbox-nav li a span.label {
-    margin-top: 13px;
-}
-.receipt-thumbnail {
-    max-width: 175px;
-    width: auto;
-    height: 84px;
-}
-.receipt-edit-image {
-    display: block;
-    margin: auto;
-    padding-bottom: 20px;
-    max-width: 1200px;
-    width: auto;
-    height: 400px;
-}
-.error-image {
-    display: block;
-    margin: auto;
-    padding-bottom: 20px;
-    width: auto;
-    height: 400px;
-}
-
-/**
-User Labels Styles
- */
-
-.label-name {
-    width: 90%;
-}
-.menu {
-    text-align: right;
-    padding: 0 !important;
-}
-.labels-title-container {
-    display: flex;
-    justify-content: space-between;
-    vertical-align: middle;
-}
-.labels-title {
-    display: inline-block;
-}
-.labels-edit:hover, .labels-edit:focus {
-    background: none repeat scroll 0 0 transparent !important;
-    color: #6a6a6a !important;
-}
-.table-label {
-    margin-bottom: 0;
-}
-.table-label tbody tr td {
-    border-top: 0;
-}
-.table-label tbody tr td.menu:hover {
-    cursor: pointer;
-}
-.table-label tbody tr td.label-name:hover {
-    cursor: default;
-}
-div#labelEditErrorContainer {
-    font-size: 14px;
-    margin-bottom: 0;
-}
-.labels-edit {
-    vertical-align: middle;
-    display: inline-block !important;
-    padding: 0 0 0 0 !important;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    margin-right: 10px;
-}
-.labels-edit i {
-    vertical-align: middle;
-    padding: 0 0 0 0 !important;
-}
-
-ul.labels-info li h4 {
-    color: #5c5c5e;
-    font-size: 13px;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 5px;
-    text-transform: uppercase;
-}
-ul.labels-info li {
-    margin: 0;
-}
-ul.labels-info li td {
-    border-radius: 0;
-    color: #6a6a6a;
-}
-ul.labels-info li:hover tr, ul.labels-info:focus li tr,
-ul.labels-info li:hover a.dropdown-toggle, ul.labels-info li:focus a.dropdown-toggle{
-    background: none repeat scroll 0 0 #d5d7de;
-    color: #6a6a6a;
-}
-ul.labels-info .open > a.dropdown-toggle {
-    background: none repeat scroll 0 0 #e5e8ef;
-}
-.menu-icon {
-    visibility: hidden;
-}
-ul.labels-info li:hover i.menu-icon {
-    visibility: visible;
-}
-ul.labels-info li td i {
-    padding-right: 10px;
-}
-
-/**
-Snackbar Styles
- */
-
-.snackbar {
-    visibility: hidden;
-    min-width: 250px;
-    margin-left: -125px;
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    border-radius: 2px;
-    padding: 16px;
-    position: fixed;
-    z-index: 1;
-    left: 50%;
-    bottom: 30px;
-    font-size: 17px;
-}
-
-.snackbar.show {
-    visibility: visible;
-    -webkit-animation: fadein 0.5s, fadeout 0.5s 9.5s;
-    animation: fadein 0.5s, fadeout 0.5s 9.5s;
-}
-
-@-webkit-keyframes fadein {
-    from {bottom: 0; opacity: 0;}
-    to {bottom: 30px; opacity: 1;}
-}
-
-@keyframes fadein {
-    from {bottom: 0; opacity: 0;}
-    to {bottom: 30px; opacity: 1;}
-}
-
-@-webkit-keyframes fadeout {
-    from {bottom: 30px; opacity: 1;}
-    to {bottom: 0; opacity: 0;}
-}
-
-@keyframes fadeout {
-    from {bottom: 30px; opacity: 1;}
-    to {bottom: 0; opacity: 0;}
-}
-
-/**
-Inbox Styles
- */
-
-.inbox-head {
-    background: none repeat scroll 0 0 #bb0000;
-    border-radius: 0 4px 0 0;
-    color: #fff;
-    min-height: 80px;
-    padding: 20px;
-}
-.inbox-head h3 {
-    display: inline-block;
-    font-weight: 300;
-    margin: 0;
-    padding-top: 6px;
-}
-.inbox-head .sr-input {
-    border: medium none;
-    border-radius: 4px 0 0 4px;
-    box-shadow: none;
-    color: #8a8a8a;
-    float: left;
-    height: 40px;
-    padding: 0 10px;
-}
-.inbox-head .sr-btn {
-    background: none repeat scroll 0 0 #666666;
-    border: medium none;
-    border-radius: 0 0 0 0;
-    color: #fff;
-    height: 40px;
-    padding: 0 20px;
-}
-.inbox-head .logout-button {
-    background: none repeat scroll 0 0 #666666;
-    border: medium none;
-    border-radius: 0 0 0 0;
-    color: #fff;
-    height: 40px;
-    padding: 0 20px;
-}
-.inbox-head .settings-button {
-    background: none repeat scroll 0 0 #666666;
-    border: medium none;
-    border-radius: 0 4px 4px 0;
-    color: #fff;
-    height: 40px;
-    padding: 0 20px;
-}
-.table-inbox {
-    border: 1px solid #d3d3d3;
-    text-align: center;
-    margin-bottom: 0;
-}
-.table-inbox tr td {
-    padding: 12px !important;
-}
-.table-inbox tr td:hover {
-    cursor: pointer;
-}
-.table-inbox tr.unread td {
-    background: none repeat scroll 0 0 #f7f7f7;
-    font-weight: 600;
-}
-.btn-group-container {
-    display: inline-block;
-    line-height: 35px;
-}
-.receipt-edit-buttons {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
-.form-save {
-    margin-left: 10px;
-}
-.file-input-container {
-    display: inline-block;
-    line-height: 35px;
-    vertical-align: middle;
-}
-.receipt-submit-container {
-    display: flex;
-    justify-content: space-between;
-    vertical-align: middle;
-}
-.pagination-number {
-    vertical-align: middle;
-    margin-right: 10px;
-}
-.pagination-nav {
-    display: inline-block;
-    vertical-align: middle;
-}
-.mail-option {
-    display: flex;
-    justify-content: space-between;
-    vertical-align: middle;
-    margin-bottom: 10px;
-    width: 100%;
-}
-.mail-option .chk-all, .mail-option .btn-group {
-    margin-right: 5px;
-}
-.mail-option .chk-all, .mail-option .btn-group a.btn {
-    background: none repeat scroll 0 0 #fcfcfc;
-    border: 1px solid #e7e7e7;
-    border-radius: 3px !important;
-    color: #afafaf;
-    display: inline-block;
-    padding: 5px 10px;
-}
-.mail-option .chk-all input[type="checkbox"] {
-    margin-top: 0;
-}
-.mail-option .btn-group a.all {
-    border: medium none;
-    padding: 0;
-}
-.control-table-label {
-    padding-top: 7px;
-    margin: 0;
-}
-.fileinput-button {
-    background: none repeat scroll 0 0 #eeeeee;
-    border: 1px solid #e6e6e6;
-}
-.inbox-body .modal .modal-body input, .inbox-body .modal .modal-body textarea {
-    border: 1px solid #e6e6e6;
-    box-shadow: none;
-}
-.btn-send, .btn-send:hover {
-    background: none repeat scroll 0 0 #bb0000;
-    color: #fff;
-}
-.btn-send:hover {
-    background: none repeat scroll 0 0 #bb0000;
-}
-.modal-header h4.modal-title {
-    font-family: "Open Sans",sans-serif;
-    font-weight: 300;
-}
-.modal-body label {
-    font-family: "Open Sans",sans-serif;
-    font-weight: 400;
-}
-.heading-inbox h4 {
-    border-bottom: 1px solid #ddd;
-    color: #444;
-    font-size: 18px;
-    margin-top: 20px;
-    padding-bottom: 10px;
-}
-.sender-info {
-    margin-bottom: 20px;
-}
-.sender-info img {
-    height: 30px;
-    width: 30px;
-}
-.sender-dropdown {
-    background: none repeat scroll 0 0 #eaeaea;
-    color: #777;
-    font-size: 10px;
-    padding: 0 3px;
-}
-.view-mail a {
-    color: #ff6c60;
-}
-.attachment-mail {
-    margin-top: 30px;
-}
-.attachment-mail ul {
-    display: inline-block;
-    margin-bottom: 30px;
-    width: 100%;
-}
-.attachment-mail ul li {
-    float: left;
-    margin-bottom: 10px;
-    margin-right: 10px;
-    width: 150px;
-}
-.attachment-mail ul li img {
-    width: 100%;
-}
-.attachment-mail ul li span {
-    float: right;
-}
-.attachment-mail .file-name {
-    float: left;
-}
-.attachment-mail .links {
-    display: inline-block;
-    width: 100%;
-}
-
-.fileinput-button {
-    float: left;
-    margin-right: 10px;
-    overflow: hidden;
-    position: relative;
-}
-.fileinput-button input {
-    cursor: pointer;
-    direction: ltr;
-    font-size: 23px;
-    margin: 0;
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transform: translate(-300px, 0px) scale(4);
-}
-.fileupload-buttonbar .btn, .fileupload-buttonbar .toggle {
-    margin-bottom: 5px;
-}
-.files .progress {
-    width: 200px;
-}
-.fileupload-processing .fileupload-loading {
-    display: block;
-}
-* html .fileinput-button {
-    line-height: 24px;
-    margin: 1px -3px 0 0;
-}
-* + html .fileinput-button {
-    margin: 1px 0 0;
-    padding: 2px 15px;
-}
-@media (max-width: 767px) {
-    .files .btn span {
-        display: none;
-    }
-    .files .preview * {
-        width: 40px;
-    }
-    .files .name * {
-        display: inline-block;
-        width: 80px;
-        word-wrap: break-word;
-    }
-    .files .progress {
-        width: 20px;
-    }
-    .files .delete {
-        width: 60px;
-    }
-}
-h4.footer-text {
-    color: #9d9f9e;
-    font-size: 12px;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding: 0 22px;
-}
-ul {
-    list-style-type: none;
-    padding: 0px;
-    margin: 0px;
-}
-
-/* Bootstrap overrides */
-
-.pagination {
-   margin: 0 !important;
-}
-.pagination > li.active > a, .pagination > li.active > a:hover {
-    background: #bb0000;
-    border-color: #bb0000;
-}
-.pagination > li:not(.active):not(.disabled) > a {
-    color: #bb0000;
 }

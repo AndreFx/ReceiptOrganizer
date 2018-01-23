@@ -1,3 +1,8 @@
+<%--
+  User: Andrew
+  Date: 9/1/2017
+  Time: 8:10 PM
+--%>
 <footer class="footer">
     <div class="container">
         <ul class="footer-links">

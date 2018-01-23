@@ -17,6 +17,14 @@ function createItemDeleteButtonHandlers(parent, labelId, divId, number) {
 
 $(document).ready(function() {
 
+    /* Sidebar collapsing button */
+
+    $('#sidebarCollapse').on('click', function () {
+        // open or close navbar
+        $('#sidebar').toggleClass('active');
+        $('#content').toggleClass('active');
+    });
+
     /* Custom validators */
 
     jQuery.validator.addMethod("notAllSpace", function(value, element) {

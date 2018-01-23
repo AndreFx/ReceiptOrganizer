@@ -1,4 +1,8 @@
-<!-- Modal Image -->
+<%--
+  User: Andrew
+  Date: 9/1/2017
+  Time: 8:10 PM
+--%>
 <div id="imageModal" class="image-modal">
 
     <!-- The Download Button -->

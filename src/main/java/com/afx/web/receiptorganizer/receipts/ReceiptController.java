@@ -4,8 +4,10 @@ import com.afx.web.receiptorganizer.dao.label.LabelDao;
 import com.afx.web.receiptorganizer.dao.receipt.ReceiptDao;
 import com.afx.web.receiptorganizer.types.*;
 import com.afx.web.receiptorganizer.exceptions.types.ReceiptNotFoundException;
+import com.afx.web.receiptorganizer.types.Label;
 import com.afx.web.receiptorganizer.utilities.ImageThumbnailCreator;
 import com.afx.web.receiptorganizer.utilities.PDFImageCreator;
+import com.asprise.ocr.Ocr;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
+import java.awt.image.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -86,13 +88,13 @@ public class ReceiptController {
             throw new ReceiptNotFoundException(id);
         }
 
-        model.addAttribute("labels", labels);
+        model.addAttribute("userLabels", labels);
         model.addAttribute("receipt", receipt);
         model.addAttribute("newReceipt", new Receipt());
         model.addAttribute("newLabel", new Label());
         model.addAttribute("receiptId", id);
 
-        return "receiptView";
+        return "receipt-view";
     }
 
     @RequestMapping(value = "/{receiptId}/image", method = RequestMethod.GET)
@@ -243,6 +245,7 @@ public class ReceiptController {
                     image = ImageIO.read(newReceipt.getMultipartFile().getInputStream());
                 }
 
+                //TODO This only needs to be done this way if the image is a pdf.
                 //Create byte array for source image
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 ImageIO.write(image, "jpeg", outputStream);
@@ -260,6 +263,13 @@ public class ReceiptController {
 
                 //Remove invalid receipt item entries
                 newReceipt.removeInvalidReceiptItems();
+
+                //TODO Test OCR
+                try {
+                    ocr(newReceipt.getMultipartFile().getName(), newReceipt.getMultipartFile().getContentType(), newReceipt.getMultipartFile().getBytes());
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                }
 
                 this.receiptDao.addReceipt(user.getUsername(), newReceipt);
 
@@ -288,5 +298,47 @@ public class ReceiptController {
             logger.debug("Clearing: " + username + " from receipt image cache.");
             userReceiptImageCache.remove(username.toLowerCase());
         }
+    }
+
+    private static void ocr(String name, String contentType, byte[] imageAsBytes) throws Exception {
+        //TODO Determine if i want to use asprise or abbyy web ocr
+        File tempFile = File.createTempFile(name, ".pdf", null);
+        FileOutputStream fos = new FileOutputStream(tempFile);
+        fos.write(imageAsBytes);
+        fos.close();
+
+
+        Ocr.setUp();
+
+        Ocr ocr = new Ocr();
+        ocr.startEngine("eng", Ocr.SPEED_FASTEST);
+        String s = ocr.recognize(new File[] {tempFile}, Ocr.RECOGNIZE_TYPE_TEXT, Ocr.OUTPUT_FORMAT_PLAINTEXT);
+
+        boolean success = tempFile.delete();
+
+        logger.info("OCR output:" + s);
+//
+//
+//        BytePointer outText;
+//
+//        tesseract.TessBaseAPI api = new tesseract.TessBaseAPI();
+//        // Initialize tesseract-ocr with English, without specifying tessdata path
+//        if (api.Init("C:", "ENG") != 0) {
+//            System.err.println("Could not initialize tesseract.");
+//            System.exit(1);
+//        }
+//
+//        // Open input image with leptonica library
+//        lept.PIX image = pixRead(tempFile.getAbsolutePath());
+//        api.SetImage(image);
+//        // Get OCR result
+//        outText = api.GetUTF8Text();
+//        String string = outText.getString();
+//        System.out.println("OCR output:\n" + string);
+//
+//        // Destroy used object and release memory
+//        api.End();
+//        outText.deallocate();
+//        pixDestroy(image);
     }
 }

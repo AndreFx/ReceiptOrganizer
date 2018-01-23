@@ -1,5 +1,7 @@
 package com.afx.web.receiptorganizer.types;
 
+import java.math.BigDecimal;
+
 public class ReceiptItem {
 
     /*
@@ -9,7 +11,7 @@ public class ReceiptItem {
     private int itemNumber;
     private String name;
     private int quantity;
-    private Float unitPrice;
+    private BigDecimal unitPrice;
     private int warrantyLength;
     private String warrantyUnit;
 
@@ -41,11 +43,11 @@ public class ReceiptItem {
         this.quantity = quantity;
     }
 
-    public Float getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(Float unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 
