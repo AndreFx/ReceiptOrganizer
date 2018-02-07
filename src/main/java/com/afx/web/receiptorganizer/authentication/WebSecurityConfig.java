@@ -36,11 +36,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${ldap.url}")
     private String URL;
 
-    //@Value("${http.port}")
-    //private int httpPort;
+    @Value("${http.port}")
+    private int httpPort;
 
-    //@Value("${https.port}")
-    //private int httpsPort;
+    @Value("${https.port}")
+    private int httpsPort;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -53,9 +53,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
           /*
            * Use HTTPs for ALL requests
           */
-        //TODO Add https
-        //http.requiresChannel().anyRequest().requiresSecure();
-        //http.portMapper().http(httpPort).mapsTo(httpsPort);
+        http.requiresChannel().anyRequest().requiresSecure();
+        http.portMapper().http(httpPort).mapsTo(httpsPort);
     }
 
     @Override

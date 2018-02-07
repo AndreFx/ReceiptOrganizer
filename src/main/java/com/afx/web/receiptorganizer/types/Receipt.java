@@ -18,7 +18,7 @@ public class Receipt {
     private String title;
     private Date date;
     private BigDecimal receiptAmount;
-    private String receiptAmountCurrency;
+    //private String receiptAmountCurrency;
     private String description;
     private String[] labels;
     private List<ReceiptItem> items = new ArrayList<>();
@@ -81,13 +81,13 @@ public class Receipt {
         this.receiptAmount = receiptAmount;
     }
 
-    public String getReceiptAmountCurrency() {
-        return receiptAmountCurrency;
-    }
+//    public String getReceiptAmountCurrency() {
+//        return receiptAmountCurrency;
+//    }
 
-    public void setReceiptAmountCurrency(String receiptAmountCurrency) {
-        this.receiptAmountCurrency = receiptAmountCurrency;
-    }
+//    public void setReceiptAmountCurrency(String receiptAmountCurrency) {
+//        this.receiptAmountCurrency = receiptAmountCurrency;
+//    }
 
     public List<ReceiptItem> getItems() {
         return items;

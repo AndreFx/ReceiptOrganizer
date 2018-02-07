@@ -7,6 +7,7 @@
 <%@taglib uri = "http://www.springframework.org/tags/form" prefix = "form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix = "c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <html>
 <head>
     <!-- SITE URLS -->
@@ -33,13 +34,13 @@
     </c:choose>
 
     <!-- FONTS -->
-    <spring:url value="http://fonts.googleapis.com/css?family=Varela+Round" var="googlefonts"/>
+    <spring:url value="https://fonts.googleapis.com/css?family=Varela+Round" var="googlefonts"/>
 
     <!-- STYLESHEETS -->
     <spring:url value="/resources/css/afx-home-styleguide.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
     <spring:url value="/resources/css/bootstrap-multiselect.css" var="multiselectcss"/>
-    <spring:url value="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" var="fontawesomecss"/>
+    <spring:url value="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" var="fontawesomecss"/>
     <spring:url value="/resources/css/jquery-ui.css" var="uicss"/>
     <spring:url value="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css" var="sidebarScrollCss"/>
 
@@ -182,23 +183,41 @@
                 <c:choose>
                     <c:when test="${receipts.size() != 0}">
                         <table class="table table-receipts table-hover">
-                            <tbody>
                             <c:forEach items="${receipts}" var="receipt" varStatus="i">
                                 <spring:url value="/receipts/${receipt.receiptId}" var="receiptViewUrl"/>
                                 <spring:url value="/receipts/${receipt.receiptId}/image?thumbnail=true" var="receiptViewImageUrl"/>
                                 <tr class="clickable-row" data-href="<c:out value="${receiptViewUrl}"/>">
                                     <td class="vertical-align-text"><img class="receipt-thumbnail modal-image" alt="${receipt.title}" src='<c:out value="${receiptViewImageUrl}"/>'></td>
-                                    <td class="vertical-align-text">${receipt.title}</td>
-                                    <td class="vertical-align-text">${receipt.description}</td>
-                                    <td class="vertical-align-text">${receipt.receiptAmountCurrency}</td>
-                                    <td class="vertical-align-text text-right">${receipt.date}</td>
+                                    <td class="vertical-align-text">
+                                        <table class="table">
+                                            <tr>
+                                                <th>${receipt.title}</th>
+                                                <fmt:formatNumber value='${receipt.receiptAmount}' type="currency" currencySymbol="" var="formattedReceiptAmount"/>
+                                                <th colspan="2">${formattedReceiptAmount}</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Top Items</td>
+                                                <td>Quantity</td>
+                                                <td>Unit Price</td>
+                                            </tr>
+                                            <c:forEach items="${receipt.items}" var="item" varStatus="j">
+                                                <c:if test="${j.index < numThumbnailItems}">
+                                                    <tr>
+                                                        <td>${item.name}</td>
+                                                        <td>${item.quantity}</td>
+                                                        <fmt:formatNumber value='${item.unitPrice}' type="currency" currencySymbol="" var="formattedUnitPrice"/>
+                                                        <td>${formattedUnitPrice}</td>
+                                                    </tr>
+                                                </c:if>
+                                            </c:forEach>
+                                        </table>
+                                    </td>
                                 </tr>
                             </c:forEach>
-                            </tbody>
                         </table>
                     </c:when>
                     <c:otherwise>
-                        <p class="text-center"> No receipts!</p>
+                        <p class="text-center">No receipts!</p>
                     </c:otherwise>
                 </c:choose>
             </div>

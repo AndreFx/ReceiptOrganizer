@@ -14,11 +14,11 @@
 
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
     <spring:url value="/resources/css/afx-login-styleguide.css" var="styleguide"/>
-    <spring:url value="http://fonts.googleapis.com/css?family=Varela+Round" var="googlefonts"/>
+    <spring:url value="https://fonts.googleapis.com/css?family=Varela+Round" var="googlefonts"/>
 
     <spring:url value="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js" var="jqueryvalidate"/>
     <spring:url value="/resources/js/bootstrap.min.js" var="bootstrapjs"/>
-    <spring:url value="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" var="fontawesomecss"/>
+    <spring:url value="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" var="fontawesomecss"/>
     <spring:url value="/resources/js/jquery-3.2.1.min.js" var="jquery"/>
 	<spring:url value="/resources/js/login.js" var="afxLogin"/>
 

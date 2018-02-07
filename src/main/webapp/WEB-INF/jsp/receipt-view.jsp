@@ -21,13 +21,13 @@
     <spring:url value="/receipts/${receipt.receiptId}/image?thumbnail=false" var="receiptViewImageUrl"/>
 
     <!-- FONTS -->
-    <spring:url value="http://fonts.googleapis.com/css?family=Varela+Round" var="googlefonts"/>
+    <spring:url value="https://fonts.googleapis.com/css?family=Varela+Round" var="googlefonts"/>
 
     <!-- STYLESHEETS -->
     <spring:url value="/resources/css/afx-home-styleguide.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
     <spring:url value="/resources/css/bootstrap-multiselect.css" var="multiselectcss"/>
-    <spring:url value="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" var="fontawesomecss"/>
+    <spring:url value="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" var="fontawesomecss"/>
     <spring:url value="/resources/css/jquery-ui.css" var="uicss"/>
     <spring:url value="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css" var="sidebarScrollCss"/>
 

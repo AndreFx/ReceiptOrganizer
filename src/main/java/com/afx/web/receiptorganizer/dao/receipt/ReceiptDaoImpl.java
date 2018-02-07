@@ -377,7 +377,6 @@ public class ReceiptDaoImpl implements ReceiptDao {
         return result;
     }
 
-    //TODO Add items to show on home screen.
     public List<Receipt> findRangeUserReceiptsFromString(String username, String searchString, int start, int numRows) {
         List<Receipt> receipts;
 
@@ -386,18 +385,22 @@ public class ReceiptDaoImpl implements ReceiptDao {
             SqlParameterSource parameters = new MapSqlParameterSource("username", username).addValue("searchstring", searchString)
                     .addValue("startrow", start).addValue("numrows", numRows);
 
-            String query = "SELECT DISTINCT RECEIPT.ReceiptId, Title, Description, Date, ReceiptAmount " +
-                    "FROM USER_RECEIPTS " +
-                    "INNER JOIN RECEIPT " +
-                    "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
+            String query = "SELECT TOP_RECEIPTS.ReceiptId, Title, Date, ReceiptAmount, Name, Quantity, UnitPrice " +
+                    "FROM (SELECT DISTINCT RECEIPT.ReceiptId, Title, Date, ReceiptAmount " +
+                    "                    FROM USER_RECEIPTS " +
+                    "                    INNER JOIN RECEIPT " +
+                    "                    ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
+                    "                    LEFT OUTER JOIN RECEIPT_ITEM " +
+                    "                    ON RECEIPT.ReceiptId = RECEIPT_ITEM.ReceiptId " +
+                    "                    WHERE Username = :username AND RECEIPT.Title LIKE :searchstring OR RECEIPT_ITEM.Name LIKE :searchstring " +
+                    "                    ORDER BY RECEIPT.Title " +
+                    "                    OFFSET :startrow ROWS " +
+                    "                    FETCH NEXT :numrows ROWS ONLY) AS TOP_RECEIPTS " +
                     "LEFT OUTER JOIN RECEIPT_ITEM " +
-                    "ON RECEIPT.ReceiptId = RECEIPT_ITEM.ReceiptId " +
-                    "WHERE Username = :username AND RECEIPT.Title LIKE :searchstring OR RECEIPT_ITEM.Name LIKE :searchstring " +
-                    "ORDER BY RECEIPT.Title " +
-                    "OFFSET :startrow ROWS " +
-                    "FETCH NEXT :numrows ROWS ONLY ";
+                    "ON TOP_RECEIPTS.ReceiptId = RECEIPT_ITEM.ReceiptId " +
+                    "ORDER BY TOP_RECEIPTS.Title";
 
-            receipts = this.jdbcTemplate.query(query, parameters, new ReceiptRowMapper());
+            receipts = this.jdbcTemplate.query(query, parameters, new ReceiptResultSetExtractor());
         } catch(DataAccessException e) {
             logger.error("Unable to search database for searchString: " + e.getMessage());
             throw e;
@@ -406,7 +409,6 @@ public class ReceiptDaoImpl implements ReceiptDao {
         return receipts;
     }
 
-    //TODO Add items to show on home screen.
     public List<Receipt> getRangeUserReceiptsForLabels(String username, List<String> labels, int start, int numRows) {
         List<Receipt> receipts;
 
@@ -417,33 +419,40 @@ public class ReceiptDaoImpl implements ReceiptDao {
                 //Get all user receipts
                 parameters = new MapSqlParameterSource("username", username)
                         .addValue("startrow", start).addValue("numrows", numRows);
-                query = "SELECT RECEIPT.ReceiptId, Title, Description, Date, ReceiptAmount  " +
-                        "FROM USER_RECEIPTS " +
-                        "INNER JOIN RECEIPT " +
-                        "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
-                        "WHERE Username = :username " +
-                        "ORDER BY RECEIPT.Title " +
-                        "OFFSET :startrow ROWS " +
-                        "FETCH NEXT :numrows ROWS ONLY ";
+                query = "SELECT TOP_RECEIPTS.ReceiptId, Title, Date, ReceiptAmount, Name, Quantity, UnitPrice " +
+                        "FROM (SELECT DISTINCT RECEIPT.ReceiptId, Title, Date, ReceiptAmount " +
+                        "                    FROM USER_RECEIPTS " +
+                        "                    INNER JOIN RECEIPT " +
+                        "                    ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
+                        "                    WHERE Username = :username " +
+                        "                    ORDER BY RECEIPT.Title " +
+                        "                    OFFSET :startrow ROWS " +
+                        "                    FETCH NEXT :numrows ROWS ONLY) AS TOP_RECEIPTS " +
+                        "LEFT OUTER JOIN RECEIPT_ITEM " +
+                        "ON TOP_RECEIPTS.ReceiptId = RECEIPT_ITEM.ReceiptId " +
+                        "ORDER BY TOP_RECEIPTS.Title";
             } else {
                 //Get receipts for specifc label
                 parameters = new MapSqlParameterSource("username", username)
                         .addValue("labelnames", labels).addValue("startrow", start)
                         .addValue("numrows", numRows);
-                query = "SELECT DISTINCT RECEIPT.ReceiptId, Title, Description, Date, ReceiptAmount  " +
-                        "FROM USER_RECEIPTS " +
-                        "INNER JOIN RECEIPT " +
-                        "ON USER_RECEIPTS.ReceiptId = RECEIPT.[ReceiptId] " +
-                        "INNER JOIN RECEIPT_LABELS " +
-                        "ON RECEIPT.ReceiptId = RECEIPT_LABELS.ReceiptId " +
-                        "WHERE RECEIPT_LABELS.Username = :username " +
-                        "AND LabelName IN (:labelnames) " +
-                        "ORDER BY RECEIPT.Title " +
-                        "OFFSET :startrow ROWS " +
-                        "FETCH NEXT :numrows ROWS ONLY ";
+                query = "SELECT TOP_RECEIPTS.ReceiptId, Title, Date, ReceiptAmount, Name, Quantity, UnitPrice " +
+                        "FROM (SELECT DISTINCT RECEIPT.ReceiptId, Title, Date, ReceiptAmount " +
+                        "                    FROM USER_RECEIPTS " +
+                        "                    INNER JOIN RECEIPT " +
+                        "                    ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
+                        "                    INNER JOIN RECEIPT_LABELS " +
+                        "                    ON RECEIPT.ReceiptId = RECEIPT_LABELS.ReceiptId " +
+                        "                    WHERE RECEIPT_LABELS.Username = :username AND LabelName IN (:labelnames) " +
+                        "                    ORDER BY RECEIPT.Title " +
+                        "                    OFFSET :startrow ROWS " +
+                        "                    FETCH NEXT :numrows ROWS ONLY) AS TOP_RECEIPTS " +
+                        "LEFT OUTER JOIN RECEIPT_ITEM " +
+                        "ON TOP_RECEIPTS.ReceiptId = RECEIPT_ITEM.ReceiptId " +
+                        "ORDER BY TOP_RECEIPTS.Title";
             }
 
-            receipts = this.jdbcTemplate.query(query, parameters, new ReceiptRowMapper());
+            receipts = this.jdbcTemplate.query(query, parameters, new ReceiptResultSetExtractor());
         } catch (DataAccessException e) {
             logger.error("Unable to fetch user receipts from database. Error: " + e.getMessage());
             throw e;

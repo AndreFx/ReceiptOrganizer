@@ -29,6 +29,7 @@ public class UserViewController {
     Constants
      */
     private static final int MAX_ACTIVE_LABELS = 5;
+    private static final int MAX_RECEIPT_THUMBNAIL_ITEMS = 2;
 
     /*
     Private fields
@@ -76,6 +77,7 @@ public class UserViewController {
         model.addAttribute("numPages", Math.ceil(totalNumReceipts / (float) user.getPaginationSize()));
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", user.getPaginationSize());
+        model.addAttribute("numThumbnailItems", MAX_RECEIPT_THUMBNAIL_ITEMS);
         model.addAttribute("numReceipts", totalNumReceipts);
 
         return "home";
@@ -110,6 +112,7 @@ public class UserViewController {
         model.addAttribute("numPages", Math.ceil(totalNumReceipts / (float) user.getPaginationSize()));
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", user.getPaginationSize());
+        model.addAttribute("numThumbnailItems", MAX_RECEIPT_THUMBNAIL_ITEMS);
         model.addAttribute("numReceipts", totalNumReceipts);
         model.addAttribute("searchString", searchString);
 

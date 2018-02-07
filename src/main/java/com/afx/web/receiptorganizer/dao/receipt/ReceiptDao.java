@@ -2,6 +2,7 @@ package com.afx.web.receiptorganizer.dao.receipt;
 
 import com.afx.web.receiptorganizer.types.Receipt;
 import com.afx.web.receiptorganizer.types.ReceiptFile;
+import com.afx.web.receiptorganizer.types.ReceiptItem;
 
 import java.util.List;
 

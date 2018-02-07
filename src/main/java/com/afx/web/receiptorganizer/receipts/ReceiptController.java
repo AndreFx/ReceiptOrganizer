@@ -7,7 +7,8 @@ import com.afx.web.receiptorganizer.exceptions.types.ReceiptNotFoundException;
 import com.afx.web.receiptorganizer.types.Label;
 import com.afx.web.receiptorganizer.utilities.ImageThumbnailCreator;
 import com.afx.web.receiptorganizer.utilities.PDFImageCreator;
-import com.asprise.ocr.Ocr;
+import com.google.cloud.vision.v1.*;
+import com.google.protobuf.ByteString;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.image.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -266,7 +268,7 @@ public class ReceiptController {
 
                 //TODO Test OCR
                 try {
-                    ocr(newReceipt.getMultipartFile().getName(), newReceipt.getMultipartFile().getContentType(), newReceipt.getMultipartFile().getBytes());
+                    ocr(newReceipt.getMultipartFile().getBytes());
                 } catch (Exception e) {
                     System.out.println(e.toString());
                 }
@@ -300,45 +302,55 @@ public class ReceiptController {
         }
     }
 
-    private static void ocr(String name, String contentType, byte[] imageAsBytes) throws Exception {
-        //TODO Determine if i want to use asprise or abbyy web ocr
-        File tempFile = File.createTempFile(name, ".pdf", null);
-        FileOutputStream fos = new FileOutputStream(tempFile);
-        fos.write(imageAsBytes);
-        fos.close();
+    private static void ocr(byte[] image) throws Exception {
+        try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
 
+            ByteString imgBytes = ByteString.copyFrom(image);
 
-        Ocr.setUp();
+            // Builds the image annotation request
+            List<AnnotateImageRequest> requests = new ArrayList<>();
+            Image img = Image.newBuilder().setContent(imgBytes).build();
+            Feature feat = Feature.newBuilder().setType(Feature.Type.DOCUMENT_TEXT_DETECTION).build();
+            AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
+                    .addFeatures(feat)
+                    .setImage(img)
+                    .build();
+            requests.add(request);
 
-        Ocr ocr = new Ocr();
-        ocr.startEngine("eng", Ocr.SPEED_FASTEST);
-        String s = ocr.recognize(new File[] {tempFile}, Ocr.RECOGNIZE_TYPE_TEXT, Ocr.OUTPUT_FORMAT_PLAINTEXT);
+            // Performs label detection on the image file
+            BatchAnnotateImagesResponse response = vision.batchAnnotateImages(requests);
+            List<AnnotateImageResponse> responses = response.getResponsesList();
 
-        boolean success = tempFile.delete();
+            for (AnnotateImageResponse res : responses) {
+                if (res.hasError()) {
+                    System.out.printf("Error: %s\n", res.getError().getMessage());
+                    return;
+                }
 
-        logger.info("OCR output:" + s);
-//
-//
-//        BytePointer outText;
-//
-//        tesseract.TessBaseAPI api = new tesseract.TessBaseAPI();
-//        // Initialize tesseract-ocr with English, without specifying tessdata path
-//        if (api.Init("C:", "ENG") != 0) {
-//            System.err.println("Could not initialize tesseract.");
-//            System.exit(1);
-//        }
-//
-//        // Open input image with leptonica library
-//        lept.PIX image = pixRead(tempFile.getAbsolutePath());
-//        api.SetImage(image);
-//        // Get OCR result
-//        outText = api.GetUTF8Text();
-//        String string = outText.getString();
-//        System.out.println("OCR output:\n" + string);
-//
-//        // Destroy used object and release memory
-//        api.End();
-//        outText.deallocate();
-//        pixDestroy(image);
+                TextAnnotation annotation = res.getFullTextAnnotation();
+                for (Page page: annotation.getPagesList()) {
+                    String pageText = "";
+                    for (Block block : page.getBlocksList()) {
+                        String blockText = "";
+                        for (Paragraph para : block.getParagraphsList()) {
+                            String paraText = "";
+                            for (Word word: para.getWordsList()) {
+                                String wordText = "";
+                                for (Symbol symbol: word.getSymbolsList()) {
+                                    wordText = wordText + symbol.getText();
+                                }
+                                paraText = paraText + wordText;
+                            }
+                            // Output Example using Paragraph:
+                            System.out.println("Paragraph: \n" + paraText);
+                            System.out.println("Bounds: \n" + para.getBoundingBox() + "\n");
+                            blockText = blockText + paraText;
+                        }
+                        pageText = pageText + blockText;
+                    }
+                }
+                System.out.println(annotation.getText());
+            }
+        }
     }
 }
