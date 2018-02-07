@@ -29,7 +29,7 @@ public class UserViewController {
     Constants
      */
     private static final int MAX_ACTIVE_LABELS = 5;
-    private static final int MAX_RECEIPT_THUMBNAIL_ITEMS = 2;
+    private static final int MAX_RECEIPT_THUMBNAIL_ITEMS = 1;
 
     /*
     Private fields

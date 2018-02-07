@@ -423,6 +423,28 @@ Receipts Table
     font-weight: 600;
 }
 
+/**
+Individual Receipt Table
+ */
+.table .table.receipt-info-table {
+    background-color: inherit;
+}
+.receipt-table-primary {
+    width: 60%;
+    overflow: hidden;
+}
+.receipt-table-secondary {
+    width: 20%;
+    overflow: hidden;
+    text-align: center;
+}
+.receipt-table-empty {
+    text-align: center;
+}
+.table .table > tbody > tr > td, .table .table > tbody > tr > th {
+    border-top: none;
+    border-bottom: 1px solid #dddddd;
+}
 
 /**
 Receipt Edit Styles

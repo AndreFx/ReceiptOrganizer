@@ -13,7 +13,7 @@
     <!-- SITE URLS -->
     <spring:url var="baseHomeUrl" value="/home/"/>
     <c:choose>
-        <c:when test="${searchString != null}">
+        <c:when test='${!searchString.equals("")}'>
             <spring:url value="./search" var="prev">
                 <spring:param name="page" value="${currentPage-1}"/>
                 <spring:param name="searchString" value="${searchString}"/>
@@ -100,17 +100,17 @@
                     <div class="btn-group-container">
                         <c:choose>
                             <c:when test="${activeLabels.size() != 0}">
-                                <span class="vertical-align-text">
+                                <h4 class="vertical-align-text">
                                 <c:forEach items="${activeLabels}" var="label" varStatus="i">
                                     [${label}]
                                 </c:forEach>
-                                </span>
+                                </h4>
                             </c:when>
-                            <c:when test='${searchString != ""}'>
-                                <span class="vertical-align-text">Search for: "${searchString}"</span>
+                            <c:when test='${!searchString.equals("")}'>
+                                <h4 class="vertical-align-text">Search for: "${searchString}"</h4>
                             </c:when>
                             <c:otherwise>
-                                <span class="vertical-align-text">All Receipts</span>
+                                <h4 class="vertical-align-text">All Receipts</h4>
                             </c:otherwise>
                         </c:choose>
                     </div>
@@ -150,7 +150,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <c:choose>
-                                                <c:when test="${searchString != null}">
+                                                <c:when test='${!searchString.equals("")}'>
                                                     <spring:url value="./search" var="url">
                                                         <spring:param name="page" value="${i.index}"/>
                                                         <spring:param name="searchString" value="${searchString}"/>
@@ -189,27 +189,38 @@
                                 <tr class="clickable-row" data-href="<c:out value="${receiptViewUrl}"/>">
                                     <td class="vertical-align-text"><img class="receipt-thumbnail modal-image" alt="${receipt.title}" src='<c:out value="${receiptViewImageUrl}"/>'></td>
                                     <td class="vertical-align-text">
-                                        <table class="table">
+                                        <table class="table receipt-info-table">
                                             <tr>
-                                                <th>${receipt.title}</th>
-                                                <fmt:formatNumber value='${receipt.receiptAmount}' type="currency" currencySymbol="" var="formattedReceiptAmount"/>
-                                                <th colspan="2">${formattedReceiptAmount}</th>
+                                                <th class="receipt-table-primary">${receipt.title}</th>
+                                                <th class="receipt-table-secondary">${receipt.date}</th>
+                                                <fmt:formatNumber value='${receipt.receiptAmount}' type="currency" var="formattedReceiptAmount"/>
+                                                <th class="receipt-table-secondary">${formattedReceiptAmount}</th>
                                             </tr>
                                             <tr>
-                                                <td>Top Items</td>
-                                                <td>Quantity</td>
-                                                <td>Unit Price</td>
+                                                <td class="receipt-table-primary">First Item</td>
+                                                <td class="receipt-table-secondary">Quantity</td>
+                                                <td class="receipt-table-secondary">Unit Price</td>
                                             </tr>
-                                            <c:forEach items="${receipt.items}" var="item" varStatus="j">
-                                                <c:if test="${j.index < numThumbnailItems}">
+                                            <c:choose>
+                                                <c:when test="${receipt.items.size() != 0}">
+                                                    <c:forEach items="${receipt.items}" var="item" varStatus="j">
+                                                        <c:if test="${j.index < numThumbnailItems}">
+                                                            <tr>
+                                                                <td class="receipt-table-primary">${item.name}</td>
+                                                                <td class="receipt-table-secondary">${item.quantity}</td>
+                                                                <fmt:formatNumber value='${item.unitPrice}' type="currency" var="formattedUnitPrice"/>
+                                                                <td class="receipt-table-secondary">${formattedUnitPrice}</td>
+                                                            </tr>
+                                                        </c:if>
+                                                    </c:forEach>
+                                                </c:when>
+                                                <c:otherwise>
                                                     <tr>
-                                                        <td>${item.name}</td>
-                                                        <td>${item.quantity}</td>
-                                                        <fmt:formatNumber value='${item.unitPrice}' type="currency" currencySymbol="" var="formattedUnitPrice"/>
-                                                        <td>${formattedUnitPrice}</td>
+                                                        <td colspan="3" class="receipt-table-empty">No Items!</td>
                                                     </tr>
-                                                </c:if>
-                                            </c:forEach>
+                                                </c:otherwise>
+                                            </c:choose>
+
                                         </table>
                                     </td>
                                 </tr>

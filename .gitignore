@@ -13,6 +13,14 @@
 #Java IDEs
 .settings/
 
+#Intellij
+*.iml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/dictionaries
+.idea/libraries
+
 # Package Files #
 *.jar
 *.war
@@ -25,4 +33,4 @@
 hs_err_pid*
 
 # Maven
-*/target/*
+target/*
