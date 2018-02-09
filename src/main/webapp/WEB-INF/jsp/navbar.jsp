@@ -30,7 +30,7 @@
                 <li>
                     <form class="pull-right position" action="${logoutUrl}" method="post" id="logout-form">
                         <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-                        <button id="logout-btn" class="btn navbar-ctl" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-sign-out"></i></button>
+                        <button id="logout-btn" class="btn navbar-ctl" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-sign-out-alt"></i></button>
                     </form>
                 </li>
                 <li>

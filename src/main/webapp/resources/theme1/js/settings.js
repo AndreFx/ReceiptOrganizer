@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
     //Validator for userSettings form.
     $('#user').validate({
         rules: {

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
     $('#editLabels').multiselect({
         enableFiltering: true,
         enableCaseInsensitiveFiltering: true,

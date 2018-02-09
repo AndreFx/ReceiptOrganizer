@@ -15,7 +15,7 @@ function createItemDeleteButtonHandlers(parent, labelId, divId, number) {
     });
 }
 
-$(document).ready(function() {
+$(function() {
 
     /* Sidebar collapsing button */
 
@@ -48,7 +48,7 @@ $(document).ready(function() {
 
     /* File upload label functionality */
 
-    $('.multipart-input').change(function() {
+    $('.multipart-input').on("change", function() {
         console.log("User selected file");
         var filename = $(this).val().split('\\').pop();
         if (filename) {
@@ -61,7 +61,7 @@ $(document).ready(function() {
     /* Image Modal functionality */
 
     //Show image modal
-    $(".modal-image").click(function(event) {
+    $(".modal-image").on("click", function(event) {
         console.log("Image Modal toggled.");
         event.stopPropagation();
         $("body").addClass("image-modal-open");
@@ -82,14 +82,14 @@ $(document).ready(function() {
     });
 
     // When the user clicks on <span> (x), close the modal
-    $(".image-modal-close").click(function() {
+    $(".image-modal-close").on("click", function() {
         $("body").removeClass("image-modal-open");
         $("#imageModal").css("display", "none");
     });
 
     /* Clickable row handler */
 
-    $(".clickable-row").click(function(event) {
+    $(".clickable-row").on("click", function(event) {
         console.log("Row clicked.");
 
         if (!$(event.target).hasClass('menu-icon') && !$(event.target).hasClass('dropdown-toggle')) {

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
 
     /* Sidebar scrolling */
     $("#sidebar").mCustomScrollbar({
@@ -331,7 +331,7 @@ $(document).ready(function() {
         }
 
         //Insert and show
-        $('#labelList > li:eq(' + (index + 1) + ')').after("<li class=\"nav-item\">\n" +
+        $('#labelSubmenu > li:eq(' + index + ')').after("<li class=\"nav-item\">\n" +
             "                <table class=\"table table-label table-hover\">\n" +
             "                    <tbody>\n" +
             "                        <tr class=\"clickable-row\" data-href=\"/ReceiptOrganizer/home/?label=" + labelName + "\">\n" +
@@ -353,8 +353,8 @@ $(document).ready(function() {
             "            </li>");
 
         //Re register click events.
-        $('.dropdown-item-edit').click(editClickEvent);
-        $('.dropdown-item-delete').click(deleteClickEvent);
+        $('.dropdown-item-edit').on("click", editClickEvent);
+        $('.dropdown-item-delete').on("click", deleteClickEvent);
     }
 
     function addLabelMultiselect(labelName) {
@@ -516,7 +516,7 @@ $(document).ready(function() {
     }
 
     //Create editor and hide and li for the selected label.
-    $('.dropdown-item-edit').click(editClickEvent);
+    $('.dropdown-item-edit').on("click", editClickEvent);
 
     //Cancel edit button functionality. Must use .on because the button is dynamically created.
     $('#sidebar').on('click', "#stopEdit", function(event) {
@@ -569,7 +569,7 @@ $(document).ready(function() {
     });
 
     //AJAX Delete for Labels
-    $('#deleteLabel').submit(function(event) {
+    $('#deleteLabel').on("submit", function(event) {
         event.preventDefault();
         var success = false;
         var labelName = $(this).find('input[name="labelName"]').val();
@@ -602,22 +602,22 @@ $(document).ready(function() {
     });
 
     //Delete the selected label, but first bring up a modal box to ensure this selection was desired.
-    $(".dropdown-item-delete").click(deleteClickEvent);
+    $(".dropdown-item-delete").on("click", deleteClickEvent);
 
     /* Modals */
 
     /* On show events */
 
     $('#addReceipt').on('shown.bs.modal', function() {
-        $("#title").focus();
+        $("#title").trigger("focus");
     });
 
     $('#addLabel').on('shown.bs.modal', function() {
-        $("#name").focus();
+        $("#name").trigger("focus");
     });
 
     $('#deleteLabelModal').on('shown.bs.modal', function() {
-        $("#deleteCancelButton").focus();
+        $("#deleteCancelButton").trigger("focus");
     });
 
     /* On hide events */

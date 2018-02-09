@@ -1,6 +1,6 @@
-$(document).ready(function() {
+$(function() {
 
-    $('#lg_username').focus();
+    $('#lg_username').trigger("focus");
 
     //Validator for editReceipt form.
     $('#loginForm').validate({
@@ -42,4 +42,13 @@ $(document).ready(function() {
             form.submit();
         }
     });
+
+    $('#loginForm').on("submit", function() {
+        form_success($(this));
+    });
+
+    function form_success($form)
+    {
+        $form.find('[type=submit]').addClass('success clicked').html('<i class="fa fa-check"></i>');
+    }
 });
