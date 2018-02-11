@@ -4,7 +4,7 @@
   Time: 8:10 PM
 --%>
 <footer class="footer">
-    <div class="container">
+    <div>
         <ul class="footer-links">
             <li><a href="https://github.com/AndreFx/ReceiptOrganizer">Github</a></li>
         </ul>
