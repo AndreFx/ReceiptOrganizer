@@ -7,6 +7,8 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
+
 @Component
 public class ReceiptValidator implements Validator {
 

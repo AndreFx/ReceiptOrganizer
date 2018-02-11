@@ -137,7 +137,7 @@
                             </c:otherwise>
                         </c:choose>
                         <nav class="pagination-nav" aria-label="page navigation">
-                            <ul class="pagination">
+                            <ul class="pagination ">
                                 <!-- Previous button -->
                                 <c:choose>
                                     <c:when test="${currentPage > 1}">
@@ -199,7 +199,7 @@
                                             <tr>
                                                 <th class="receipt-table-primary">${receipt.title}</th>
                                                 <th class="receipt-table-secondary">${receipt.date}</th>
-                                                <fmt:formatNumber value='${receipt.receiptAmount}' type="currency" var="formattedReceiptAmount"/>
+                                                <fmt:formatNumber value='${receipt.total}' type="currency" var="formattedReceiptAmount"/>
                                                 <th class="receipt-table-secondary">${formattedReceiptAmount}</th>
                                             </tr>
                                             <tr>

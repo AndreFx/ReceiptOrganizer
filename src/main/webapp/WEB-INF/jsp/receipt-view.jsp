@@ -168,10 +168,17 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="receiptAmount" class="col-lg-2 control-label">Receipt Amount</form:label>
+                        <form:label path="total" class="col-lg-2 control-label">Tax</form:label>
                         <div class="col-lg-10">
-                            <fmt:formatNumber value='${receipt.receiptAmount}' type="currency" currencySymbol="" var="formattedReceiptAmount"/>
-                            <form:input path="receiptAmount" id="editReceiptAmount" type="text" value="${formattedReceiptAmount}" class="form-control"/>
+                            <fmt:formatNumber value='${receipt.tax}' type="currency" currencySymbol="" var="formattedEditTax"/>
+                            <form:input path="tax" id="editTax" type="text" value="${formattedEditTax}" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <form:label path="total" class="col-lg-2 control-label">Total</form:label>
+                        <div class="col-lg-10">
+                            <fmt:formatNumber value='${receipt.total}' type="currency" currencySymbol="" var="formattedEditTotal"/>
+                            <form:input path="total" id="editTotal" type="text" value="${formattedEditTotal}" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">

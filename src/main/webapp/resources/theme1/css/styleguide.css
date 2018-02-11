@@ -336,6 +336,7 @@ Pagination
  */
 .pagination {
    margin: 0 !important;
+    vertical-align: middle;
 }
 .pagination > li.active > a, .pagination > li.active > a:hover {
     background: #bb0000;
@@ -430,6 +431,7 @@ Individual Receipt Table
 .receipt-table-primary {
     width: 60%;
     overflow: hidden;
+    text-align: left;
 }
 .receipt-table-secondary {
     width: 20%;

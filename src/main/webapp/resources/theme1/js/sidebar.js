@@ -636,7 +636,7 @@ $(function() {
         }
 
         //Reset rowNum
-        currentRowNum = 0;
+        currentRowNum = 1;
 
         //Clear any user input
         $(this).find('form')[0].reset();

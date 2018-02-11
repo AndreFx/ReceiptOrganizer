@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +32,7 @@ public class ReceiptResultSetExtractor  implements ResultSetExtractor<List<Recei
                 currentReceipt.setReceiptId(currentId);
                 currentReceipt.setTitle(rs.getString("Title"));
                 currentReceipt.setDate(rs.getDate("Date"));
-
-                //Convert receiptamount to currency string
-                BigDecimal amount = rs.getBigDecimal("ReceiptAmount");
-                currentReceipt.setReceiptAmount(amount);
-                //NumberFormat formatter = NumberFormat.getCurrencyInstance();
-                //currentReceipt.setReceiptAmountCurrency(formatter.format(amount));
+                currentReceipt.setTotal(rs.getBigDecimal("Total"));
                 currentReceipt.setItems(currentReceiptItems);
 
                 receipts.add(currentReceipt);

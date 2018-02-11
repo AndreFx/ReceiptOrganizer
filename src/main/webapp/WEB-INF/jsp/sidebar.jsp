@@ -190,10 +190,17 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="receiptAmount" class="col-lg-2 control-label">Receipt Amount</form:label>
+                        <form:label path="total" class="col-lg-2 control-label">Tax</form:label>
                         <div class="col-lg-9">
-                            <fmt:formatNumber value='${newReceipt.receiptAmount}' type="currency" currencySymbol="" var="formattedReceiptAmount"/>
-                            <form:input path="receiptAmount" id="editReceiptAmount" type="text" value="${formattedReceiptAmount}" class="form-control"/>
+                            <fmt:formatNumber value='${newReceipt.tax}' type="currency" currencySymbol="" var="formattedTax"/>
+                            <form:input path="tax" type="text" value="${formattedTax}" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <form:label path="total" class="col-lg-2 control-label">Total</form:label>
+                        <div class="col-lg-9">
+                            <fmt:formatNumber value='${newReceipt.total}' type="currency" currencySymbol="" var="formattedTotal"/>
+                            <form:input path="total" type="text" value="${formattedTotal}" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">

@@ -17,8 +17,8 @@ public class Receipt {
     private Integer receiptId;
     private String title;
     private Date date;
-    private BigDecimal receiptAmount;
-    //private String receiptAmountCurrency;
+    private BigDecimal tax;
+    private BigDecimal total;
     private String description;
     private String[] labels;
     private List<ReceiptItem> items = new ArrayList<>();
@@ -36,7 +36,9 @@ public class Receipt {
      */
 
     public Receipt() {
-        receiptAmount = new BigDecimal(0.00);
+        //Set defaults for new forms
+        total = new BigDecimal(0.00);
+        tax = new BigDecimal(0.00);
     }
 
     /*
@@ -73,21 +75,21 @@ public class Receipt {
         this.date = date;
     }
 
-    public BigDecimal getReceiptAmount() {
-        return receiptAmount;
+    public BigDecimal getTax() {
+        return tax;
     }
 
-    public void setReceiptAmount(BigDecimal receiptAmount) {
-        this.receiptAmount = receiptAmount;
+    public void setTax(BigDecimal tax) {
+        this.tax = tax;
     }
 
-//    public String getReceiptAmountCurrency() {
-//        return receiptAmountCurrency;
-//    }
+    public BigDecimal getTotal() {
+        return total;
+    }
 
-//    public void setReceiptAmountCurrency(String receiptAmountCurrency) {
-//        this.receiptAmountCurrency = receiptAmountCurrency;
-//    }
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
 
     public List<ReceiptItem> getItems() {
         return items;

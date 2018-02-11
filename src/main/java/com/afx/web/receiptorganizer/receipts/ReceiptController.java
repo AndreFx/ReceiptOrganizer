@@ -5,6 +5,7 @@ import com.afx.web.receiptorganizer.dao.receipt.ReceiptDao;
 import com.afx.web.receiptorganizer.types.*;
 import com.afx.web.receiptorganizer.exceptions.types.ReceiptNotFoundException;
 import com.afx.web.receiptorganizer.types.Label;
+import com.afx.web.receiptorganizer.userview.validators.ReceiptValidator;
 import com.afx.web.receiptorganizer.utilities.ImageThumbnailCreator;
 import com.afx.web.receiptorganizer.utilities.PDFImageCreator;
 import com.google.cloud.vision.v1.*;
@@ -17,6 +18,7 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -60,6 +62,8 @@ public class ReceiptController {
     @Autowired
     private LabelDao labelDao;
 
+    @Autowired
+    private ReceiptValidator receiptValidator;
 
     /*
     Binding methods
@@ -67,12 +71,14 @@ public class ReceiptController {
 
     @InitBinder("newReceipt")
     public void newReceiptInitBinder(WebDataBinder binder) {
+        binder.addValidators(receiptValidator);
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 
     @InitBinder("receipt")
     public void receiptEditInitBinder(WebDataBinder binder) {
+        binder.addValidators(receiptValidator);
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
@@ -169,7 +175,8 @@ public class ReceiptController {
             if (receipt.getMultipartFile() != null && !receipt.getMultipartFile().isEmpty()) {
 
                 BufferedImage image;
-                if (receipt.getMultipartFile().getContentType().equals("application/pdf")) {
+                if (receipt.getMultipartFile().getContentType() != null
+                        && receipt.getMultipartFile().getContentType().equals("application/pdf")) {
                     image = PDFImageCreator.createImageOfPDFPage(receipt.getMultipartFile().getInputStream(),
                             "receipt.pdf", 0);
                     receipt.setReceiptPDF(receipt.getMultipartFile().getBytes());
