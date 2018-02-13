@@ -93,5 +93,6 @@
         </div>
     </div>
     <jsp:include page="/WEB-INF/jsp/image-modal.jsp"/>
+    <jsp:include page="/WEB-INF/jsp/loader.jsp"/>
 </body>
 </html>

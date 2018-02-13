@@ -30,6 +30,7 @@ public class Receipt {
     private byte[] receiptThumbnail;
     private String MIME;
     private MultipartFile multipartFile;
+    private String originalFileName;
 
     /*
     Constructors
@@ -145,6 +146,14 @@ public class Receipt {
 
     public void setMultipartFile(MultipartFile multipartFile) {
         this.multipartFile = multipartFile;
+    }
+
+    public String getOriginalFileName() {
+        return originalFileName;
+    }
+
+    public void setOriginalFileName(String originalFileName) {
+        this.originalFileName = originalFileName;
     }
 
     public String[] getLabels() {

@@ -480,13 +480,18 @@ public class ReceiptDaoImpl implements ReceiptDao {
 
     @SuppressWarnings("unchecked")
     private Map<String, ?>[] getLabelBatchParams(String username, Receipt receipt) {
-        Map<String, ?>[] batchParams = new HashMap[receipt.getLabels().length];
-        for (int i = 0; i < receipt.getLabels().length; i++) {
-            Map<String, Object> temp = new HashMap<>();
-            temp.put("receiptid", receipt.getReceiptId());
-            temp.put("username", username);
-            temp.put("labelname", receipt.getLabels()[i]);
-            batchParams[i] = temp;
+        Map<String, ?>[] batchParams = null;
+        if (receipt.getLabels() != null) {
+            batchParams = new HashMap[receipt.getLabels().length];
+            for (int i = 0; i < receipt.getLabels().length; i++) {
+                Map<String, Object> temp = new HashMap<>();
+                temp.put("receiptid", receipt.getReceiptId());
+                temp.put("username", username);
+                temp.put("labelname", receipt.getLabels()[i]);
+                batchParams[i] = temp;
+            }
+        } else {
+            batchParams = new HashMap[0];
         }
 
         return batchParams;
@@ -509,6 +514,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
                 temp.put("warrantylengthunit", items.get(i).getWarrantyUnit());
                 batchParams[i] = temp;
             }
+        } else {
+            batchParams = new HashMap[0];
         }
 
         return batchParams;

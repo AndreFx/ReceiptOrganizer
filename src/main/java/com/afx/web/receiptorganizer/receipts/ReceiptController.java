@@ -8,8 +8,6 @@ import com.afx.web.receiptorganizer.types.Label;
 import com.afx.web.receiptorganizer.userview.validators.ReceiptValidator;
 import com.afx.web.receiptorganizer.utilities.ImageThumbnailCreator;
 import com.afx.web.receiptorganizer.utilities.PDFImageCreator;
-import com.google.cloud.vision.v1.*;
-import com.google.protobuf.ByteString;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +16,6 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -28,9 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.image.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -42,15 +37,14 @@ public class ReceiptController {
     Constants
      */
 
-    private static final int THUMBNAIL_HEIGHT = 84;
-    private static final int THUMBNAIL_MAX_WIDTH = 175;
+    public static final int THUMBNAIL_HEIGHT = 84;
+    public static final int THUMBNAIL_MAX_WIDTH = 175;
 
     /*
     Private static variables
      */
 
     private static Logger logger = LogManager.getLogger(ReceiptController.class);
-    private static HashMap<String, HashMap<Integer, byte[]>> userReceiptImageCache = new HashMap<>();
 
     /*
     Private fields
@@ -197,12 +191,6 @@ public class ReceiptController {
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime) / 1000000;
                 logger.debug("Time to scale receipt image of size: " + imageAsBytes.length + " into a thumbnail: " + duration + "ms");
-
-                //Update image cache.
-                if (!userReceiptImageCache.containsKey(user.getUsername().toLowerCase())) {
-                    userReceiptImageCache.put(user.getUsername().toLowerCase(), new HashMap<>());
-                }
-                userReceiptImageCache.get(user.getUsername().toLowerCase()).put(id, imageAsBytes);
             }
 
             //Remove invalid receipt item entries
@@ -226,12 +214,6 @@ public class ReceiptController {
     @RequestMapping(value = "/{receiptId}/delete", method = RequestMethod.POST)
     public String deleteReceipt(@PathVariable(value = "receiptId") int id, @ModelAttribute("user") User user) {
         logger.debug("User: " + user.getUsername() + " deleting receipt with id: " + id);
-
-        //Update image cache.
-        if (userReceiptImageCache.containsKey(user.getUsername().toLowerCase()) &&
-                userReceiptImageCache.get(user.getUsername().toLowerCase()).containsKey(id)) {
-            userReceiptImageCache.get(user.getUsername().toLowerCase()).remove(id);
-        }
 
         this.receiptDao.deleteReceipt(user.getUsername(), id);
 
@@ -273,13 +255,6 @@ public class ReceiptController {
                 //Remove invalid receipt item entries
                 newReceipt.removeInvalidReceiptItems();
 
-                //TODO Test OCR
-                try {
-                    ocr(newReceipt.getMultipartFile().getBytes());
-                } catch (Exception e) {
-                    System.out.println(e.toString());
-                }
-
                 this.receiptDao.addReceipt(user.getUsername(), newReceipt);
 
                 logger.debug("User: " + user.getUsername() + " successfully uploaded image.");
@@ -302,62 +277,4 @@ public class ReceiptController {
     Public static utility methods
      */
 
-    public static void removeUserFromCache(String username) {
-        if (userReceiptImageCache.containsKey(username.toLowerCase())) {
-            logger.debug("Clearing: " + username + " from receipt image cache.");
-            userReceiptImageCache.remove(username.toLowerCase());
-        }
-    }
-
-    private static void ocr(byte[] image) throws Exception {
-        try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
-
-            ByteString imgBytes = ByteString.copyFrom(image);
-
-            // Builds the image annotation request
-            List<AnnotateImageRequest> requests = new ArrayList<>();
-            Image img = Image.newBuilder().setContent(imgBytes).build();
-            Feature feat = Feature.newBuilder().setType(Feature.Type.DOCUMENT_TEXT_DETECTION).build();
-            AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
-                    .addFeatures(feat)
-                    .setImage(img)
-                    .build();
-            requests.add(request);
-
-            // Performs label detection on the image file
-            BatchAnnotateImagesResponse response = vision.batchAnnotateImages(requests);
-            List<AnnotateImageResponse> responses = response.getResponsesList();
-
-            for (AnnotateImageResponse res : responses) {
-                if (res.hasError()) {
-                    System.out.printf("Error: %s\n", res.getError().getMessage());
-                    return;
-                }
-
-                TextAnnotation annotation = res.getFullTextAnnotation();
-                for (Page page: annotation.getPagesList()) {
-                    String pageText = "";
-                    for (Block block : page.getBlocksList()) {
-                        String blockText = "";
-                        for (Paragraph para : block.getParagraphsList()) {
-                            String paraText = "";
-                            for (Word word: para.getWordsList()) {
-                                String wordText = "";
-                                for (Symbol symbol: word.getSymbolsList()) {
-                                    wordText = wordText + symbol.getText();
-                                }
-                                paraText = paraText + wordText;
-                            }
-                            // Output Example using Paragraph:
-                            System.out.println("Paragraph: \n" + paraText);
-                            System.out.println("Bounds: \n" + para.getBoundingBox() + "\n");
-                            blockText = blockText + paraText;
-                        }
-                        pageText = pageText + blockText;
-                    }
-                }
-                System.out.println(annotation.getText());
-            }
-        }
-    }
 }

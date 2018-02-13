@@ -554,7 +554,60 @@ Buttons
 .btn-send:hover {
     background: none repeat scroll 0 0 #bb0000;
 }
-
+/**
+Receipt OCR Form
+ */
+.receipt-ocr-form {
+    position: relative;
+    padding: 25% 20px;
+    text-align: center;
+}
+#receiptImage {
+    display: none;
+}
+.receipt-ocr-form button {
+    display: block;
+    padding: 8px 16px;
+    margin: 40px auto 0;
+}
+.receipt-ocr-form.has-advanced-upload {
+    background-color: white;
+    outline: 2px dashed black;
+    outline-offset: -10px;
+}
+.receipt-ocr-form.has-advanced-upload .ocr-drag-and-drop {
+    display: inline;
+}
+.receipt-ocr-form.has-dragover {
+    outline-color: #bb0000;
+}
+.receipt-ocr-form label:hover strong {
+    color: #bb0000
+}
+.receipt-ocr-form {
+    font-size: 18px;
+}
+.receipt-ocr-form.is-error #receiptOcrFormUpload {
+    display: none;
+}
+#receiptOcrFormError {
+    display: none;
+}
+.receipt-ocr-form.is-error #receiptOcrFormError {
+    display: block;
+}
+.receipt-ocr-form a {
+    color: #333333;
+    font-weight: 700;
+}
+.receipt-ocr-form a:hover {
+    color: #bb0000;
+    text-decoration: none;
+}
+.receipt-image-file-name {
+    font-family: "Open Sans",sans-serif;
+    font-weight: 400;
+}
 
 /* ---------------------------------------------------
     FOOTER STYLES
@@ -918,4 +971,47 @@ a.full-width {
 }
 .bottom-stack-order {
     z-index: 0 !important;
+}
+
+/*
+Spinning loader
+ */
+
+.spinner {
+    animation: rotator 1.4s linear infinite;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1050;
+    margin-left: -33px;
+}
+.path {
+    stroke-dasharray: 187;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    animation:
+            dash 1.4s ease-in-out infinite,
+            colors 5.6s ease-in-out infinite;
+}
+@keyframes rotator {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(270deg); }
+}
+@keyframes colors {
+    0% { stroke: #4285F4; }
+    25% { stroke: #DE3E35; }
+    50% { stroke: #F7C223; }
+    75% { stroke: #1B9A59; }
+    100% { stroke: #4285F4; }
+}
+@keyframes dash {
+    0% { stroke-dashoffset: 187; }
+    50% {
+        stroke-dashoffset: 46.75;
+        transform:rotate(135deg);
+    }
+    100% {
+        stroke-dashoffset: 187;
+        transform:rotate(450deg);
+    }
 }

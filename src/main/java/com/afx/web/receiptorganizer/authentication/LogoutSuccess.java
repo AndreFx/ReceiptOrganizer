@@ -1,6 +1,5 @@
 package com.afx.web.receiptorganizer.authentication;
 
-import com.afx.web.receiptorganizer.receipts.ReceiptController;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -16,11 +15,11 @@ public class LogoutSuccess extends SimpleUrlLogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-        if (authentication.getName().contains("@")) {
-            ReceiptController.removeUserFromCache(authentication.getName().substring(0, authentication.getName().indexOf("@")));
-        } else {
-            ReceiptController.removeUserFromCache(authentication.getName());
-        }
+//        if (authentication.getName().contains("@")) {
+//            ReceiptController.removeUserFromCache(authentication.getName().substring(0, authentication.getName().indexOf("@")));
+//        } else {
+//            ReceiptController.removeUserFromCache(authentication.getName());
+//        }
 
         super.onLogoutSuccess(request, response, authentication);
     }

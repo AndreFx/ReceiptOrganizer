@@ -104,20 +104,12 @@ $(function() {
                 min: 0.0
             },
             date: "validUSDate",
-            multipartFile: {
-                required: true,
-                accept: "image/*,application/pdf"
-            },
             description: {
                 maxlength: 500
             }
         },
 
         messages: {
-            multipartFile: {
-                required: "Receipt upload is required",
-                accept: "File must be an image or pdf"
-            },
             title: {
                 required: "Title is required",
                 notAllSpace: "Title is required",
@@ -319,7 +311,7 @@ $(function() {
         var liIndex = 0;
         $('.label-name').find('span').each(function() {
             //Ignore 'All Receipts'
-            if (liIndex != 0) {
+            if (liIndex !== 0) {
                 labelNameList.push($(this).text());
             }
             liIndex++;
@@ -365,7 +357,7 @@ $(function() {
         var liIndex = 0;
         $('#labels').find('option').each(function() {
             //Ignore 'All Receipts'
-            if (liIndex != 0) {
+            if (liIndex !== 0) {
                 labelNameList.push($(this).text());
             }
             liIndex++;
@@ -381,14 +373,14 @@ $(function() {
             $('#labels').prepend("<option value=\"" + labelName + "\">" + labelName + "</option>");
 
             //Update receiptEdit page if open
-            if ($('#editLabels').length != 0) {
+            if ($('#editLabels').length !== 0) {
                 $('#editLabels').prepend("<option value=\"" + labelName + "\">" + labelName + "</option>");
             }
         } else {
             $('#labels > option:eq(' + index + ')').after("<option value=\"" + labelName + "\">" + labelName + "</option>");
 
             //Update receiptEdit page if open
-            if ($('#editLabels').length != 0) {
+            if ($('#editLabels').length !== 0) {
                 $('#editLabels > option:eq(' + index + ')').after("<option value=\"" + labelName + "\">" + labelName + "</option>");
             }
         }
@@ -408,7 +400,7 @@ $(function() {
         });
 
         //Update receiptEdit page as well.
-        if ($('#editLabels').length != 0) {
+        if ($('#editLabels').length !== 0) {
             $('#editLabels').find('option').each(function() {
                 //Ignore 'All Receipts'
                 if ($(this).text() === labelName) {
@@ -440,7 +432,7 @@ $(function() {
             maxHeight: 250
         });
 
-        if ($('#editLabels').length != 0) {
+        if ($('#editLabels').length !== 0) {
             $('#editLabels').multiselect('destroy').multiselect({
                 enableFiltering: true,
                 enableCaseInsensitiveFiltering: true,
@@ -468,9 +460,11 @@ $(function() {
         event.stopPropagation();
         event.preventDefault();
 
-        if ($('#editor').length) {
-            $('#editor').prev().show();
-            $('#editor').remove();
+        var $editor = $('#editor');
+
+        if ($editor.length) {
+            $editor.prev().show();
+            $editor.remove();
         }
 
         var manager = $('#editManager').clone().attr("id", "editor");
@@ -523,35 +517,37 @@ $(function() {
         //Delete form, show original li
         console.log("Canceling edit action.");
         event.stopPropagation();
-        $('#editor').prev().show();
-        $('#editor').remove();
+
+        var $editor = $('#editor');
+        $editor.prev().show();
+        $editor.remove();
 
         //Stop the dropdown from reopening. Is there some other issue here?
-        $('body').click();
+        $('body').trigger('click');
     });
 
     //AJAX Submission for editing a label
     $('#sidebar').on('submit', "#editor", function(event) {
         event.preventDefault();
-        var success = false;
+        var success = false,
+            $editor = $('#editor');
 
         $.ajax({
             url : '/ReceiptOrganizer/labels/update',
             type: "POST",
             data : {
-                oldLabelName: $('#editor').find("input[name='oldLabelName']").val(),
-                newLabelName: $('#editor').find("input[name='newLabelName']").val()
+                oldLabelName: $editor.find("input[name='oldLabelName']").val(),
+                newLabelName: $editor.find("input[name='newLabelName']").val()
             },
             success : function(res) {
 
                 if(res.success){
                     $('#labelEditErrorContainer').hide();
                     //Update text
-                    var editor = $('#editor');
-                    var labelName = $(editor).find('input[name="newLabelName"]').val().trim();
-                    var oldLabelName = $('#editor').find("input[name='oldLabelName']").val();
-                    $(editor).prev().remove();
-                    $(editor).remove();
+                    var labelName = $editor.find('input[name="newLabelName"]').val().trim();
+                    var oldLabelName = $editor.find("input[name='oldLabelName']").val();
+                    $editor.prev().remove();
+                    $editor.remove();
                     insertLabelListSorted(labelName);
                     updateLabelMultiselect(oldLabelName, labelName);
 
@@ -604,64 +600,188 @@ $(function() {
     //Delete the selected label, but first bring up a modal box to ensure this selection was desired.
     $(".dropdown-item-delete").on("click", deleteClickEvent);
 
-    /* Modals */
+    /*
+    MODAL VIEW EVENTS
+    */
 
-    /* On show events */
+    $('#addReceiptOcr').on('hidden.bs.modal', function() {
+        if (moveToReceiptForm) {
+            $('body').addClass('modal-open');
+            moveToReceiptForm = false;
+        }
+        resetVisionForm();
+    });
 
     $('#addReceipt').on('shown.bs.modal', function() {
         $("#title").trigger("focus");
-    });
+    })
+        .on('hidden.bs.modal', function() {
+            console.log('Receipt modal closed.');
+
+            //Hide error messages
+            $('div#receiptErrors').empty();
+            $('#receiptErrorContainer').hide();
+            $('#multipartFile').parent().next().html("No file chosen");
+
+            //Clear additional rows for items
+            for (var i = 0; i <= currentRowNum; i++) {
+                $('#itemRow' + i).remove();
+            }
+
+            //Reset rowNum
+            currentRowNum = 1;
+
+            //Clear any user input
+            $(this).find('form')[0].reset();
+            $('.receipt-image-file-name').text('');
+            $(this).find('.has-error').removeClass('has-error');
+            $(this).find('input').removeAttr('aria-describedby');
+
+            //Refresh multiselect
+            $("select[id='items0.warrantyUnit']").multiselect('refresh');
+        });
 
     $('#addLabel').on('shown.bs.modal', function() {
         $("#name").trigger("focus");
-    });
+    })
+        .on('hidden.bs.modal', function() {
+            console.log('Label modal closed.');
+
+            $('div#labelErrors').empty();
+            $('#labelErrorContainer').hide();
+
+            //Clear any user input
+            $(this).find('form')[0].reset();
+            $(this).find('.has-error').removeClass('has-error');
+            $(this).find('input').removeAttr('aria-describedby');
+        });
 
     $('#deleteLabelModal').on('shown.bs.modal', function() {
         $("#deleteCancelButton").trigger("focus");
+    })
+        .on('hidden.bs.modal', function() {
+            console.log('Edit Label modal closed.');
+
+            $('#deleteLabelNameText').empty();
+        });
+
+    /*
+    VISION FORM COMPONENTS
+     */
+
+    //Checks for required components of drag and drop upload.
+    var isAdvancedUpload = function() {
+        var div = document.createElement('div');
+        return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+    };
+
+    var $visionForm     = $('.receipt-ocr-form'),
+        $visionInput    = $('.receipt-ocr-form input[type="file"]'),
+        $label          = $('.receipt-ocr-form label'),
+        $spinner        = $('.spinner'),
+        $restart        = $('.receipt-ocr-form-restart'),
+        $visionErrorMsg = $('#receiptOcrFormError span'),
+        moveToReceiptForm = false,
+        showFileName = function(files) {
+            $label.text(files[0].name);
+        },
+        resetVisionForm = function() {
+            $label.html('<strong>Choose a file</strong><span class="ocr-drag-and-drop"> or drag it here</span>.');
+            $visionForm[0].reset();
+            $visionForm.removeClass('is-error');
+            droppedFile = false;
+        };
+
+    //Drag and drop file support
+    if (isAdvancedUpload) {
+        $visionForm.addClass('has-advanced-upload');
+
+        var droppedFile = false,
+            dragCounter = 0;
+
+        $visionForm.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        })
+            .on('dragenter', function() {
+                dragCounter++;
+                $visionForm.addClass('has-dragover');
+            })
+            .on('dragleave dragend drop', function() {
+                dragCounter--;
+                if (dragCounter === 0) {
+                    $visionForm.removeClass('has-dragover');
+                }
+            })
+            .on('drop', function(e) {
+                droppedFile = e.originalEvent.dataTransfer.files;
+                showFileName(droppedFile);
+                $visionForm.trigger('submit');
+            });
+    }
+
+    $visionForm.on('change', function(e) {
+        $visionForm.trigger('submit');
+    });
+    $visionInput.on('change', function(e) {
+        showFileName(e.target.files);
     });
 
-    /* On hide events */
+    $visionForm.on('submit', function(e) {
+        console.log('Submitting OCR form.');
 
-    $('#addReceipt').on('hidden.bs.modal', function() {
-        console.log('Receipt modal closed.');
+        if (!$spinner.hasClass('hidden')) return false;
 
-        //Hide error messages
-        $('div#receiptErrors').empty();
-        $('#receiptErrorContainer').hide();
-        $('#multipartFile').parent().next().html("No file chosen");
+        $spinner.removeClass('hidden');
 
-        //Clear additional rows for items
-        for (var i = 0; i <= currentRowNum; i++) {
-            $('#itemRow' + i).remove();
+        if (isAdvancedUpload) {
+            e.preventDefault();
+            var ajaxData = new FormData();
+
+            if (droppedFile) {
+                ajaxData.append($visionInput.attr('name'), droppedFile[0]);
+            } else {
+                ajaxData.append($visionInput.attr('name'), $visionInput[0].files[0]);
+            }
+
+            $.ajax({
+                url: $visionForm.attr('action'),
+                type: $visionForm.attr('method'),
+                data: ajaxData,
+                dataType: 'json',
+                cache: false,
+                contentType: false,
+                processData: false,
+                complete: function() {
+                    $spinner.addClass('hidden');
+                },
+                success: function(res) {
+                    if (res.success) {
+                        moveToReceiptForm = true;
+                        $('#addReceiptOcr').modal('hide');
+
+                        $('.receipt-image-file-name').text(res.data.originalFileName);
+
+                        $('#addReceipt').modal('show');
+                    } else {
+                        $visionForm.addClass('is-error');
+                        $visionErrorMsg.text(res.errorMessage);
+                    }
+                },
+                error: function() {
+                    $visionForm.addClass('is-error');
+                    $visionErrorMsg.text('Unable to process request.');
+                }
+            });
+        } else {
+            e.preventDefault();
+            // TODO Maybe support older browsers
         }
-
-        //Reset rowNum
-        currentRowNum = 1;
-
-        //Clear any user input
-        $(this).find('form')[0].reset();
-        $(this).find('.has-error').removeClass('has-error');
-        $(this).find('input').removeAttr('aria-describedby');
-
-        //Refresh multiselect
-        $("select[id='items0.warrantyUnit']").multiselect('refresh');
     });
 
-    $('#addLabel').on('hidden.bs.modal', function() {
-        console.log('Label modal closed.');
-
-        $('div#labelErrors').empty();
-        $('#labelErrorContainer').hide();
-
-        //Clear any user input
-        $(this).find('form')[0].reset();
-        $(this).find('.has-error').removeClass('has-error');
-        $(this).find('input').removeAttr('aria-describedby');
-    });
-
-    $('#deleteLabelModal').on('hidden.bs.modal', function() {
-        console.log('Edit Label modal closed.');
-
-        $('#deleteLabelNameText').empty();
+    $restart.on('click', function(e) {
+       e.preventDefault();
+       resetVisionForm();
+       $visionInput.trigger('click');
     });
 });

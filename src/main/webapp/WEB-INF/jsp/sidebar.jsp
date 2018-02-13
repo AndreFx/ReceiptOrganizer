@@ -10,6 +10,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <spring:url var="homeUrl" value="/home/"/>
+<spring:url var="receiptVisionUrl" value="/receipts/vision/ocr"/>
 <spring:url var="createReceiptUrl" value="/receipts/create"/>
 <spring:url var="deleteLabelUrl" value="/labels/delete"/>
 <spring:url var="createLabelUrl" value="/labels/create"/>
@@ -29,7 +30,7 @@
         </div>
     </div>
     <div class="content-body">
-        <a href="#addReceipt" data-toggle="modal"  title="Add Receipt" class="btn btn-new-receipt">
+        <a href="#addReceiptOcr" data-toggle="modal"  title="Add Receipt" class="btn btn-new-receipt">
             Add Receipt
         </a>
     </div>
@@ -150,6 +151,33 @@
     </div>
 </nav>
 <!-- Modals -->
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="addReceiptOcr" class="modal fade" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">Add Receipt</h4>
+            </div>
+            <div class="modal-body" id="receiptOCRBody">
+                <form class="receipt-ocr-form" id="newReceiptOcrForm" method="post" action="${receiptVisionUrl}?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
+                    <div id="receiptOcrFormUpload">
+                        <input type="file" name="receiptImage" id="receiptImage" accept="image/*,application/pdf">
+                        <label for="receiptImage"><strong>Choose a file</strong><span class="ocr-drag-and-drop"> or drag it here</span>.</label>
+                        <button id="receiptOcrFormBtn" class="btn btn-send hidden" type="submit" value="Submit">Upload</button>
+                    </div>
+                    <div id="receiptOcrFormError">
+                        Error!
+                        <span></span>
+                        <a href="#" class="receipt-ocr-form-restart" role="button">Try again!</a>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <h4 class="footer-text">Create a new receipt</h4>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="addReceipt" class="modal fade" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -157,7 +185,8 @@
                 <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
                 <h4 class="modal-title">Add Receipt</h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="newReceiptBody">
+                <!-- TODO This will be an update action without a multipart file -->
                 <form:form autocomplete="off" modelAttribute="newReceipt" method="post" action="${createReceiptUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-group alert alert-danger center-full-width error-container" id="receiptErrorContainer">
                         <div class="col-lg-10" id="receiptErrors"></div>
@@ -221,12 +250,7 @@
                         <div class="col-lg-offset-2 col-lg-9">
                             <div class="receipt-submit-container">
                                 <div class="file-input-container">
-                                        <span class="btn green fileinput-button">
-                                            <i class="fa fa-plus fa fa-white"></i>
-                                            <span>Receipt</span>
-                                            <form:input class="multipart-input" path="multipartFile" type="file" accept="image/*,application/pdf"/>
-                                        </span>
-                                    <form:label path="multipartFile">No file chosen</form:label>
+                                    <span class="receipt-image-file-name"></span>
                                 </div>
                                 <div>
                                     <form:button id="receiptCreateSubmit" class="btn btn-send">Create</form:button>
