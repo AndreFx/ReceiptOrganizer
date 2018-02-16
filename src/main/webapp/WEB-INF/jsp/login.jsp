@@ -1,40 +1,53 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%--
+  User: Andrew
+  Date: 9/1/2017
+  Time: 8:10 PM
+--%>
+<%@page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix = "c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<title>Receipt Organizer Tool</title>
+	<!-- SITE URLS -->
     <spring:url var="loginUrl" value="/login"/>
 
-    <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
-    <spring:url value="/resources/css/afx-login-styleguide.css" var="styleguide"/>
-    <spring:url value="http://fonts.googleapis.com/css?family=Varela+Round" var="googlefonts"/>
+	<!-- FONTS -->
+	<spring:url value="https://fonts.googleapis.com/css?family=Varela+Round" var="googlefonts"/>
 
-    <spring:url value="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js" var="jqueryvalidate"/>
+	<!-- STYLESHEETS -->
+    <spring:url value="/resources/css/bootstrap.css" var="bootstrap"/>
+    <spring:url value="/resources/css/styleguide.css" var="styleguide"/>
+	<spring:url value="/resources/css/fontawesome-all.css" var="fontawesomecss"/>
+
+	<!-- JAVASCRIPT -->
+    <spring:url value="/resources/js/jquery.validate.min.js" var="jqueryvalidate"/>
     <spring:url value="/resources/js/bootstrap.min.js" var="bootstrapjs"/>
-    <spring:url value="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" var="fontawesomecss"/>
     <spring:url value="/resources/js/jquery-3.2.1.min.js" var="jquery"/>
 	<spring:url value="/resources/js/login.js" var="afxLogin"/>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" type="text/css" href="${bootstrap}">
     <link rel="stylesheet" type="text/css" href="${styleguide}">
     <link rel="stylesheet" type="text/css" href="${googlefonts}">
     <link rel="stylesheet" type="text/css" href="${fontawesomecss}"/>
-    <script src="${jquery}"></script>
-    <script src="${jqueryvalidate}"></script>
-    <script src="${bootstrapjs}"></script>
-	<script src="${afxLogin}"></script>
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <script defer src="${jquery}"></script>
+    <script defer src="${jqueryvalidate}"></script>
+    <script defer src="${bootstrapjs}"></script>
+	<script defer src="${afxLogin}"></script>
+
+	<title>Receipt Organizer Tool</title>
 </head>
 <body>
-	<div class="text-center" style="padding: 50px 0">
+	<div class="text-center login" style="padding: 50px 0">
 		<div class="logo">login</div>
 		<!-- Main Form -->
-		<div class="login-form-1">
-			<form method="post" action="${loginUrl}" id="loginForm"
-				class="text-left">
+		<div class="login-form">
+			<form method="post" action="${loginUrl}" id="loginForm" class="text-left" autocomplete="off">
 				<c:choose>
 					<c:when test="${param.error != null}">
 						<div class="login-form-main-message show invalid" id="form-errors-container">

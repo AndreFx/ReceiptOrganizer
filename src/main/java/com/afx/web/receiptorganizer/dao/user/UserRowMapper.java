@@ -1,6 +1,5 @@
 package com.afx.web.receiptorganizer.dao.user;
 
-import com.afx.web.receiptorganizer.types.Receipt;
 import com.afx.web.receiptorganizer.types.User;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -15,7 +14,8 @@ public class UserRowMapper implements RowMapper<User> {
         user.setfName(rs.getString("fName"));
         user.setlName(rs.getString("lName"));
         user.setPaginationSize(rs.getInt("PaginationSize"));
-        user.setFile(rs.getBytes("UserPhoto"));
+        user.setUserPhotoImage(rs.getBytes("UserPhoto"));
+        user.setUserPhotoThumbnail(rs.getBytes("UserPhotoThumbnail"));
         return user;
     }
 }

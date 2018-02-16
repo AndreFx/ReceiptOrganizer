@@ -1,6 +1,5 @@
 package com.afx.web.receiptorganizer.dao.label;
 
-import com.afx.web.receiptorganizer.dao.receipt.ReceiptDaoImpl;
 import com.afx.web.receiptorganizer.types.Label;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,13 +27,25 @@ import java.util.Map;
 @Qualifier("categoryDao")
 public class LabelDaoImpl implements LabelDao {
 
-    private static Logger logger = LogManager.getLogger(ReceiptDaoImpl.class);
+    /*
+    Logger
+     */
+
+    private static Logger logger = LogManager.getLogger(LabelDaoImpl.class);
+
+    /*
+    Private fields
+     */
 
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
     private PlatformTransactionManager transactionManager;
+
+    /*
+    Data access methods
+     */
 
     public void addLabel(String username, Label label) {
         TransactionDefinition def = new DefaultTransactionDefinition();
@@ -122,9 +133,9 @@ public class LabelDaoImpl implements LabelDao {
                     "AND LabelName = :labelName";
             labelName = this.jdbcTemplate.queryForObject(query, parameters, String.class);
         } catch (EmptyResultDataAccessException e) {
-            logger.info("User : " + username + " attempted to add a non-unique label.");
+            logger.info("User: " + username + " attempted to add a non-unique label.");
         }
 
-        return !labelName.equals("");
+        return labelName.equals("");
     }
 }

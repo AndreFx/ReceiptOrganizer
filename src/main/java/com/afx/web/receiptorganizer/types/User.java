@@ -2,16 +2,44 @@ package com.afx.web.receiptorganizer.types;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 public class User implements Serializable {
 
-    private String username;
+    /*
+    Private Fields
+     */
+
+    @Size(max = 50, message = "First name must be under 50 characters")
     private String fName;
+
+    @Size(max = 50, message = "Last name must be under 50 characters")
     private String lName;
+
+    @NotNull
+    @Min(value=5, message = "Page size must be between 5 and 25")
+    @Max(value=25, message = "Page size must be between 5 and 25")
     private Integer paginationSize;
+    private String username;
     private MultipartFile image;
-    private byte[] file;
+    private byte[] userPhotoImage;
+    private byte[] userPhotoThumbnail;
+
+    /*
+    Getters and setters
+     */
+
+    public byte[] getUserPhotoThumbnail() {
+        return userPhotoThumbnail;
+    }
+
+    public void setUserPhotoThumbnail(byte[] userPhotoThumbnail) {
+        this.userPhotoThumbnail = userPhotoThumbnail;
+    }
 
     public String getUsername() {
 	    return this.username;
@@ -53,11 +81,12 @@ public class User implements Serializable {
         this.image = image;
     }
 
-    public byte[] getFile() {
-        return file;
+    public byte[] getUserPhotoImage() {
+        return userPhotoImage;
     }
 
-    public void setFile(byte[] file) {
-        this.file = file;
+    public void setUserPhotoImage(byte[] userPhotoImage) {
+        this.userPhotoImage = userPhotoImage;
     }
+
 }

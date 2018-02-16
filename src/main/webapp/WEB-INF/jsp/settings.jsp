@@ -9,47 +9,65 @@
 <%@taglib uri = "http://www.springframework.org/tags/form" prefix = "form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix = "c"%>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
+    <!-- SITE URLS -->
     <spring:url var="baseHomeUrl" value="/home/"/>
     <spring:url var="searchUrl" value="/home/search"/>
     <spring:url var="logoutUrl" value="/logout"/>
     <spring:url var="settingsUrl" value="/users/settings"/>
     <spring:url var="settingsUpdateUrl" value="/users/settings/update"/>
-    <spring:url value="/users/getUserPhoto" var="userPhotoView"/>
+    <spring:url value="/users/getUserPhoto?thumbnail=false" var="userPhotoView"/>
 
-    <spring:url value="/resources/css/afx-home-styleguide.css" var="styleguide"/>
+    <!-- FONTS -->
+    <spring:url value="https://fonts.googleapis.com/css?family=Varela+Round" var="googlefonts"/>
+
+    <!-- STYLESHEETS -->
+    <spring:url value="/resources/css/styleguide.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
     <spring:url value="/resources/css/bootstrap-multiselect.css" var="multiselectcss"/>
-    <spring:url value="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" var="fontawesomecss"/>
+    <spring:url value="/resources/css/fontawesome-all.css" var="fontawesomecss"/>
     <spring:url value="/resources/css/jquery-ui.css" var="uicss"/>
+    <spring:url value="/resources/css/jquery.mCustomScrollbar.min.css" var="sidebarScrollCss"/>
 
+    <!-- JAVASCRIPT -->
     <spring:url value="/resources/js/bootstrap.min.js" var="bootstrapjs"/>
     <spring:url value="/resources/js/jquery-3.2.1.min.js" var="jquery"/>
     <spring:url value="/resources/js/bootstrap-multiselect.js" var="multiselectjs"/>
     <spring:url value="/resources/js/jquery.validate.min.js" var="validate"/>
+    <spring:url value="/resources/js/additional-methods.min.js" var="addvalidate"/>
     <spring:url value="/resources/js/jquery-ui.min.js" var="ui"/>
-    <spring:url value="/resources/js/receiptOrganizerCommon.js" var="receiptCommon"/>
-    <spring:url value="/resources/js/userSettings.js" var="userSettings"/>
-    <spring:url value="/resources/js/receiptOrganizerSidebar.js" var="sidebar"/>
+    <spring:url value="/resources/js/jquery.mCustomScrollbar.min.js" var="sidebarScroll"/>
+    <spring:url value="/resources/js/common.js" var="receiptCommon"/>
+    <spring:url value="/resources/js/settings.js" var="userSettings"/>
+    <spring:url value="/resources/js/sidebar.js" var="sidebar"/>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+
     <link rel="stylesheet" href="${fontawesomecss}"/>
+    <link rel="stylesheet" type="text/css" href="${googlefonts}">
     <link rel="stylesheet" href="${bootstrap}"/>
     <link rel="stylesheet" href="${multiselectcss}"/>
     <link rel="stylesheet" href="${uicss}"/>
-
-    <!-- My stylesheet last -->
+    <link rel="stylesheet" href="${sidebarScrollCss}"/>
     <link rel="stylesheet" href="${styleguide}">
 
     <script src="${jquery}"></script>
-    <script src="${bootstrapjs}"></script>
-    <script src="${multiselectjs}"></script>
-    <script src="${validate}"></script>
-    <script src="${ui}"></script>
-    <script src="${receiptCommon}"></script>
-    <script src="${sidebar}"></script>
-    <script src="${userSettings}"></script>
-    <script>
-        $(document).ready(function() {
+    <script defer src="${bootstrapjs}"></script>
+    <script defer src="${multiselectjs}"></script>
+    <script defer src="${validate}"></script>
+    <script defer src="${addvalidate}"></script>
+    <script defer src="${ui}"></script>
+    <script defer src="${receiptCommon}"></script>
+    <script defer src="${sidebarScroll}"></script>
+    <script defer src="${sidebar}"></script>
+    <script defer src="${userSettings}"></script>
+    <script defer>
+        $(function() {
             $(function () {
                 var token = $("meta[name='_csrf']").attr("content");
                 var header = $("meta[name='_csrf_header']").attr("content");
@@ -59,37 +77,40 @@
             });
         });
     </script>
-    <meta name="_csrf" content="${_csrf.token}"/>
-    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+
     <title>User Settings</title>
 </head>
 <body>
-    <div class="mail-box">
-        <jsp:include page="/WEB-INF/jsp/userLabelsAside.jsp">
+    <div class="wrapper">
+        <jsp:include page="/WEB-INF/jsp/sidebar.jsp">
             <jsp:param name="baseHomeUrl" value="${baseHomeUrl}"/>
         </jsp:include>
-        <aside class="lg-side">
-            <jsp:include page="rightNavbar.jsp"/>
-            <div class="inbox-body">
+        <div id="content">
+            <jsp:include page="navbar.jsp"/>
+            <div class="content-body">
                 <img class="receipt-edit-image modal-image" alt="${sessionScope.user.username} Image" src='<c:out value="${userPhotoView}"/>'>
-                <form:form autocomplete="false" modelAttribute="user" method="post" action="${settingsUpdateUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
+                <form:form autocomplete="off" modelAttribute="user" method="post" action="${settingsUpdateUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-group alert alert-danger center-full-width error-container" id="userSettingsErrorContainer">
-                        <div class="col-lg-10" id="userSettingsErrors"></div>
+                        <div class="col-lg-10" id="userSettingsErrors">
+                            <form:errors path="fName"/>
+                            <form:errors path="lName"/>
+                            <form:errors path="paginationSize"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="fName" class="col-lg-2 control-name">First Name</form:label>
+                        <form:label path="fName" class="col-lg-2 control-label">First Name</form:label>
                         <div class="col-lg-10">
                             <form:input path="fName" type="text" placeholder="" value="" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="lName" class="col-lg-2 control-name">Last Name</form:label>
+                        <form:label path="lName" class="col-lg-2 control-label">Last Name</form:label>
                         <div class="col-lg-10">
                             <form:input path="lName" type="text" placeholder="" value="" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="paginationSize" class="col-lg-2 control-name">Page Size (5 - 25)</form:label>
+                        <form:label path="paginationSize" class="col-lg-2 control-label">Page Size (5 - 25)</form:label>
                         <div class="col-lg-10">
                             <form:input path="paginationSize" type="text" placeholder="" value="" class="form-control"/>
                         </div>
@@ -103,7 +124,7 @@
                                             <span class="btn green fileinput-button">
                                                 <i class="fa fa-plus fa fa-white"></i>
                                                 <span>Change your photo</span>
-                                                <form:input class="multipart-input" path="image" id="editMultipartFile" type="file" accept=".png,.jpg"/>
+                                                <form:input class="multipart-input" path="image" id="editMultipartFile" type="file" accept="image/*"/>
                                             </span>
                                             <form:label path="image">No file chosen</form:label>
                                         </div>
@@ -117,10 +138,14 @@
                     </div>
                 </form:form>
             </div>
-        </aside>
-        <jsp:include page="/WEB-INF/jsp/imageModal.jsp"/>
+            <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
+        </div>
     </div>
-    <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
+    <div class="snackbar">
+        <span id="snackbarText"></span>
+    </div>
+    <jsp:include page="/WEB-INF/jsp/image-modal.jsp"/>
+    <jsp:include page="/WEB-INF/jsp/loader.jsp"/>
 </body>
 </html>
 
