@@ -10,7 +10,7 @@
 	<repositories>
 		<repository>
 			<id>alternate-repo</id>
-			<url>(http://maven.geotoolkit.org/</url>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
 		</repository>
 	</repositories>
 
