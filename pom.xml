@@ -7,6 +7,13 @@
 	<packaging>war</packaging>
 	<!-- TODO Fix needing to reimport maven projects -->
 
+	<repositories>
+		<repository>
+			<id>my-alternate-repository</id>
+			<url>https://maven.atlassian.com/3rdparty/</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>javax</groupId>
