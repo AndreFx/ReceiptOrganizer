@@ -9,8 +9,8 @@
 
 	<repositories>
 		<repository>
-			<id>my-alternate-repository</id>
-			<url>https://maven.atlassian.com/3rdparty/</url>
+			<id>alternate-repo</id>
+			<url>(http://maven.geotoolkit.org/</url>
 		</repository>
 	</repositories>
 
