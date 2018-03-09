@@ -1,13 +1,13 @@
 package com.afx.web.receiptorganizer.vision;
 
 import com.afx.web.receiptorganizer.dao.receipt.ReceiptDao;
-import com.afx.web.receiptorganizer.exceptions.types.ReceiptNotFoundException;
 import com.afx.web.receiptorganizer.receipts.ReceiptController;
 import com.afx.web.receiptorganizer.types.Receipt;
 import com.afx.web.receiptorganizer.types.User;
 import com.afx.web.receiptorganizer.utilities.ImageThumbnailCreator;
 import com.afx.web.receiptorganizer.utilities.PDFImageCreator;
 import com.afx.web.receiptorganizer.vision.responses.VisionJsonResponse;
+import com.afx.web.receiptorganizer.vision.types.LogoAndDocumentResponse;
 import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
 import org.apache.logging.log4j.LogManager;
@@ -42,6 +42,8 @@ public class VisionController {
     @Autowired
     private ReceiptDao receiptDao;
 
+    private final static int MAX_DESCRIPTION_LENGTH = 500;
+
     @RequestMapping(value = "/ocr", produces={MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
     @ResponseBody
     public VisionJsonResponse getVisionResult(@RequestParam("receiptImage") MultipartFile receiptImage, @ModelAttribute("user") User user) throws Exception {
@@ -56,14 +58,23 @@ public class VisionController {
             byte[] imageAsBytes = receiptImage.getBytes();
             InputStream imageAsStream = receiptImage.getInputStream();
             BufferedImage image;
+            LogoAndDocumentResponse ocrResponse = null;
 
-            //TODO Call OCR
+            //TODO Move OCR into helper?
+            if (receiptImage.getContentType() != null && !receiptImage.getContentType().equals("application/pdf")) {
+                ocrResponse = doOCR(imageAsBytes);
+            }
 
             //TODO Create receipt object from ocr data
             //TODO Make a method for this, it gets really long
             data = new Receipt();
             data.setMIME(receiptImage.getContentType());
             data.setOriginalFileName(receiptImage.getOriginalFilename());
+
+            //Only for ocr compatible receipts
+            if (ocrResponse != null) {
+                data.setDescription(ocrResponse.getDocumentText());
+            }
             try {
                 if (data.getMIME().equals("application/pdf")) {
                     image = PDFImageCreator.createImageOfPDFPage(imageAsStream, data.getOriginalFileName(), 0);
@@ -89,10 +100,9 @@ public class VisionController {
                 long duration = (endTime - startTime) / 1000000;
                 logger.debug("Time to scale receipt image of size: " + imageAsBytes.length + " into a thumbnail: " + duration + "ms");
 
-                //TODO Send new receipt to database
-                this.receiptDao.addReceipt(user.getUsername(), data);
-
                 //TODO Update data var with receipt id and any other important info.
+                //Send receipt to database and get receiptId for user editing of OCR initialized values
+                data.setReceiptId(this.receiptDao.addReceipt(user.getUsername(), data));
 
                 success = true;
             } catch (DataAccessException e) {
@@ -115,7 +125,9 @@ public class VisionController {
         return response;
     }
 
-    private static void ocr(byte[] image) throws Exception {
+    private static LogoAndDocumentResponse doOCR(byte[] image) throws Exception {
+        LogoAndDocumentResponse retVal = null;
+
         try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
 
             ByteString imgBytes = ByteString.copyFrom(image);
@@ -123,48 +135,42 @@ public class VisionController {
             // Builds the image annotation request
             List<AnnotateImageRequest> requests = new ArrayList<>();
             Image img = Image.newBuilder().setContent(imgBytes).build();
-            Feature feat = Feature.newBuilder().setType(Feature.Type.DOCUMENT_TEXT_DETECTION).build();
-            AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
-                    .addFeatures(feat)
+            Feature docFeat = Feature.newBuilder().setType(Feature.Type.DOCUMENT_TEXT_DETECTION).build();
+            AnnotateImageRequest docRequest = AnnotateImageRequest.newBuilder()
+                    .addFeatures(docFeat)
                     .setImage(img)
                     .build();
-            requests.add(request);
+            Feature lblFeat = Feature.newBuilder().setType(Feature.Type.LOGO_DETECTION).build();
+            AnnotateImageRequest lblRequest = AnnotateImageRequest.newBuilder()
+                    .addFeatures(lblFeat)
+                    .setImage(img)
+                    .build();
+            requests.add(lblRequest);
+            requests.add(docRequest);
 
             // Performs label detection on the image file
             BatchAnnotateImagesResponse response = vision.batchAnnotateImages(requests);
             List<AnnotateImageResponse> responses = response.getResponsesList();
 
+            retVal = new LogoAndDocumentResponse();
             for (AnnotateImageResponse res : responses) {
                 if (res.hasError()) {
                     System.out.printf("Error: %s\n", res.getError().getMessage());
-                    return;
+                    return retVal;
                 }
 
-                TextAnnotation annotation = res.getFullTextAnnotation();
-                for (Page page: annotation.getPagesList()) {
-                    String pageText = "";
-                    for (Block block : page.getBlocksList()) {
-                        String blockText = "";
-                        for (Paragraph para : block.getParagraphsList()) {
-                            String paraText = "";
-                            for (Word word: para.getWordsList()) {
-                                String wordText = "";
-                                for (Symbol symbol: word.getSymbolsList()) {
-                                    wordText = wordText + symbol.getText();
-                                }
-                                paraText = paraText + wordText;
-                            }
-                            // Output Example using Paragraph:
-                            System.out.println("Paragraph: \n" + paraText);
-                            System.out.println("Bounds: \n" + para.getBoundingBox() + "\n");
-                            blockText = blockText + paraText;
-                        }
-                        pageText = pageText + blockText;
-                    }
+                //Return top logo result and document text.
+                List<EntityAnnotation> logoAnnotations = res.getLogoAnnotationsList();
+                if (res.hasFullTextAnnotation()) {
+                    TextAnnotation annotation = res.getFullTextAnnotation();
+                    retVal.setDocumentText(annotation.getText().substring(0, MAX_DESCRIPTION_LENGTH));
+                } else if (logoAnnotations.size() != 0) {
+                    retVal.setLogoDescription(logoAnnotations.get(0).getDescription());
                 }
-                System.out.println(annotation.getText());
             }
         }
+
+        return retVal;
     }
 
 }

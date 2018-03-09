@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ReceiptDao {
 
-    void addReceipt(String username, Receipt receipt);
+    int addReceipt(String username, Receipt receipt);
 
     void deleteReceipt(String username, int receiptId);
 

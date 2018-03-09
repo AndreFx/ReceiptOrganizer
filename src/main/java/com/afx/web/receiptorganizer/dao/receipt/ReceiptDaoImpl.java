@@ -52,7 +52,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
      */
 
     @SuppressWarnings("unchecked")
-    public void addReceipt(String username, Receipt receipt) {
+    public int addReceipt(String username, Receipt receipt) {
         TransactionDefinition def = new DefaultTransactionDefinition();
         TransactionStatus status = transactionManager.getTransaction(def);
 
@@ -63,12 +63,14 @@ public class ReceiptDaoImpl implements ReceiptDao {
             receipt.setTax(new BigDecimal(0.00));
         }
 
+        KeyHolder keyHolder;
+
         try {
             //Insert into RECEIPT table first.
             String sql = "INSERT INTO RECEIPT " +
                     "VALUES (:title, :description, :date, :tax, :total, :receiptFullImage, :receiptThumbnail, " +
                     ":receiptPDF, :MIME)";
-            KeyHolder keyHolder = new GeneratedKeyHolder();
+            keyHolder = new GeneratedKeyHolder();
 
             //BeanPropertySqlParameterSource uses reflection to map the fields to the params, make sure no other object
             //has fields with the same name as receipt.
@@ -103,6 +105,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
             transactionManager.rollback(status);
             throw e;
         }
+
+        return keyHolder.getKey().intValue();
     }
 
     public void deleteReceipt(String username, int receiptId) {
