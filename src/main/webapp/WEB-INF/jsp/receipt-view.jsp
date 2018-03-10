@@ -232,7 +232,6 @@
                                 <p class="text-center">Are you sure you want to delete the receipt: ${receipt.title}?</p>
                             </div>
                             <div class="modal-footer">
-                                <!-- TODO Fix csrf token to not be in the url -->
                                 <form:form id="deleteReceiptForm" autocomplete="off" action="${deleteReceiptUrl}" method="post" class="form-horizontal">
                                     <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
                                     <button class="btn btn-secondary">Yes</button>

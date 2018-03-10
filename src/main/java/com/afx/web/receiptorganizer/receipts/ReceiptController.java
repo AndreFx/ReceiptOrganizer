@@ -235,6 +235,7 @@ public class ReceiptController {
         try {
             //Remove invalid receipt item entries
             receipt.removeInvalidReceiptItems();
+            receipt.setDescription(receipt.getDescription().replace("\r", ""));
 
             this.receiptDao.editReceipt(user.getUsername(), receipt);
 
@@ -244,7 +245,7 @@ public class ReceiptController {
             throw new ReceiptNotFoundException(id);
         }
 
-        return "redirect:/home/";
+        return "redirect:/receipts/";
     }
 
     @RequestMapping(value = "/{receiptId}/delete", method = RequestMethod.POST)
@@ -253,7 +254,7 @@ public class ReceiptController {
 
         this.receiptDao.deleteReceipt(user.getUsername(), id);
 
-        return "redirect:/home/";
+        return "redirect:/receipts/";
     }
 
     @RequestMapping(value = "/", produces={MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)

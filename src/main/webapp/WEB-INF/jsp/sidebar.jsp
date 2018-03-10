@@ -193,7 +193,7 @@
                 <h4 class="modal-title">Update Receipt</h4>
             </div>
             <div class="modal-body" id="newReceiptBody">
-                <form:form id="editReceiptForm" autocomplete="off" modelAttribute="newReceipt" method="post" class="form-horizontal">
+                <form:form id="finishReceiptForm" autocomplete="off" modelAttribute="newReceipt" method="post" class="form-horizontal">
                     <div class="form-group alert alert-danger center-full-width error-container" id="receiptErrorContainer">
                         <div class="col-lg-10" id="receiptErrors"></div>
                     </div>

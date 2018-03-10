@@ -138,7 +138,7 @@ public class UserController {
             return "settings";
         }
 
-        return "redirect:/home/";
+        return "redirect:/receipts/";
     }
 
     @RequestMapping(value = "/settings", method = RequestMethod.GET)

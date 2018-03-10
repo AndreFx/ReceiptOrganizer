@@ -92,7 +92,7 @@ $(function() {
     });
 
     //Validator for newReceipt form.
-    $('#newReceipt').validate({
+    $('#finishReceiptForm').validate({
         rules: {
             title: {
                 required: true,
@@ -140,7 +140,7 @@ $(function() {
         errorElement: 'div',
 
         errorPlacement: function(error, element) {
-            console.log("Placing newReceipt form errors.");
+            console.log("Placing finishReceiptForm form errors.");
             error.appendTo('div#receiptErrors');
             $('#receiptErrorContainer').show();
         },
@@ -761,7 +761,7 @@ $(function() {
                         $('#addReceiptOcr').modal('hide');
 
                         $('.receipt-image-file-name').text(res.data.originalFileName);
-                        $('#editReceiptForm').attr('action', '/ReceiptOrganizer/receipts/' + res.data.receiptId);
+                        $('#finishReceiptForm').attr('action', '/ReceiptOrganizer/receipts/' + res.data.receiptId);
                         $('#description').text(res.data.description);
 
                         $('#addReceipt').modal('show');
