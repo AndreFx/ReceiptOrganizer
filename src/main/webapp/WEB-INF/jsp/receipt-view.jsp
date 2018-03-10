@@ -14,7 +14,7 @@
     <!-- SITE URLS -->
     <spring:url var="receiptIndexUrl" value="/receipts/"/>
     <spring:url var="searchUrl" value="/receipts/"/>
-    <spring:url var="editReceiptUrl" value="/receipts/${receiptId}/update"/>
+    <spring:url var="updateReceiptUrl" value="/receipts/${receiptId}"/>
     <spring:url var="deleteReceiptUrl" value="/receipts/${receiptId}/delete"/>
     <spring:url var="logoutUrl" value="/logout"/>
     <spring:url var="settingsUrl" value="/users/settings"/>
@@ -92,7 +92,7 @@
             <jsp:include page="navbar.jsp"/>
             <div class="content-body">
                 <img class="receipt-edit-image modal-image" alt="${receipt.title} Image" src='<c:out value="${receiptViewImageUrl}"/>'>
-                <form:form autocomplete="off" modelAttribute="receipt" method="post" action="${editReceiptUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
+                <form:form autocomplete="off" modelAttribute="receipt" method="post" action="${updateReceiptUrl}" class="form-horizontal">
                     <div class="form-group alert alert-danger center-full-width error-container" id="editReceiptErrorContainer">
                         <div class="col-lg-10" id="editReceiptErrors"></div>
                     </div>
@@ -199,12 +199,7 @@
                                 <div class="btn-group-container">
                                     <div class="receipt-submit-container">
                                         <div class="file-input-container">
-                                            <span class="btn green fileinput-button">
-                                                <i class="fa fa-plus fa fa-white"></i>
-                                                <span>Change Receipt Image</span>
-                                                <form:input path="multipartFile" id="editMultipartFile" class="multipart-input" type="file" accept="image/*,application/pdf"/>
-                                            </span>
-                                            <form:label path="multipartFile">No file chosen</form:label>
+                                            <span class="receipt-image-file-name">${receipt.originalFileName}</span>
                                         </div>
                                         <div>
                                             <form:button id="receiptEditSubmit" class="btn btn-send form-save">Save Changes</form:button>

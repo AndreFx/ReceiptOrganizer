@@ -68,8 +68,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
         try {
             //Insert into RECEIPT table first.
             String sql = "INSERT INTO RECEIPT " +
-                    "VALUES (:title, :description, :date, :tax, :total, :receiptFullImage, :receiptThumbnail, " +
-                    ":receiptPDF, :MIME)";
+                    "VALUES (:title, :vendor, :description, :date, :tax, :total, :receiptFullImage, :receiptThumbnail, " +
+                    ":receiptPDF, :originalFileName, :MIME)";
             keyHolder = new GeneratedKeyHolder();
 
             //BeanPropertySqlParameterSource uses reflection to map the fields to the params, make sure no other object
@@ -202,7 +202,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
 
         try {
             SqlParameterSource parameters = new MapSqlParameterSource("receiptid", receiptId).addValue("username", username);
-            String query = "SELECT RECEIPT.ReceiptId, Title, Description, Date, Tax, Total " +
+            String query = "SELECT RECEIPT.ReceiptId, Title, Description, Date, Tax, Total, OriginalFileName " +
                     "FROM USER_RECEIPTS " +
                     "INNER JOIN RECEIPT " +
                     "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +

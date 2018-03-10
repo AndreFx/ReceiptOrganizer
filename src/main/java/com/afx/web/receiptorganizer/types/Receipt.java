@@ -2,6 +2,7 @@ package com.afx.web.receiptorganizer.types;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,11 +16,18 @@ public class Receipt {
      */
 
     private Integer receiptId;
+
+    @Size(max = 50)
     private String title;
     private Date date;
     private BigDecimal tax;
     private BigDecimal total;
+
+    @Size(max = 2000)
     private String description;
+
+    @Size(max = 50)
+    private String vendor;
     private String[] labels;
     private List<ReceiptItem> items = new ArrayList<>();
 
@@ -106,6 +114,14 @@ public class Receipt {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
     }
 
     public byte[] getReceiptPDF() {

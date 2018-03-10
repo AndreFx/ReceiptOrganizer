@@ -762,7 +762,8 @@ $(function() {
 
                         $('.receipt-image-file-name').text(res.data.originalFileName);
                         $('#finishReceiptForm').attr('action', '/ReceiptOrganizer/receipts/' + res.data.receiptId);
-                        $('#description').text(res.data.description);
+                        $('#title').val(res.data.title);
+                        $('#description').val(res.data.description);
 
                         $('#addReceipt').modal('show');
                     } else {

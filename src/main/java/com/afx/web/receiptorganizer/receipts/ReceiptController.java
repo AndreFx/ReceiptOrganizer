@@ -47,7 +47,7 @@ public class ReceiptController {
     private static final int MAX_RECEIPT_THUMBNAIL_ITEMS = 1;
     private static final int THUMBNAIL_HEIGHT = 84;
     private static final int THUMBNAIL_MAX_WIDTH = 175;
-    private static final int MAX_DESCRIPTION_LENGTH = 500;
+    private static final int MAX_DESCRIPTION_LENGTH = 2000;
 
     /*
     Private static variables
@@ -164,6 +164,7 @@ public class ReceiptController {
         model.addAttribute("newReceipt", new Receipt());
         model.addAttribute("newLabel", new Label());
         model.addAttribute("receiptId", id);
+        model.addAttribute("receiptFile", receipt.getOriginalFileName());
 
         return "receipt-view";
     }
@@ -288,6 +289,7 @@ public class ReceiptController {
             //Only for ocr compatible receipts
             if (ocrResponse != null) {
                 data.setDescription(ocrResponse.getDocumentText());
+                data.setTitle(ocrResponse.getLogoDescription());
             }
             try {
                 if (data.getMIME().equals("application/pdf")) {
@@ -381,7 +383,7 @@ public class ReceiptController {
                 List<EntityAnnotation> logoAnnotations = res.getLogoAnnotationsList();
                 if (res.hasFullTextAnnotation()) {
                     TextAnnotation annotation = res.getFullTextAnnotation();
-                    if (annotation.getText().length() > 500) {
+                    if (annotation.getText().length() > MAX_DESCRIPTION_LENGTH) {
                         retVal.setDocumentText(annotation.getText().substring(0, MAX_DESCRIPTION_LENGTH));
                     } else {
                         retVal.setDocumentText(annotation.getText());

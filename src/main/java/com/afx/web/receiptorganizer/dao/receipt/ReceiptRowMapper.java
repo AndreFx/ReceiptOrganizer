@@ -17,6 +17,7 @@ public class ReceiptRowMapper implements RowMapper<Receipt> {
         receipt.setDate(rs.getDate("Date"));
         receipt.setTax(rs.getBigDecimal("Tax"));
         receipt.setTotal(rs.getBigDecimal("Total"));
+        receipt.setOriginalFileName(rs.getString("OriginalFileName"));
         return receipt;
     }
 }
