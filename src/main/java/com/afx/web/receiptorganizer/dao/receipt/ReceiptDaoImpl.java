@@ -151,29 +151,9 @@ public class ReceiptDaoImpl implements ReceiptDao {
             parameters.put("total", receipt.getTotal());
 
             //Don't update receipt image if image is null
-            if (receipt.getReceiptFullImage() == null) {
-                sql = "UPDATE RECEIPT " +
+            sql = "UPDATE RECEIPT " +
                         "SET Title = :title, Description = :description, Date = :date, Tax = :tax, Total = :total " +
                         "WHERE ReceiptId = :receiptid";
-            } else {
-                parameters.put("image", receipt.getReceiptFullImage());
-                parameters.put("thumbnail", receipt.getReceiptThumbnail());
-                if (receipt.getReceiptPDF() == null) {
-                    sql = "UPDATE RECEIPT " +
-                            "SET Title = :title, Description = :description, Date = :date, Tax = :tax, Total = :total, " +
-                            "FullImage = :image, ImageThumbnail = :thumbnail " +
-                            "WHERE ReceiptId = :receiptid";
-                } else {
-                    //File upload was a pdf
-                    parameters.put("receiptPDF", receipt.getReceiptPDF());
-                    parameters.put("MIME", "application/pdf");
-                    sql = "UPDATE RECEIPT " +
-                            "SET Title = :title, Description = :description, Date = :date, Tax = :tax, Total = :total, " +
-                            "FullImage = :image, ImageThumbnail = :thumbnail, OriginalFile = :receiptPDF, " +
-                            "OriginalFileMIME = :MIME " +
-                            "WHERE ReceiptId = :receiptid";
-                }
-            }
             this.jdbcTemplate.update(sql, parameters);
 
             //Remove old labels from RECEIPT_LABELS
@@ -208,7 +188,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
 
             transactionManager.commit(status);
         } catch (DataAccessException e) {
-            logger.error("Unable to edit label in database. Error: " + e.getMessage());
+            logger.error("Unable to edit receipt in database. Error: " + e.getMessage());
             transactionManager.rollback(status);
             throw e;
         }

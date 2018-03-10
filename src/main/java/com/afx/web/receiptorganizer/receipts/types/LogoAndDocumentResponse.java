@@ -1,4 +1,4 @@
-package com.afx.web.receiptorganizer.vision.types;
+package com.afx.web.receiptorganizer.receipts.types;
 
 public class LogoAndDocumentResponse {
 

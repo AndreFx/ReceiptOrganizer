@@ -10,7 +10,7 @@
 <html lang="en">
 <head>
     <!-- SITE URLS -->
-    <spring:url var="baseHomeUrl" value="/home/"/>
+    <spring:url var="receiptIndexUrl" value="/receipts/"/>
     <spring:url var="logoutUrl" value="/logout"/>
     <spring:url var="settingsUrl" value="/users/settings"/>
     <spring:url value="/resources/images/systemError.jpg" var="errorImage"/>
@@ -73,9 +73,7 @@
 </head>
 <body>
     <div class="wrapper">
-        <jsp:include page="/WEB-INF/jsp/sidebar.jsp">
-            <jsp:param name="baseHomeUrl" value="${baseHomeUrl}"/>
-        </jsp:include>
+        <jsp:include page="/WEB-INF/jsp/sidebar.jsp"/>
         <div id="content">
             <jsp:include page="navbar.jsp"/>
             <div class="content-body">

@@ -40,7 +40,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-	    registry.addViewController("/").setViewName("forward:/home/");
+	    registry.addViewController("/").setViewName("forward:/receipts/");
 	    registry.addViewController("login").setViewName("login");
     }
 

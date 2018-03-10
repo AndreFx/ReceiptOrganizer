@@ -1,4 +1,4 @@
-package com.afx.web.receiptorganizer.vision.responses;
+package com.afx.web.receiptorganizer.receipts.responses;
 
 import com.afx.web.receiptorganizer.types.Receipt;
 

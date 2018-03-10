@@ -7,7 +7,7 @@
 <%@taglib uri = "http://www.springframework.org/tags/form" prefix = "form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix = "c"%>
-<spring:url var="searchUrl" value="/home/search"/>
+<spring:url var="searchUrl" value="/receipts/"/>
 <spring:url var="logoutUrl" value="/logout"/>
 <spring:url var="settingsUrl" value="/users/settings"/>
 

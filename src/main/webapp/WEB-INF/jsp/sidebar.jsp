@@ -9,16 +9,16 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix = "c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
-<spring:url var="homeUrl" value="/home/"/>
-<spring:url var="receiptVisionUrl" value="/receipts/vision/ocr"/>
-<spring:url var="createReceiptUrl" value="/receipts/create"/>
+<c:set var="receiptsUrl" value="/receipts/"/>
+<spring:url value="${receiptsUrl}" var="allReceiptsUrl"/>
+<spring:url var="createReceiptUrl" value="/receipts/"/>
 <spring:url var="deleteLabelUrl" value="/labels/delete"/>
 <spring:url var="createLabelUrl" value="/labels/create"/>
 <spring:url var="updateLabelUrl" value="/labels/update"/>
 <spring:url value="/users/getUserPhoto?thumbnail=true" var="userPhotoView"/>
 <nav id="sidebar">
     <div class="sidebarHeader">
-        <a href="${homeUrl}" class="home-link"><h3>AFX Receipt Organizer</h3></a>
+        <a href="${allReceiptsUrl}" class="home-link"><h3>AFX Receipt Organizer</h3></a>
         <div class="user-head">
             <a class="avatar">
                 <img class="modal-image" width="64" height="60" src="${userPhotoView}" alt="${sessionScope.user.username}'s Account Photo">
@@ -48,7 +48,7 @@
                     </c:choose>
                     <table class="table table-label table-hover">
                         <tbody>
-                        <tr class="clickable-row" data-href="${param.baseHomeUrl}">
+                        <tr class="clickable-row" data-href="${allReceiptsUrl}">
                             <td class="vertical-align-text label-name"><i class="fa fa-sign-blank text-info"></i><span>All Receipts</span></td>
                         </tr>
                         </tbody>
@@ -70,15 +70,22 @@
                         <tbody>
                         <c:choose>
                             <c:when test="${activeLabels.contains(label.name)}">
-                                <spring:url value="." var="url"/>
+                                <!-- Allow users to deselect a single active label -->
+                                <spring:url value="${receiptsUrl}" var="url">
+                                    <c:forEach items="${activeLabels}" var="activeLabel" varStatus="i">
+                                        <c:if test="${!activeLabel.equals(label.name)}">
+                                            <spring:param name="requestLabels" value="${activeLabel}"/>
+                                        </c:if>
+                                    </c:forEach>
+                                </spring:url>
                             </c:when>
                             <c:when test="${activeLabels.size() == 0}">
-                                <spring:url value="." var="url">
+                                <spring:url value="${receiptsUrl}" var="url">
                                     <spring:param name="requestLabels" value="${label.name}"/>
                                 </spring:url>
                             </c:when>
                             <c:otherwise>
-                                <spring:url value="." var="url">
+                                <spring:url value="${receiptsUrl}" var="url">
                                     <c:forEach items="${activeLabels}" var="activeLabel" varStatus="i">
                                         <spring:param name="requestLabels" value="${activeLabel}"/>
                                     </c:forEach>
@@ -159,7 +166,7 @@
                 <h4 class="modal-title">Add Receipt</h4>
             </div>
             <div class="modal-body" id="receiptOCRBody">
-                <form class="receipt-ocr-form" id="newReceiptOcrForm" method="post" action="${receiptVisionUrl}?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
+                <form class="receipt-ocr-form" id="newReceiptOcrForm" method="post" action="${createReceiptUrl}?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
                     <div id="receiptOcrFormUpload">
                         <input type="file" name="receiptImage" id="receiptImage" accept="image/*,application/pdf">
                         <label for="receiptImage"><strong>Choose a file</strong><span class="ocr-drag-and-drop"> or drag it here</span>.</label>
@@ -183,11 +190,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                <h4 class="modal-title">Add Receipt</h4>
+                <h4 class="modal-title">Update Receipt</h4>
             </div>
             <div class="modal-body" id="newReceiptBody">
-                <!-- TODO This will be an update action without a multipart file -->
-                <form:form autocomplete="off" modelAttribute="newReceipt" method="post" action="${createReceiptUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
+                <form:form id="editReceiptForm" autocomplete="off" modelAttribute="newReceipt" method="post" class="form-horizontal">
                     <div class="form-group alert alert-danger center-full-width error-container" id="receiptErrorContainer">
                         <div class="col-lg-10" id="receiptErrors"></div>
                     </div>
@@ -253,7 +259,7 @@
                                     <span class="receipt-image-file-name"></span>
                                 </div>
                                 <div>
-                                    <form:button id="receiptCreateSubmit" class="btn btn-send">Create</form:button>
+                                    <form:button id="receiptCreateSubmit" class="btn btn-send">Finish</form:button>
                                 </div>
                             </div>
                         </div>
@@ -261,7 +267,7 @@
                 </form:form>
             </div>
             <div class="modal-footer">
-                <h4 class="footer-text">Create a new receipt</h4>
+                <h4 class="footer-text">Update an existing receipt</h4>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

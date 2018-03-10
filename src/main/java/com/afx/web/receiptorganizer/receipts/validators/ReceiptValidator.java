@@ -1,4 +1,4 @@
-package com.afx.web.receiptorganizer.userview.validators;
+package com.afx.web.receiptorganizer.receipts.validators;
 
 import com.afx.web.receiptorganizer.types.Receipt;
 import org.springframework.stereotype.Component;

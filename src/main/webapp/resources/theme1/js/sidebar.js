@@ -761,6 +761,7 @@ $(function() {
                         $('#addReceiptOcr').modal('hide');
 
                         $('.receipt-image-file-name').text(res.data.originalFileName);
+                        $('#editReceiptForm').attr('action', '/ReceiptOrganizer/receipts/' + res.data.receiptId);
                         $('#description').text(res.data.description);
 
                         $('#addReceipt').modal('show');
