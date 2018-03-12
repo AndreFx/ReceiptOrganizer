@@ -17,15 +17,14 @@ $(function() {
                 maxlength: 50
             },
             receiptAmount: {
-                number: true,
-                min: 0.0
+                number: true
             },
-            multipartFile: {
-                accept: "image/*,application/pdf"
+            tax: {
+                number: true
             },
             date: "validUSDate",
             description: {
-                maxlength: 500
+                maxlength: 2000
             }
         },
 
@@ -36,15 +35,14 @@ $(function() {
                 maxlength: "Title must be under 50 characters"
             },
             receiptAmount: {
-                number: "Receipt Amount must be a valid number",
-                min: "Receipt Amount cannot be negative"
+                number: "Receipt Amount must be a valid number"
+            },
+            tax: {
+                number: "Tax amount must be a valid number"
             },
             date: "Please enter a date in the format of MM/dd/yyyy",
             description: {
-                maxlength: "Description must be under 500 characters"
-            },
-            multipartFile: {
-                accept: "File must be an image or pdf"
+                maxlength: "Description must be under 2000 characters"
             }
         },
 
@@ -251,7 +249,7 @@ $(function() {
             var row = $("#editItemRow" + i);
 
             //Decrease the value of all attributes of the rows
-            $(row).attr('id', "itemRow" + (i - 1));
+            $(row).attr('id', "editItemRow" + (i - 1));
             $(row).find("label.control-label").text("Item #" + (i - 1));
 
             //reassign id

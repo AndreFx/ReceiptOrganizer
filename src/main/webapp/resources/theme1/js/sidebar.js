@@ -100,12 +100,14 @@ $(function() {
                 maxlength: 50
             },
             receiptAmount: {
-                number: true,
-                min: 0.0
+                number: true
+            },
+            tax: {
+                number: true
             },
             date: "validUSDate",
             description: {
-                maxlength: 500
+                maxlength: 2000
             }
         },
 
@@ -116,12 +118,14 @@ $(function() {
                 maxlength: "Title must be under 50 characters"
             },
             receiptAmount: {
-                number: "Receipt Amount must be a valid number",
-                min: "Receipt Amount cannot be negative"
+                number: "Receipt Amount must be a valid number"
+            },
+            tax: {
+                number: "Tax amount must be a valid number"
             },
             date: "Please enter a date in the format of MM/dd/yyyy",
             description: {
-                maxlength: "Description must be under 500 characters"
+                maxlength: "Description must be under 2000 characters"
             }
         },
 
@@ -171,6 +175,10 @@ $(function() {
 
     $('body').on('click', "#receiptAddItemBtn", function(event) {
         event.stopPropagation();
+        addItemRow();
+    });
+
+    function addItemRow() {
         console.log("Adding new item row in new receipt modal");
 
         //Create copy of row
@@ -267,7 +275,7 @@ $(function() {
         }
 
         currentRowNum++;
-    });
+    }
 
     /* Delete item functionality */
 
@@ -764,6 +772,23 @@ $(function() {
                         $('#finishReceiptForm').attr('action', '/ReceiptOrganizer/receipts/' + res.data.receiptId);
                         $('#title').val(res.data.title);
                         $('#description').val(res.data.description);
+                        $('#total').val(res.data.total.toFixed(2));
+                        $('#tax').val(res.data.tax.toFixed(2));
+
+                        //Set date
+                        var time = new Date(res.data.date);
+                        var theyear = time.getFullYear();
+                        var themonth = time.getMonth() + 1;
+                        var theday = time.getDate();
+                        $('#date').val(themonth + "/" + theday + "/" + theyear);
+
+                        var count = res.data.items.length;
+                        for (var i = 0; i < count; i++) {
+                            addItemRow();
+                            $("input[id='items" + i + ".name']").val(res.data.items[i].name);
+                            $("input[id='items" + i + ".quantity']").val(res.data.items[i].quantity);
+                            $("input[id='items" + i + ".unitPrice']").val(res.data.items[i].unitPrice.toFixed(2));
+                        }
 
                         $('#addReceipt').modal('show');
                     } else {

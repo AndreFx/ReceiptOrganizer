@@ -4,6 +4,8 @@ import com.afx.web.receiptorganizer.dao.label.LabelDao;
 import com.afx.web.receiptorganizer.dao.receipt.ReceiptDao;
 import com.afx.web.receiptorganizer.receipts.responses.VisionJsonResponse;
 import com.afx.web.receiptorganizer.receipts.types.LogoAndDocumentResponse;
+import com.afx.web.receiptorganizer.receipts.types.receiptparsers.ReceiptParser;
+import com.afx.web.receiptorganizer.receipts.types.receiptparsers.factories.ReceiptParserFactory;
 import com.afx.web.receiptorganizer.types.*;
 import com.afx.web.receiptorganizer.exceptions.types.ReceiptNotFoundException;
 import com.afx.web.receiptorganizer.types.Label;
@@ -47,7 +49,6 @@ public class ReceiptController {
     private static final int MAX_RECEIPT_THUMBNAIL_ITEMS = 1;
     private static final int THUMBNAIL_HEIGHT = 84;
     private static final int THUMBNAIL_MAX_WIDTH = 175;
-    private static final int MAX_DESCRIPTION_LENGTH = 2000;
 
     /*
     Private static variables
@@ -236,7 +237,8 @@ public class ReceiptController {
         try {
             //Remove invalid receipt item entries
             receipt.removeInvalidReceiptItems();
-            receipt.setDescription(receipt.getDescription().replace("\r", ""));
+            String description = receipt.getDescription().replace("\r", "");
+            receipt.setDescription(description);
 
             this.receiptDao.editReceipt(user.getUsername(), receipt);
 
@@ -270,65 +272,48 @@ public class ReceiptController {
 
         if (!receiptImage.isEmpty()) {
             byte[] imageAsBytes = receiptImage.getBytes();
-            InputStream imageAsStream = receiptImage.getInputStream();
-            BufferedImage image;
-            LogoAndDocumentResponse ocrResponse = null;
 
-            //TODO Move OCR into helper?
             //TODO Add button to skip ocr
             if (receiptImage.getContentType() != null && !receiptImage.getContentType().equals("application/pdf")) {
-                ocrResponse = doOCR(imageAsBytes);
-            }
-
-            //TODO Create receipt object from ocr data
-            //TODO Make a method for this, it gets really long
-            data = new Receipt();
-            data.setMIME(receiptImage.getContentType());
-            data.setOriginalFileName(receiptImage.getOriginalFilename());
-
-            //Only for ocr compatible receipts
-            if (ocrResponse != null) {
-                data.setDescription(ocrResponse.getDocumentText());
-                data.setTitle(ocrResponse.getLogoDescription());
-            }
-            try {
-                if (data.getMIME().equals("application/pdf")) {
-                    image = PDFImageCreator.createImageOfPDFPage(imageAsStream, data.getOriginalFileName(), 0);
-
-                    //Convert pdf image back to bytes
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    ImageIO.write(image, "jpg", outputStream);
-                    outputStream.flush();
-                    byte[] pdfImageAsBytes = outputStream.toByteArray();
-                    outputStream.close();
-
-                    data.setReceiptFullImage(pdfImageAsBytes);
-                    data.setReceiptPDF(imageAsBytes);
-                } else {
-                    image = ImageIO.read(imageAsStream);
-                    data.setReceiptFullImage(imageAsBytes);
+                LogoAndDocumentResponse ocrResponse = doOCR(imageAsBytes);
+                try {
+                    ReceiptParser parser = new ReceiptParserFactory().getReceiptParser(ocrResponse.getLogoDescription());
+                    data = parser.getReceipt(receiptImage, ocrResponse);
+                } catch (IOException iox) {
+                    logger.error("Failed to convert user: " + user.getUsername() + " image for storage on database.");
+                    throw new RuntimeException(iox.getMessage());
                 }
+            } else if (receiptImage.getContentType() != null && receiptImage.getContentType().equals("application/pdf")) {
+                errorMsg = "Unable to perform OCR on pdf files. Autofill disabled for this receipt.";
+                //Setup receipt
+                data = new Receipt();
+                BufferedImage image;
+                InputStream imageAsStream = receiptImage.getInputStream();
+                image = PDFImageCreator.createImageOfPDFPage(imageAsStream, data.getOriginalFileName(), 0);
+
+                //Convert pdf image back to bytes
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                ImageIO.write(image, "jpg", outputStream);
+                outputStream.flush();
+                byte[] pdfImageAsBytes = outputStream.toByteArray();
+                outputStream.close();
+
+                data.setReceiptFullImage(pdfImageAsBytes);
+                data.setReceiptPDF(imageAsBytes);
 
                 //Create byte array for thumbnail
                 long startTime = System.nanoTime();
-                data.setReceiptThumbnail(ImageThumbnailCreator.createThumbnail(image, ReceiptController.THUMBNAIL_HEIGHT, ReceiptController.THUMBNAIL_MAX_WIDTH));
+                data.setReceiptThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_MAX_WIDTH));
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime) / 1000000;
                 logger.debug("Time to scale receipt image of size: " + imageAsBytes.length + " into a thumbnail: " + duration + "ms");
-
-                //TODO Update data var with receipt id and any other important info.
-                //Send receipt to database and get receiptId for user editing of OCR initialized values
-                data.setReceiptId(this.receiptDao.addReceipt(user.getUsername(), data));
-
-                success = true;
-            } catch (DataAccessException e) {
-                logger.error("User: " + user.getUsername() + " failed to upload file: " + receiptImage.getOriginalFilename());
-                logger.error("Error description: " + e.getMessage());
-                throw e;
-            } catch (IOException iox) {
-                logger.error("Failed to convert user: " + user.getUsername() + " image for storage on database.");
-                throw new RuntimeException(iox.getMessage());
+            } else {
+                //Imageless receipt, shouldn't occur.
+                data = new Receipt();
             }
+
+            data.setReceiptId(this.receiptDao.addReceipt(user.getUsername(), data));
+            success = true;
         } else {
             logger.info("User: " + user.getUsername() + " attempted to upload empty file.");
             errorMsg = "Receipt image is required.";
@@ -383,11 +368,8 @@ public class ReceiptController {
                 List<EntityAnnotation> logoAnnotations = res.getLogoAnnotationsList();
                 if (res.hasFullTextAnnotation()) {
                     TextAnnotation annotation = res.getFullTextAnnotation();
-                    if (annotation.getText().length() > MAX_DESCRIPTION_LENGTH) {
-                        retVal.setDocumentText(annotation.getText().substring(0, MAX_DESCRIPTION_LENGTH));
-                    } else {
-                        retVal.setDocumentText(annotation.getText());
-                    }
+                    String description = annotation.getText().replaceAll("[^\\p{ASCII}]", "");
+                    retVal.setDocumentText(description);
                 } else if (logoAnnotations.size() != 0) {
                     retVal.setLogoDescription(logoAnnotations.get(0).getDescription());
                 }

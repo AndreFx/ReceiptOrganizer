@@ -128,7 +128,7 @@
                                 <form:input id="edititems${i.index}.quantity" path="items[${i.index}].quantity" type="text" placeholder="" value="${receiptItem.quantity}" class="form-control"/>
                             </div>
                             <div class="col-lg-2">
-                                <fmt:formatNumber value='${receiptItem.unitPrice}' type="currency" currencySymbol="" var="formattedUnitPrice"/>
+                                <fmt:formatNumber value='${receiptItem.unitPrice}' type="number" minFractionDigits="2" maxFractionDigits="2" var="formattedUnitPrice"/>
                                 <form:input id="edititems${i.index}.unitPrice" path="items[${i.index}].unitPrice" type="text" placeholder="" value="${formattedUnitPrice}" class="form-control"/>
                             </div>
                             <div class="col-lg-2">
@@ -168,14 +168,14 @@
                     <div class="form-group">
                         <form:label path="total" class="col-lg-2 control-label">Tax</form:label>
                         <div class="col-lg-10">
-                            <fmt:formatNumber value='${receipt.tax}' type="currency" currencySymbol="" var="formattedEditTax"/>
+                            <fmt:formatNumber value='${receipt.tax}' type="number" minFractionDigits="2" maxFractionDigits="2" var="formattedEditTax"/>
                             <form:input path="tax" id="editTax" type="text" value="${formattedEditTax}" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <form:label path="total" class="col-lg-2 control-label">Total</form:label>
                         <div class="col-lg-10">
-                            <fmt:formatNumber value='${receipt.total}' type="currency" currencySymbol="" var="formattedEditTotal"/>
+                            <fmt:formatNumber value='${receipt.total}' type="number" minFractionDigits="2" maxFractionDigits="2" var="formattedEditTotal"/>
                             <form:input path="total" id="editTotal" type="text" value="${formattedEditTotal}" class="form-control"/>
                         </div>
                     </div>

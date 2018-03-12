@@ -197,7 +197,7 @@
                                             <tr>
                                                 <th class="receipt-table-primary">${receipt.title}</th>
                                                 <th class="receipt-table-secondary">${receipt.date}</th>
-                                                <fmt:formatNumber value='${receipt.total}' type="currency" var="formattedReceiptAmount"/>
+                                                <fmt:formatNumber value='${receipt.total}' type="number" minFractionDigits="2" maxFractionDigits="2" var="formattedReceiptAmount"/>
                                                 <th class="receipt-table-secondary">${formattedReceiptAmount}</th>
                                             </tr>
                                             <tr>
@@ -212,7 +212,7 @@
                                                             <tr>
                                                                 <td class="receipt-table-primary">${item.name}</td>
                                                                 <td class="receipt-table-secondary">${item.quantity}</td>
-                                                                <fmt:formatNumber value='${item.unitPrice}' type="currency" var="formattedUnitPrice"/>
+                                                                <fmt:formatNumber value='${item.unitPrice}' type="number" minFractionDigits="2" maxFractionDigits="2" var="formattedUnitPrice"/>
                                                                 <td class="receipt-table-secondary">${formattedUnitPrice}</td>
                                                             </tr>
                                                         </c:if>

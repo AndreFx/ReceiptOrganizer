@@ -32,7 +32,7 @@ $(function() {
     }, "Empty input not allowed");
 
     jQuery.validator.addMethod("validUSDate", function(value, element) {
-        var pattern = /(0\d{1}|1[0-2])\/([0-2]\d{1}|3[0-1])\/(19|20)\d{2}/;
+        var pattern = /(0?\d{1}|1[0-2])\/(3[01]|[12][0-9]|0?[1-9])\/(19|20)\d{2}/;
         var match = value.match(pattern);
         if (!match) {
             return false;
