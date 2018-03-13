@@ -5,6 +5,7 @@ import com.afx.web.receiptorganizer.receipts.types.receiptparsers.ReceiptParser;
 import com.afx.web.receiptorganizer.receipts.types.receiptparsers.ReceiptParserBase;
 import com.afx.web.receiptorganizer.types.Receipt;
 import com.afx.web.receiptorganizer.types.ReceiptItem;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -12,7 +13,6 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,11 +21,24 @@ public class AdvanceAutoReceiptParser extends ReceiptParserBase implements Recei
     /*
     Constants
      */
+
     private static final String DATE_REGEX = "(1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/[0-9]{4}";
     private static final String TOTAL_REGEX = "(?:[^S][^u][^b]\\s*)(?:(?:Total)|(?:total))\\s*\\$(-?[0-9]+\\.\\s*[0-9]{2})";
     private static final String TAX_REGEX = "(?:T1\\s*Tax\\s*@\\s*\\d\\.?\\d*%)\\s*\\$([0-9]+\\.[0-9]{2})";
     private static final String ITEM_REGEX = "(.*(\\d{8}|\\d{7}))\\s+.*\\s*(\\d*)?\\s*\\$?(\\d*\\.\\d{2}|\\d*\\s*\\d{2})";
     private static final String WHITESPACE_FINDER = "\\s";
+
+    /*
+    Constructors
+     */
+
+    public AdvanceAutoReceiptParser(int thumbnailHeight, int thumbnailWidth, int maxDescriptionLength) {
+        super(thumbnailHeight, thumbnailWidth, maxDescriptionLength);
+    }
+
+    /*
+    ReceiptParser implementation
+     */
 
     //This could potentially be several different methods, one for each autofill
     @Override
@@ -107,8 +120,6 @@ public class AdvanceAutoReceiptParser extends ReceiptParserBase implements Recei
 
             items.add(item);
         }
-
-        //TODO Assign labels
 
         receipt.setItems(items);
 

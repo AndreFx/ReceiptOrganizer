@@ -169,7 +169,11 @@
                 <form class="receipt-ocr-form" id="newReceiptOcrForm" method="post" action="${createReceiptUrl}?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
                     <div id="receiptOcrFormUpload">
                         <input type="file" name="receiptImage" id="receiptImage" accept="image/*,application/pdf">
-                        <label for="receiptImage"><strong>Choose a file</strong><span class="ocr-drag-and-drop"> or drag it here</span>.</label>
+                        <label for="receiptImage" id="receiptImageLabel"><strong>Choose a file</strong><span class="ocr-drag-and-drop"> or drag it here</span>.</label>
+                        <div>
+                            <input type="checkbox" name="skipOcr" id="skipOcr"/>
+                            <label for="skipOcr">Skip OCR</label>
+                        </div>
                         <button id="receiptOcrFormBtn" class="btn btn-send hidden" type="submit" value="Submit">Upload</button>
                     </div>
                     <div id="receiptOcrFormError">

@@ -626,27 +626,30 @@ $(function() {
         .on('hidden.bs.modal', function() {
             console.log('Receipt modal closed.');
 
-            //Hide error messages
-            $('div#receiptErrors').empty();
-            $('#receiptErrorContainer').hide();
-            $('#multipartFile').parent().next().html("No file chosen");
+            //Reload page until update receipt is implemented through ajax.
+            location.reload();
 
-            //Clear additional rows for items
-            for (var i = 0; i <= currentRowNum; i++) {
-                $('#itemRow' + i).remove();
-            }
-
-            //Reset rowNum
-            currentRowNum = 1;
-
-            //Clear any user input
-            $(this).find('form')[0].reset();
-            $('.receipt-image-file-name').text('');
-            $(this).find('.has-error').removeClass('has-error');
-            $(this).find('input').removeAttr('aria-describedby');
-
-            //Refresh multiselect
-            $("select[id='items0.warrantyUnit']").multiselect('refresh');
+            // //Hide error messages
+            // $('div#receiptErrors').empty();
+            // $('#receiptErrorContainer').hide();
+            // $('#multipartFile').parent().next().html("No file chosen");
+            //
+            // //Clear additional rows for items
+            // for (var i = 0; i <= currentRowNum; i++) {
+            //     $('#itemRow' + i).remove();
+            // }
+            //
+            // //Reset rowNum
+            // currentRowNum = 1;
+            //
+            // //Clear any user input
+            // $(this).find('form')[0].reset();
+            // $('.receipt-image-file-name').text('');
+            // $(this).find('.has-error').removeClass('has-error');
+            // $(this).find('input').removeAttr('aria-describedby');
+            //
+            // //Refresh multiselect
+            // $("select[id='items0.warrantyUnit']").multiselect('refresh');
         });
 
     $('#addLabel').on('shown.bs.modal', function() {
@@ -685,7 +688,8 @@ $(function() {
 
     var $visionForm     = $('.receipt-ocr-form'),
         $visionInput    = $('.receipt-ocr-form input[type="file"]'),
-        $label          = $('.receipt-ocr-form label'),
+        $label          = $('.receipt-ocr-form label#receiptImageLabel'),
+        $overlay        = $('#overlay'),
         $spinner        = $('.spinner'),
         $restart        = $('.receipt-ocr-form-restart'),
         $visionErrorMsg = $('#receiptOcrFormError span'),
@@ -728,11 +732,9 @@ $(function() {
             });
     }
 
-    $visionForm.on('change', function(e) {
-        $visionForm.trigger('submit');
-    });
     $visionInput.on('change', function(e) {
         showFileName(e.target.files);
+        $visionForm.trigger('submit');
     });
 
     $visionForm.on('submit', function(e) {
@@ -741,20 +743,20 @@ $(function() {
         if (!$spinner.hasClass('hidden')) return false;
 
         $spinner.removeClass('hidden');
+        $overlay.addClass('overlay');
 
         if (isAdvancedUpload) {
             e.preventDefault();
-            var ajaxData = new FormData();
+            var ajaxData = new FormData($visionForm[0]);
 
             if (droppedFile) {
                 ajaxData.append($visionInput.attr('name'), droppedFile[0]);
-            } else {
-                ajaxData.append($visionInput.attr('name'), $visionInput[0].files[0]);
             }
 
             $.ajax({
                 url: $visionForm.attr('action'),
                 type: $visionForm.attr('method'),
+                enctype: $visionForm.attr('enctype'),
                 data: ajaxData,
                 dataType: 'json',
                 cache: false,
@@ -762,6 +764,7 @@ $(function() {
                 processData: false,
                 complete: function() {
                     $spinner.addClass('hidden');
+                    $overlay.removeClass('overlay');
                 },
                 success: function(res) {
                     if (res.success) {
@@ -776,11 +779,13 @@ $(function() {
                         $('#tax').val(res.data.tax.toFixed(2));
 
                         //Set date
-                        var time = new Date(res.data.date);
-                        var theyear = time.getFullYear();
-                        var themonth = time.getMonth() + 1;
-                        var theday = time.getDate();
-                        $('#date').val(themonth + "/" + theday + "/" + theyear);
+                        if (res.data.date != null) {
+                            var time = new Date(res.data.date);
+                            var theyear = time.getFullYear();
+                            var themonth = time.getMonth() + 1;
+                            var theday = time.getDate();
+                            $('#date').val(themonth + "/" + theday + "/" + theyear);
+                        }
 
                         var count = res.data.items.length;
                         for (var i = 0; i < count; i++) {
@@ -803,7 +808,10 @@ $(function() {
             });
         } else {
             e.preventDefault();
-            // TODO Maybe support older browsers
+            $spinner.addClass('hidden');
+            $overlay.removeClass('overlay');
+            $visionForm.addClass('is-error');
+            $visionErrorMsg.text('Unable to process request, Browser not supported.');
         }
     });
 

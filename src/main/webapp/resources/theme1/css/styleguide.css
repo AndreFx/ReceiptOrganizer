@@ -26,6 +26,15 @@ Version     : 1.0
 .wrapper {
     display: flex;
 }
+.overlay {
+    background-color: rgba(1, 1, 1, 0.7);
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1059;
+}
 
 /* ---------------------------------------------------
     NAVBAR STYLES
@@ -982,8 +991,9 @@ Spinning loader
     position: absolute;
     left: 50%;
     top: 50%;
-    z-index: 1050;
+    z-index: 1060;
     margin-left: -33px;
+    margin-top: -33px;
 }
 .path {
     stroke-dasharray: 187;

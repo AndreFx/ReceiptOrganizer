@@ -5,6 +5,7 @@ import com.afx.web.receiptorganizer.types.Receipt;
 import com.afx.web.receiptorganizer.utilities.ImageThumbnailCreator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -18,15 +19,25 @@ public abstract class ReceiptParserBase implements ReceiptParser {
     Constants
      */
 
-    private static final int THUMBNAIL_HEIGHT = 84;
-    private static final int THUMBNAIL_MAX_WIDTH = 175;
-    private static final int MAX_DESCRIPTION_LENGTH = 2000;
+    private int thumbnailHeight;
+    private int thumbnailWidth;
+    private int maxDescriptionLength;
 
     /*
     Logger
      */
 
     protected static Logger logger = LogManager.getLogger(ReceiptParserBase.class);
+
+    /*
+    Constructor
+     */
+
+    protected ReceiptParserBase(int thumbnailHeight, int thumbnailWidth, int maxDescriptionLength) {
+        this.thumbnailHeight = thumbnailHeight;
+        this.thumbnailWidth = thumbnailWidth;
+        this.maxDescriptionLength = maxDescriptionLength;
+    }
 
     /*
     ReceiptParser implementation
@@ -41,9 +52,9 @@ public abstract class ReceiptParserBase implements ReceiptParser {
         data.setOriginalFileName(receiptImage.getOriginalFilename());
 
         //Only for ocr compatible receipts
-        if (visionResponse.getDocumentText().length() > MAX_DESCRIPTION_LENGTH) {
+        if (visionResponse.getDocumentText().length() > maxDescriptionLength) {
             //Truncate to fit max length
-            data.setDescription(visionResponse.getDocumentText().substring(0, MAX_DESCRIPTION_LENGTH));
+            data.setDescription(visionResponse.getDocumentText().substring(0, maxDescriptionLength));
         } else {
             data.setDescription(visionResponse.getDocumentText());
         }
@@ -52,13 +63,7 @@ public abstract class ReceiptParserBase implements ReceiptParser {
 
         image = ImageIO.read(imageAsStream);
         data.setReceiptFullImage(imageAsBytes);
-
-        //Create byte array for thumbnail
-        long startTime = System.nanoTime();
-        data.setReceiptThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_MAX_WIDTH));
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime) / 1000000;
-        logger.debug("Time to scale receipt image of size: " + imageAsBytes.length + " into a thumbnail: " + duration + "ms");
+        data.setReceiptThumbnail(ImageThumbnailCreator.createThumbnail(image, thumbnailHeight, thumbnailWidth));
 
         return data;
     }

@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-@Qualifier("categoryDao")
+@Qualifier("labelDao")
 public class LabelDaoImpl implements LabelDao {
 
     /*

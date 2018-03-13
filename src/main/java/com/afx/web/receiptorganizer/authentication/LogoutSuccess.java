@@ -15,6 +15,7 @@ public class LogoutSuccess extends SimpleUrlLogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
+        //Remove old caching attempt
 //        if (authentication.getName().contains("@")) {
 //            ReceiptController.removeUserFromCache(authentication.getName().substring(0, authentication.getName().indexOf("@")));
 //        } else {

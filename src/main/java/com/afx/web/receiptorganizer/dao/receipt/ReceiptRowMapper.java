@@ -3,7 +3,6 @@ package com.afx.web.receiptorganizer.dao.receipt;
 import com.afx.web.receiptorganizer.types.Receipt;
 import org.springframework.jdbc.core.RowMapper;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

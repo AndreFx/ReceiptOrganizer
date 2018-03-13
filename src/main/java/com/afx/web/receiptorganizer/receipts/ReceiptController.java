@@ -18,6 +18,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.MediaType;
@@ -45,10 +46,14 @@ public class ReceiptController {
     Constants
      */
 
-    private static final int MAX_ACTIVE_LABELS = 5;
-    private static final int MAX_RECEIPT_THUMBNAIL_ITEMS = 1;
-    private static final int THUMBNAIL_HEIGHT = 84;
-    private static final int THUMBNAIL_MAX_WIDTH = 175;
+    @Value("${labels.maxActive}")
+    private int MAX_ACTIVE_LABELS;
+    @Value("${receipts.maxThumbnailItems}")
+    private int MAX_RECEIPT_THUMBNAIL_ITEMS;
+    @Value("${receipts.thumbnailHeight}")
+    private int THUMBNAIL_HEIGHT;
+    @Value("${receipts.thumbnailWidth}")
+    private int THUMBNAIL_WIDTH;
 
     /*
     Private static variables
@@ -68,6 +73,9 @@ public class ReceiptController {
 
     @Autowired
     private ReceiptValidator receiptValidator;
+
+    @Autowired
+    private ReceiptParserFactory receiptParserFactory;
 
     /*
     Binding methods
@@ -102,7 +110,6 @@ public class ReceiptController {
         if (requestLabels == null) {
             requestLabels = new ArrayList<>();
         } else if (requestLabels.size() > MAX_ACTIVE_LABELS) {
-            //TODO Send user message about max number of active labels
             requestLabels.remove(MAX_ACTIVE_LABELS);
         }
 
@@ -262,7 +269,9 @@ public class ReceiptController {
 
     @RequestMapping(value = "/", produces={MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
     @ResponseBody
-    public VisionJsonResponse create(@RequestParam("receiptImage") MultipartFile receiptImage, @ModelAttribute("user") User user) throws Exception {
+    public VisionJsonResponse create(@RequestParam("receiptImage") MultipartFile receiptImage,
+                                     @RequestParam(value = "skipOcr", required = false) String skipOcr,
+                                     @ModelAttribute("user") User user) throws Exception {
         logger.debug("User: " + user.getUsername() + " performing OCR on file: " + receiptImage.getOriginalFilename());
 
         VisionJsonResponse response = new VisionJsonResponse();
@@ -273,11 +282,10 @@ public class ReceiptController {
         if (!receiptImage.isEmpty()) {
             byte[] imageAsBytes = receiptImage.getBytes();
 
-            //TODO Add button to skip ocr
-            if (receiptImage.getContentType() != null && !receiptImage.getContentType().equals("application/pdf")) {
+            if (receiptImage.getContentType() != null && !receiptImage.getContentType().equals("application/pdf") && skipOcr == null) {
                 LogoAndDocumentResponse ocrResponse = doOCR(imageAsBytes);
                 try {
-                    ReceiptParser parser = new ReceiptParserFactory().getReceiptParser(ocrResponse.getLogoDescription());
+                    ReceiptParser parser = this.receiptParserFactory.getReceiptParser(ocrResponse.getLogoDescription());
                     data = parser.getReceipt(receiptImage, ocrResponse);
                 } catch (IOException iox) {
                     logger.error("Failed to convert user: " + user.getUsername() + " image for storage on database.");
@@ -302,14 +310,16 @@ public class ReceiptController {
                 data.setReceiptPDF(imageAsBytes);
 
                 //Create byte array for thumbnail
-                long startTime = System.nanoTime();
-                data.setReceiptThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_MAX_WIDTH));
-                long endTime = System.nanoTime();
-                long duration = (endTime - startTime) / 1000000;
-                logger.debug("Time to scale receipt image of size: " + imageAsBytes.length + " into a thumbnail: " + duration + "ms");
+                data.setReceiptThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
             } else {
-                //Imageless receipt, shouldn't occur.
+                //Skip ocr selected on nonpdf file
                 data = new Receipt();
+                BufferedImage image;
+                InputStream imageAsStream = receiptImage.getInputStream();
+
+                image = ImageIO.read(imageAsStream);
+                data.setReceiptFullImage(imageAsBytes);
+                data.setReceiptThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
             }
 
             data.setReceiptId(this.receiptDao.addReceipt(user.getUsername(), data));

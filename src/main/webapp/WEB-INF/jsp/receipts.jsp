@@ -242,6 +242,7 @@
     <div class="snackbar">
         <span id="snackbarText"></span>
     </div>
+    <div id="overlay"></div>
     <jsp:include page="/WEB-INF/jsp/image-modal.jsp"/>
     <jsp:include page="/WEB-INF/jsp/loader.jsp"/>
 </body>
