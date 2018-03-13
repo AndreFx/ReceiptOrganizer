@@ -73,12 +73,20 @@
 </head>
 <body>
     <div class="wrapper">
-        <jsp:include page="/WEB-INF/jsp/sidebar.jsp"/>
-        <div id="content">
-            <jsp:include page="navbar.jsp"/>
+        <c:if test="${showSidebar}">
+            <jsp:include page="/WEB-INF/jsp/sidebar.jsp"/>
+        </c:if>
+        <div id="content"
+        <c:if test="${!showSidebar}">
+            style="width: 100%"
+        </c:if>>
+            <c:if test="${showNavbar}">
+                <jsp:include page="navbar.jsp"/>
+            </c:if>
             <div class="content-body">
                 <img class="error-image" src="${errorImage}" alt="System Error">
                 <p class="text-center">${errorMessage}</p>
+                <a class="center-block text-center" href="${returnLink}">Return</a>
 
                 <!--
                 Exception:  ${exception.message}
