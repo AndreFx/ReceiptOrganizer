@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.*;
 import java.io.*;
@@ -100,8 +101,12 @@ public class ReceiptController {
      */
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String index(@RequestParam(value = "searchString", required = false) String searchString, @RequestParam(value = "requestLabels", required = false) List<String> requestLabels, @RequestParam(value = "page", required = false) Integer page,
-                           @ModelAttribute("user") User user, ModelMap model) {
+    public String index(HttpServletRequest request,
+                        @RequestParam(value = "searchString", required = false) String searchString,
+                        @RequestParam(value = "requestLabels", required = false) List<String> requestLabels,
+                        @RequestParam(value = "page", required = false) Integer page,
+                        @ModelAttribute("user") User user,
+                        ModelMap model) {
         logger.debug("Serving user: " + user.getUsername() + " request for home screen.");
 
         List<Receipt> receipts = null;
@@ -155,6 +160,15 @@ public class ReceiptController {
         model.addAttribute("numReceipts", totalNumReceipts);
         model.addAttribute("searchString", searchString);
 
+        //Save last index query string
+        String queryString = request.getQueryString();
+        request.getSession().removeAttribute("lastReceiptQuery");
+        if (queryString == null) {
+            request.getSession().setAttribute("lastReceiptQuery", "");
+        } else {
+            request.getSession().setAttribute("lastReceiptQuery", queryString);
+        }
+
         return "receipts";
     }
 
@@ -178,10 +192,10 @@ public class ReceiptController {
     }
 
     @RequestMapping(value = "/{receiptId}/image", method = RequestMethod.GET)
-    public void getImage(@PathVariable(value = "receiptId") int id,
-                                @RequestParam("thumbnail") boolean scale,
-                                @ModelAttribute("user") User user,
-                                HttpServletResponse response) {
+    public void getImage(HttpServletResponse response,
+                         @PathVariable(value = "receiptId") int id,
+                         @RequestParam("thumbnail") boolean scale,
+                         @ModelAttribute("user") User user) {
         logger.debug("User: " + user.getUsername() + " requesting image for receipt: " + id);
 
         try {
@@ -237,7 +251,10 @@ public class ReceiptController {
     }
 
     @RequestMapping(value = "/{receiptId}", method = RequestMethod.POST)
-    public String update(@PathVariable(value = "receiptId") int id, @ModelAttribute("user") User user, @ModelAttribute("receipt") Receipt receipt) {
+    public String update(HttpServletRequest request,
+                         @PathVariable(value = "receiptId") int id,
+                         @ModelAttribute("user") User user,
+                         @ModelAttribute("receipt") Receipt receipt) {
         logger.debug("User: " + user.getUsername() + " updating receipt with id: " + id);
         receipt.setReceiptId(id);
 
@@ -255,16 +272,20 @@ public class ReceiptController {
             throw new ReceiptNotFoundException(id);
         }
 
-        return "redirect:/receipts/";
+        String query = (String) request.getSession().getAttribute("lastReceiptQuery");
+        return "redirect:/receipts/?" + query;
     }
 
     @RequestMapping(value = "/{receiptId}/delete", method = RequestMethod.POST)
-    public String delete(@PathVariable(value = "receiptId") int id, @ModelAttribute("user") User user) {
+    public String delete(HttpServletRequest request,
+                         @PathVariable(value = "receiptId") int id,
+                         @ModelAttribute("user") User user) {
         logger.debug("User: " + user.getUsername() + " deleting receipt with id: " + id);
 
         this.receiptDao.deleteReceipt(user.getUsername(), id);
 
-        return "redirect:/receipts/";
+        String query = (String) request.getSession().getAttribute("lastReceiptQuery");
+        return "redirect:/receipts/?" + query;
     }
 
     @RequestMapping(value = "/", produces={MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)

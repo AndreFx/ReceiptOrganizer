@@ -166,7 +166,7 @@
                 <h4 class="modal-title">Add Receipt</h4>
             </div>
             <div class="modal-body" id="receiptOCRBody">
-                <form class="receipt-ocr-form" id="newReceiptOcrForm" method="post" action="${createReceiptUrl}?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
+                <form class="receipt-ocr-form" id="newReceiptOcrForm" method="post" action="${createReceiptUrl}" enctype="multipart/form-data">
                     <div id="receiptOcrFormUpload">
                         <input type="file" name="receiptImage" id="receiptImage" accept="image/*,application/pdf">
                         <label for="receiptImage" id="receiptImageLabel"><strong>Choose a file</strong><span class="ocr-drag-and-drop"> or drag it here</span>.</label>

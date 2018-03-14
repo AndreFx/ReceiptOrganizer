@@ -91,7 +91,7 @@
         <div id="content">
             <jsp:include page="navbar.jsp"/>
             <div class="content-body">
-                <img class="receipt-edit-image modal-image" alt="${receipt.title} Image" src='<c:out value="${receiptViewImageUrl}"/>'>
+                <img class="receipt-edit-image modal-image" alt="${receipt.title} Image" src="${receiptViewImageUrl}">
                 <form:form autocomplete="off" modelAttribute="receipt" method="post" action="${updateReceiptUrl}" class="form-horizontal">
                     <div class="form-group alert alert-danger center-full-width error-container" id="editReceiptErrorContainer">
                         <div class="col-lg-10" id="editReceiptErrors"></div>

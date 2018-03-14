@@ -23,9 +23,11 @@ public class AdvanceAutoReceiptParser extends ReceiptParserBase implements Recei
      */
 
     private static final String DATE_REGEX = "(1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/[0-9]{4}";
-    private static final String TOTAL_REGEX = "(?:[^S][^u][^b]\\s*)(?:(?:Total)|(?:total))\\s*\\$(-?[0-9]+\\.\\s*[0-9]{2})";
+    private static final String TOTAL_REGEX =
+            "(?:[^S][^u][^b]\\s*)(?:(?:Total)|(?:total))\\s*\\$(-?[0-9]+\\.\\s*[0-9]{2})";
     private static final String TAX_REGEX = "(?:T1\\s*Tax\\s*@\\s*\\d\\.?\\d*%)\\s*\\$([0-9]+\\.[0-9]{2})";
-    private static final String ITEM_REGEX = "(.*(\\d{8}|\\d{7}))\\s+.*\\s*(\\d*)?\\s*\\$?(\\d*\\.\\d{2}|\\d*\\s*\\d{2})";
+    private static final String ITEM_REGEX =
+            "(.*(?<!#\\s|#\\s\\d)(?:\\d{8}|\\d{7}))\\s+.*\\s*(\\d*)?\\s*\\$?(\\d*\\.\\d{2}|\\d*\\s*\\d{2})";
     private static final String WHITESPACE_FINDER = "\\s";
 
     /*
@@ -96,8 +98,8 @@ public class AdvanceAutoReceiptParser extends ReceiptParserBase implements Recei
             ReceiptItem item = new ReceiptItem();
 
             String nameMatch = itemM.group(1);
-            String quantityMatch = itemM.group(3);
-            String priceMatch = itemM.group(4);
+            String quantityMatch = itemM.group(2);
+            String priceMatch = itemM.group(3);
             item.setName(nameMatch);
 
             try {
