@@ -71,7 +71,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public DataSource dataSource() {
+    public javax.sql.DataSource dataSource() {
         DataSource dataSource = null;
         JndiTemplate jndi = new JndiTemplate();
         try {
@@ -83,8 +83,8 @@ public class ApplicationConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public NamedParameterJdbcTemplate jdbcTemplate(DataSource dataSource) {
-        return new NamedParameterJdbcTemplate(dataSource);
+    public NamedParameterJdbcTemplate jdbcTemplate() {
+        return new NamedParameterJdbcTemplate(dataSource());
     }
 
     @Bean

@@ -7,6 +7,7 @@ import com.afx.web.receiptorganizer.labels.responses.LabelJsonResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("labels")
@@ -34,13 +36,19 @@ public class LabelController {
     @Autowired
     private LabelDao labelDao;
 
+    @Autowired
+    private MessageSource messageSource;
+
     /*
     Controller methods
      */
 
     @RequestMapping(value="/create", produces={MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
     @ResponseBody
-    public LabelJsonResponse createLabel(@ModelAttribute("user") User user, @Valid @ModelAttribute Label newLabel, BindingResult result, RedirectAttributes ra) {
+    public LabelJsonResponse createLabel(@ModelAttribute("user") User user, @Valid @ModelAttribute Label newLabel,
+                                         BindingResult result,
+                                         RedirectAttributes ra,
+                                         Locale locale) {
         logger.debug("User: " + user.getUsername() + " creating new label: " + newLabel.getName());
         LabelJsonResponse response = new LabelJsonResponse();
         newLabel.setName(newLabel.getName().trim());
@@ -49,14 +57,15 @@ public class LabelController {
             try {
                 this.labelDao.addLabel(user.getUsername(), newLabel);
                 response.setSuccess(true);
+                response.setErrorMessage(messageSource.getMessage("label.add.success", null, locale));
                 logger.debug("User: " + user.getUsername() + " created new label: " + newLabel.getName());
             } catch (DataAccessException e) {
                 response.setSuccess(false);
-                response.setErrorMessage("Label name is not unique");
+                response.setErrorMessage(messageSource.getMessage("label.add.failure.notunique", null, locale));
             }
         } else {
             response.setSuccess(false);
-            response.setErrorMessage("Invalid label name");
+            response.setErrorMessage(messageSource.getMessage("label.add.failure.invalid", null, locale));
         }
 
         return response;

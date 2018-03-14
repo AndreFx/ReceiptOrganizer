@@ -73,7 +73,7 @@ $(function() {
 
                         $('#labelErrorContainer').hide();
                         $('#addLabel').modal('hide');
-                        showSnackbarMessage('Label successfully created.', defaultLabelNotifTimeout);
+                        showSnackbarMessage(res.errorMessage, defaultLabelNotifTimeout);
                         success = true;
                     } else {
                         //Set error messages
