@@ -28,6 +28,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     AuthenticationSuccess authSuccess;
 
     @Autowired
+    AuthenticationFailure authFailure;
+
+    @Autowired
     LogoutSuccess logoutSuccess;
 
     @Value("${ldap.domain}")
@@ -47,8 +50,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
           /*
            * Set up your spring security config here. For example...
           */
-        http.authorizeRequests().antMatchers("/resources/**", "/login").permitAll().and().authorizeRequests().anyRequest().authenticated()
-                .and().formLogin().loginPage("/login").permitAll().successHandler(authSuccess)
+        http.authorizeRequests().antMatchers("/resources/**", "/login").permitAll()
+                .and().authorizeRequests().anyRequest().authenticated()
+                .and().formLogin().loginPage("/login").permitAll().successHandler(authSuccess).failureHandler(authFailure)
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccess).logoutSuccessUrl("/login?logout").invalidateHttpSession(true);
           /*
            * Use HTTPs for ALL requests
@@ -65,6 +69,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationManager authenticationManager() {
         return new ProviderManager(Arrays.asList(activeDirectoryLdapAuthenticationProvider()));
+    }
+
+    @Bean
+    public AuthenticationSuccess authenticationSuccessHandlerBean() {
+        return new AuthenticationSuccess();
+    }
+
+    @Bean
+    public AuthenticationFailure authenticationFailureHandlerBean() {
+        return new AuthenticationFailure();
+    }
+
+    @Bean
+    public LogoutSuccess logoutSuccessHandlerBean() {
+        return new LogoutSuccess();
     }
 
     @Bean
