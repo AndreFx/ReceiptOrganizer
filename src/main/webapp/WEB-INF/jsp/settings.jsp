@@ -139,11 +139,6 @@
             <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
         </div>
     </div>
-    <div class="snackbar">
-        <span id="snackbarText"></span>
-    </div>
-    <jsp:include page="/WEB-INF/jsp/image-modal.jsp"/>
-    <jsp:include page="/WEB-INF/jsp/loader.jsp"/>
 </body>
 </html>
 

@@ -743,13 +743,15 @@ $(function() {
         if (!$spinner.hasClass('hidden')) return false;
 
         $spinner.removeClass('hidden');
-        $overlay.addClass('overlay');
+        $overlay.addClass('cover');
+        $overlay.removeClass('hidden');
 
         if (isAdvancedUpload) {
             e.preventDefault();
             var ajaxData = new FormData($visionForm[0]);
 
             if (droppedFile) {
+                ajaxData.delete($visionInput.attr('name'));
                 ajaxData.append($visionInput.attr('name'), droppedFile[0]);
             }
 
@@ -764,7 +766,8 @@ $(function() {
                 processData: false,
                 complete: function() {
                     $spinner.addClass('hidden');
-                    $overlay.removeClass('overlay');
+                    $overlay.removeClass('cover');
+                    $overlay.addClass('hidden');
                 },
                 success: function(res) {
                     if (res.success) {
@@ -809,7 +812,8 @@ $(function() {
         } else {
             e.preventDefault();
             $spinner.addClass('hidden');
-            $overlay.removeClass('overlay');
+            $overlay.removeClass('cover');
+            $overlay.addClass('hidden');
             $visionForm.addClass('is-error');
             $visionErrorMsg.text('Unable to process request, Browser not supported.');
         }
