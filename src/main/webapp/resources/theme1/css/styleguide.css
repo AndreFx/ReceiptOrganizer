@@ -142,6 +142,7 @@ Sidebar header
  */
 #sidebar .sidebarHeader {
     padding: 20px;
+    padding-bottom: 40px;
     background: #910000;
 }
 #sidebar .sidebarHeader h3 {
