@@ -344,22 +344,29 @@ public class ReceiptDaoImpl implements ReceiptDao {
             if (labels.size() == 0) {
                 //Get all user receipts
                 parameters = new MapSqlParameterSource("username", username);
-                countQuery = "SELECT Count(*) As Count " +
+                countQuery = "SELECT Count(*) AS Count " +
                         "FROM USER_RECEIPTS " +
                         "INNER JOIN RECEIPT " +
                         "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
                         "WHERE Username = :username ";
             } else {
-                //Get receipts for specifc labels
-                parameters = new MapSqlParameterSource("username", username).addValue("labelnames", labels);
-                countQuery = "SELECT COUNT(DISTINCT RECEIPT.ReceiptId) As Count " +
+                //Get receipts for specific labels
+                parameters = new MapSqlParameterSource("username", username)
+                        .addValue("labelnames", labels)
+                        .addValue("labelnameslength", labels.size());
+                countQuery = "SELECT COUNT(RECEIPT_RESULTS.ReceiptId) AS Count " +
+                        "FROM (SELECT DISTINCT RECEIPT.ReceiptId As ReceiptId " +
                         "FROM USER_RECEIPTS " +
                         "INNER JOIN RECEIPT " +
-                        "ON USER_RECEIPTS.ReceiptId = RECEIPT.[ReceiptId] " +
+                        "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
                         "INNER JOIN RECEIPT_LABELS " +
                         "ON RECEIPT.ReceiptId = RECEIPT_LABELS.ReceiptId " +
-                        "WHERE RECEIPT_LABELS.Username = :username " +
-                        "AND LabelName IN (:labelnames) ";
+                        "GROUP BY RECEIPT.ReceiptId " +
+                        "HAVING SUM(" +
+                        "   CASE " +
+                        "       WHEN LabelName IN (:labelnames) THEN 1 " +
+                        "       ELSE 0 " +
+                        "   END) >= :labelnameslength) AS RECEIPT_RESULTS ";
             }
             result = this.jdbcTemplate.queryForObject(countQuery, parameters, new ReceiptCountRowMapper());
         } catch(DataAccessException e) {
@@ -414,7 +421,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
             if (labels.size() == 0) {
                 //Get all user receipts
                 parameters = new MapSqlParameterSource("username", username)
-                        .addValue("startrow", start).addValue("numrows", numRows);
+                        .addValue("startrow", start)
+                        .addValue("numrows", numRows);
                 query = "SELECT TOP_RECEIPTS.ReceiptId, Title, Date, Total, Name, Quantity, UnitPrice " +
                         "FROM (SELECT DISTINCT RECEIPT.ReceiptId, Title, Date, Total " +
                         "                    FROM USER_RECEIPTS " +
@@ -428,9 +436,11 @@ public class ReceiptDaoImpl implements ReceiptDao {
                         "ON TOP_RECEIPTS.ReceiptId = RECEIPT_ITEM.ReceiptId " +
                         "ORDER BY TOP_RECEIPTS.Title";
             } else {
-                //Get receipts for specifc label
+                //Get receipts for specific label
                 parameters = new MapSqlParameterSource("username", username)
-                        .addValue("labelnames", labels).addValue("startrow", start)
+                        .addValue("labelnames", labels)
+                        .addValue("labelnameslength", labels.size())
+                        .addValue("startrow", start)
                         .addValue("numrows", numRows);
                 query = "SELECT TOP_RECEIPTS.ReceiptId, Title, Date, Total, Name, Quantity, UnitPrice " +
                         "FROM (SELECT DISTINCT RECEIPT.ReceiptId, Title, Date, Total " +
@@ -439,7 +449,13 @@ public class ReceiptDaoImpl implements ReceiptDao {
                         "                    ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
                         "                    INNER JOIN RECEIPT_LABELS " +
                         "                    ON RECEIPT.ReceiptId = RECEIPT_LABELS.ReceiptId " +
-                        "                    WHERE RECEIPT_LABELS.Username = :username AND LabelName IN (:labelnames) " +
+                        "                    WHERE RECEIPT_LABELS.Username = :username " +
+                        "                    GROUP BY RECEIPT.ReceiptId, Title, Date, Total " +
+                        "                    HAVING SUM(" +
+                        "                    CASE " +
+                        "                       WHEN LabelName IN (:labelnames) THEN 1 " +
+                        "                       ELSE 0 " +
+                        "                    END) >= :labelnameslength "+
                         "                    ORDER BY RECEIPT.Title " +
                         "                    OFFSET :startrow ROWS " +
                         "                    FETCH NEXT :numrows ROWS ONLY) AS TOP_RECEIPTS " +
