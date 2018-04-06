@@ -4,7 +4,6 @@ import com.afx.web.receiptorganizer.receipts.types.LogoAndDocumentResponse;
 import com.afx.web.receiptorganizer.receipts.types.receiptparsers.ReceiptParser;
 import com.afx.web.receiptorganizer.receipts.types.receiptparsers.ReceiptParserBase;
 import com.afx.web.receiptorganizer.types.Receipt;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

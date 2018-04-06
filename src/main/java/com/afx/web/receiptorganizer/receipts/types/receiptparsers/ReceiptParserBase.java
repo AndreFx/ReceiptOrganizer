@@ -5,7 +5,6 @@ import com.afx.web.receiptorganizer.types.Receipt;
 import com.afx.web.receiptorganizer.utilities.ImageThumbnailCreator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;

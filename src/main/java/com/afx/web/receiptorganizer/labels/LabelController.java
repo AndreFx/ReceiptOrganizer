@@ -1,9 +1,9 @@
 package com.afx.web.receiptorganizer.labels;
 
 import com.afx.web.receiptorganizer.dao.label.LabelDao;
+import com.afx.web.receiptorganizer.labels.responses.LabelJsonResponse;
 import com.afx.web.receiptorganizer.types.Label;
 import com.afx.web.receiptorganizer.types.User;
-import com.afx.web.receiptorganizer.labels.responses.LabelJsonResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
