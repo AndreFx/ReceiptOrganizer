@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.http.CacheControl;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jndi.JndiTemplate;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @ComponentScan(basePackages = {"com.afx.web.receiptorganizer"})
@@ -67,7 +69,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**")
                 .addResourceLocations("/resources/theme1/")
-                .setCachePeriod(31556926);
+                .setCacheControl(CacheControl.maxAge(0, TimeUnit.DAYS));
     }
 
     @Bean

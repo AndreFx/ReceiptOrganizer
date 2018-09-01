@@ -214,6 +214,16 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.21.0</version>
 			</plugin>
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<version>1.2.2.Final</version>
+				<configuration>
+					<username>${jboss-username}</username>
+					<password>${jboss-password}</password>
+					<fileName>target/${plugin.war.warName}.war</fileName>
+				</configuration>
+        	</plugin>
 		</plugins>
 	</build>
 </project>
