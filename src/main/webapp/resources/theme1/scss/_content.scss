@@ -1,0 +1,161 @@
+/* ---------------------------------------------------
+    CONTENT STYLES
+----------------------------------------------------- */
+
+/**
+Styles for hiding sidebar and expanding content
+ */
+ #content {
+    background: rgb(250, 250, 250);
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-height: 100vh;
+    width: calc(100% - 300px);
+    padding: 40px;
+    transition: all 0.3s
+}
+#content.active {
+    width: 100%;
+}
+.content-body {
+    padding: 20px;
+}
+
+/**
+Pagination
+ */
+.pagination {
+   margin: 0 !important;
+    vertical-align: middle;
+}
+.pagination > li.active > a, .pagination > li.active > a:hover {
+    background: #bb0000;
+    border-color: #bb0000;
+}
+.pagination > li:not(.active):not(.disabled) > a {
+    color: #bb0000;
+}
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #bb0000;
+    border-color: #bb0000;
+}
+.pagination-number {
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.pagination-nav {
+    display: inline-block;
+    vertical-align: middle;
+}
+.page-option {
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.page-option .chk-all, .page-option .btn-group {
+    margin-right: 5px;
+}
+.page-option .chk-all, .page-option .btn-group a.btn {
+    background: none repeat scroll 0 0 #fcfcfc;
+    border: 1px solid #e7e7e7;
+    border-radius: 3px !important;
+    color: #afafaf;
+    display: inline-block;
+    padding: 5px 10px;
+}
+.page-option .chk-all input[type="checkbox"] {
+    margin-top: 0;
+}
+.page-option .btn-group a.all {
+    border: medium none;
+    padding: 0;
+}
+
+/**
+Button Styles
+ */
+.modal-image {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.modal-image:hover {
+    opacity: 0.7;
+}
+
+/**
+Receipts Table
+ */
+.receipt-thumbnail {
+    max-width: 175px;
+    width: auto;
+    height: 84px;
+}
+.table-receipts {
+    border: 1px solid #d3d3d3;
+    text-align: center;
+    margin-bottom: 0;
+}
+.table-receipts tr td {
+    padding: 12px !important;
+}
+.table-receipts tr td:hover {
+    cursor: pointer;
+}
+.table-receipts tr.unread td {
+    background: none repeat scroll 0 0 #f7f7f7;
+    font-weight: 600;
+}
+
+/**
+Individual Receipt Table
+ */
+.table .table.receipt-info-table {
+    background-color: inherit;
+}
+.receipt-table-primary {
+    width: 60%;
+    overflow: hidden;
+    text-align: left;
+}
+.receipt-table-secondary {
+    width: 20%;
+    overflow: hidden;
+    text-align: center;
+}
+.receipt-table-empty {
+    text-align: center;
+}
+.table .table > tbody > tr > td, .table .table > tbody > tr > th {
+    border-top: none;
+    border-bottom: 1px solid #dddddd;
+}
+
+/**
+Receipt Edit Styles
+ */
+.receipt-edit-image {
+    display: block;
+    margin: auto;
+    padding-bottom: 20px;
+    max-width: 1200px;
+    width: auto;
+    height: 400px;
+}
+
+/**
+Exception Page
+ */
+.error-image {
+    display: block;
+    margin: auto;
+    padding-bottom: 20px;
+    width: auto;
+    height: 400px;
+}

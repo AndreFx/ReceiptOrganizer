@@ -1,0 +1,205 @@
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+/**
+Sidebar Collapsing support
+ */
+#sidebar {
+    background: #bb0000;
+    color: #ffffff;
+    border-radius: 4px 0 0 4px;
+    width: 300px;
+    height: 100vh;
+    transition: all 0.3s;
+    position: fixed;
+    z-index: 1;
+}
+#sidebar.active {
+    margin-left: -300px;
+}
+
+/**
+Sidebar header
+ */
+#sidebar .sidebarHeader {
+    padding: 20px;
+    padding-bottom: 40px;
+    background: #910000;
+}
+#sidebar .sidebarHeader h3 {
+    margin-top: 0;
+}
+.home-link, .home-link:hover, .home-link:focus {
+    color: #ffffff;
+    text-decoration: none;
+    padding-left: 10px;
+}
+
+/**
+User avatar styles
+ */
+.user-head .avatar {
+    float: left;
+    width: 65px;
+}
+.user-head .avatar img {
+    border-radius: 4px;
+}
+.user-head .username {
+    display: inline-block;
+    margin: 0 0 0 10px;
+}
+.user-head .username h5 {
+    font-size: 14px;
+    font-weight: 300;
+    margin-bottom: 0;
+    margin-top: 15px;
+}
+.user-head .username h5 a {
+    color: #ffffff;
+}
+.user-head .username span a {
+    color: #ffffff;
+    font-size: 12px;
+}
+
+/**
+Buttons
+ */
+.btn-new-receipt, .btn-new-receipt:hover, .btn-new-receipt:focus {
+    background: #ffffff;
+    color: #bb0000;
+    padding: 12px 0;
+    text-align: center;
+    width: 100%;
+}
+.btn-save-label-edit, .btn-save-label-edit:hover, .btn-save-label-edit:focus {
+    background: #ffffff;
+    color: #bb0000;
+    border: solid 1px;
+    padding: 5px 11px;
+}
+.btn-cancel-label-edit, .btn-cancel-label-edit:hover, .btn-cancel-label-edit:focus {
+    color: #ffffff;
+    background: #910000;
+}
+
+/**
+Labels list
+ */
+.label-divider {
+    border-bottom: 1px solid #610000;
+}
+.label-name {
+    width: 80%;
+}
+.menu {
+    text-align: center;
+}
+.labels-title-container {
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+}
+.labels-title {
+    display: inline-block;
+}
+.table-label {
+    margin-bottom: 0;
+}
+.table-label tbody tr td {
+    border-top: 0;
+}
+div#labelEditErrorContainer {
+    font-size: 14px;
+    margin-bottom: 0;
+}
+ul.labels-info li > a[data-toggle="collapse"] {
+    position: relative;
+}
+ul.labels-info li > a[aria-expanded="false"]::before, ul.labels-info li > a[aria-expanded="true"]::before {
+    content: '\e259';
+    display: block;
+    position: absolute;
+    right: 20px;
+    font-family: 'Glyphicons Halflings';
+}
+ul.labels-info li > a[aria-expanded="true"]::before {
+    content: '\e260';
+    font-family: 'Glyphicons Halflings';
+}
+ul.labels-info li.active > a {
+    background: #910000;
+    color: #ffffff;
+    font-size: 18px;
+}
+ul.labels-info > li > a {
+    display: block;
+}
+ul.labels-info li a:focus {
+    outline: 0;
+}
+ul.labels-info li h4 {
+    color: #ffffff;
+    font-size: 13px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    text-transform: uppercase;
+}
+ul.labels-info li {
+    margin: 0;
+}
+ul.labels-info li td i {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+.table-label tbody tr td .menu-icon:hover {
+    cursor: pointer;
+}
+.table-label tbody tr td.label-name:hover {
+    cursor: default;
+}
+/* Label row default colors */
+ul.labels-info li.nav-item tr td {
+    color: #ffffff;
+}
+ul.labels-info li.nav-item {
+    background: #bb0000;
+}
+ul.labels-info li.nav-item.active {
+    background: #910000;
+}
+ul.labels-info li.nav-item.active a.label-dropdown-toggle {
+    color: #910000;
+    background: #910000;
+}
+ul.labels-info li.nav-item a.label-dropdown-toggle {
+    color: #bb0000;
+    background: #bb0000;
+}
+li#editor tr {
+    background: #ffffff;
+}
+/* Label row hover colors */
+ul.labels-info li.nav-item:hover tr {
+     background: #ffffff;
+}
+ul.labels-info li.nav-item.active:hover tr {
+    background: #910000;
+}
+ul.labels-info li.nav-item:not(.active):hover tr td {
+    color: #bb0000;
+}
+ul.labels-info li.nav-item:hover a.label-dropdown-toggle {
+    color: #bb0000;
+    background: #ffffff;
+}
+ul.labels-info li.nav-item.active:hover a.label-dropdown-toggle {
+    background: #910000;
+    color: #ffffff;
+}
+.clickable-row, a.label-dropdown-toggle {
+    transition: all 0.3s;
+}

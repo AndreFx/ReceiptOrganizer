@@ -5,36 +5,37 @@
     "tasks": [
         { 
             "label": "deploy",
-            "version": "0.1.0", 
-            "command": "mvn clean package wildfly:deploy", 
+            "command": "mvn clean package wildfly:deploy -Dmaven.test.skip=true", 
+            "isShellCommand": true, 
+            "showOutput": "always"
+        },
+        { 
+            "label": "build",
+            "command": "mvn clean install -Dmaven.test.skip=true", 
             "isShellCommand": true, 
             "showOutput": "always"
         },
         { 
             "label": "test",
-            "version": "0.1.0", 
-            "command": "mvn clean test", 
+            "command": "mvn clean test -P local-test", 
             "isShellCommand": true, 
             "showOutput": "always"
         },
         { 
             "label": "redeploy",
-            "version": "0.1.0", 
-            "command": "mvn clean package wildfly:redeploy", 
+            "command": "mvn clean package wildfly:redeploy -Dmaven.test.skip=true", 
             "isShellCommand": true, 
             "showOutput": "always"
         },
         { 
             "label": "undeploy",
-            "version": "0.1.0", 
-            "command": "mvn clean package wildfly:undeploy", 
+            "command": "mvn clean package wildfly:undeploy -Dmaven.test.skip=true", 
             "isShellCommand": true, 
             "showOutput": "always"
         },
         { 
             "label": "run debug",
-            "version": "0.1.0", 
-            "command": "sh ~/Documents/jboss-eap-7.0/bin/standalone.sh --debug", 
+            "command": "sh ~/Documents/Github/ReceiptOrganizer/run_debug.sh", 
             "isShellCommand": true, 
             "showOutput": "always"
         }

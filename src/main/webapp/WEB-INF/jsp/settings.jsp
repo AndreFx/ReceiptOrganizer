@@ -22,9 +22,10 @@
 
     <!-- FONTS -->
     <spring:url value="https://fonts.googleapis.com/css?family=Varela+Round" var="googlefonts"/>
+    <spring:url value="/resources/images/receipt.png" var="favicon"/>
 
     <!-- STYLESHEETS -->
-    <spring:url value="/resources/css/styleguide.css" var="styleguide"/>
+    <spring:url value="/resources/css/base.css" var="styleguide"/>
     <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap"/>
     <spring:url value="/resources/css/bootstrap-multiselect.css" var="multiselectcss"/>
     <spring:url value="/resources/css/fontawesome-all.css" var="fontawesomecss"/>
@@ -48,6 +49,7 @@
     <meta name="_csrf" content="${_csrf.token}"/>
     <meta name="_csrf_header" content="${_csrf.headerName}"/>
 
+    <link rel="icon" type="image/png" href="${favicon}">
     <link rel="stylesheet" href="${fontawesomecss}"/>
     <link rel="stylesheet" type="text/css" href="${googlefonts}">
     <link rel="stylesheet" href="${bootstrap}"/>

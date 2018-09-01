@@ -15,10 +15,11 @@
 
 	<!-- FONTS -->
 	<spring:url value="https://fonts.googleapis.com/css?family=Varela+Round" var="googlefonts"/>
+	<spring:url value="/resources/images/receipt.png" var="favicon"/>
 
 	<!-- STYLESHEETS -->
     <spring:url value="/resources/css/bootstrap.css" var="bootstrap"/>
-    <spring:url value="/resources/css/styleguide.css" var="styleguide"/>
+    <spring:url value="/resources/css/base.css" var="styleguide"/>
 	<spring:url value="/resources/css/fontawesome-all.css" var="fontawesomecss"/>
 
 	<!-- JAVASCRIPT -->
@@ -30,10 +31,11 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+	<link rel="icon" type="image/png" href="${favicon}">
     <link rel="stylesheet" type="text/css" href="${bootstrap}">
     <link rel="stylesheet" type="text/css" href="${styleguide}">
     <link rel="stylesheet" type="text/css" href="${googlefonts}">
-    <link rel="stylesheet" type="text/css" href="${fontawesomecss}"/>
+    <link rel="stylesheet" type="text/css" href="${fontawesomecss}">
 
     <script defer src="${jquery}"></script>
     <script defer src="${jqueryvalidate}"></script>
