@@ -12,7 +12,7 @@
 <html lang="en">
 <head>
     <!-- SITE URLS -->
-    <spring:url var="baseHomeUrl" value="/home/"/>
+    <spring:url var="receiptIndexUrl" value="/receipts/"/>
     <c:choose>
         <c:when test='${!searchString.equals("")}'>
             <spring:url value="./search" var="prev">
@@ -96,9 +96,7 @@
 </head>
 <body>
     <div class="wrapper">
-        <jsp:include page="/WEB-INF/jsp/sidebar.jsp">
-            <jsp:param name="baseHomeUrl" value="${baseHomeUrl}"/>
-        </jsp:include>
+        <jsp:include page="/WEB-INF/jsp/sidebar.jsp"/>
         <div id="content">
             <jsp:include page="navbar.jsp"/>
             <div class="content-body">
@@ -199,7 +197,7 @@
                                             <tr>
                                                 <th class="receipt-table-primary">${receipt.title}</th>
                                                 <th class="receipt-table-secondary">${receipt.date}</th>
-                                                <fmt:formatNumber value='${receipt.total}' type="currency" var="formattedReceiptAmount"/>
+                                                <fmt:formatNumber value='${receipt.total}' type="number" minFractionDigits="2" maxFractionDigits="2" var="formattedReceiptAmount"/>
                                                 <th class="receipt-table-secondary">${formattedReceiptAmount}</th>
                                             </tr>
                                             <tr>
@@ -214,7 +212,7 @@
                                                             <tr>
                                                                 <td class="receipt-table-primary">${item.name}</td>
                                                                 <td class="receipt-table-secondary">${item.quantity}</td>
-                                                                <fmt:formatNumber value='${item.unitPrice}' type="currency" var="formattedUnitPrice"/>
+                                                                <fmt:formatNumber value='${item.unitPrice}' type="number" minFractionDigits="2" maxFractionDigits="2" var="formattedUnitPrice"/>
                                                                 <td class="receipt-table-secondary">${formattedUnitPrice}</td>
                                                             </tr>
                                                         </c:if>
@@ -241,10 +239,5 @@
             <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
         </div>
     </div>
-    <div class="snackbar">
-        <span id="snackbarText"></span>
-    </div>
-    <jsp:include page="/WEB-INF/jsp/image-modal.jsp"/>
-    <jsp:include page="/WEB-INF/jsp/loader.jsp"/>
 </body>
 </html>

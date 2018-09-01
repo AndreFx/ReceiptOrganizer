@@ -13,8 +13,8 @@
 <html lang="en">
 <head>
     <!-- SITE URLS -->
-    <spring:url var="baseHomeUrl" value="/home/"/>
-    <spring:url var="searchUrl" value="/home/search"/>
+    <spring:url var="receiptIndexUrl" value="/receipts/"/>
+    <spring:url var="searchUrl" value="/receipts/"/>
     <spring:url var="logoutUrl" value="/logout"/>
     <spring:url var="settingsUrl" value="/users/settings"/>
     <spring:url var="settingsUpdateUrl" value="/users/settings/update"/>
@@ -82,9 +82,7 @@
 </head>
 <body>
     <div class="wrapper">
-        <jsp:include page="/WEB-INF/jsp/sidebar.jsp">
-            <jsp:param name="baseHomeUrl" value="${baseHomeUrl}"/>
-        </jsp:include>
+        <jsp:include page="/WEB-INF/jsp/sidebar.jsp"/>
         <div id="content">
             <jsp:include page="navbar.jsp"/>
             <div class="content-body">
@@ -141,11 +139,6 @@
             <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
         </div>
     </div>
-    <div class="snackbar">
-        <span id="snackbarText"></span>
-    </div>
-    <jsp:include page="/WEB-INF/jsp/image-modal.jsp"/>
-    <jsp:include page="/WEB-INF/jsp/loader.jsp"/>
 </body>
 </html>
 

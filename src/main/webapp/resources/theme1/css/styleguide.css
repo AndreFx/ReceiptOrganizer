@@ -26,6 +26,20 @@ Version     : 1.0
 .wrapper {
     display: flex;
 }
+.overlay {
+    opacity: 0;
+    background-color: rgb(1, 1, 1);
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1059;
+    transition: opacity .25s ease-in-out;
+}
+.overlay.cover {
+    opacity: 0.7
+}
 
 /* ---------------------------------------------------
     NAVBAR STYLES
@@ -128,6 +142,7 @@ Sidebar header
  */
 #sidebar .sidebarHeader {
     padding: 20px;
+    padding-bottom: 40px;
     background: #910000;
 }
 #sidebar .sidebarHeader h3 {
@@ -979,11 +994,12 @@ Spinning loader
 
 .spinner {
     animation: rotator 1.4s linear infinite;
-    position: absolute;
+    position: fixed;
     left: 50%;
     top: 50%;
-    z-index: 1050;
+    z-index: 1060;
     margin-left: -33px;
+    margin-top: -33px;
 }
 .path {
     stroke-dasharray: 187;

@@ -36,6 +36,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${ldap.url}")
     private String URL;
 
+    @Value("${ldap.searchFilter}")
+    private String SEARCH_FILTER;
+
     @Value("${http.port}")
     private int httpPort;
 
@@ -47,7 +50,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
           /*
            * Set up your spring security config here. For example...
           */
-        http.authorizeRequests().antMatchers("/resources/**", "/login").permitAll().and().authorizeRequests().anyRequest().authenticated()
+        http.authorizeRequests().antMatchers("/resources/**", "/login").permitAll()
+                .and().authorizeRequests().anyRequest().authenticated()
                 .and().formLogin().loginPage("/login").permitAll().successHandler(authSuccess)
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccess).logoutSuccessUrl("/login?logout").invalidateHttpSession(true);
           /*
@@ -68,10 +72,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public LogoutSuccess logoutSuccessHandlerBean() {
+        return new LogoutSuccess();
+    }
+
+    @Bean
     public AuthenticationProvider activeDirectoryLdapAuthenticationProvider() {
         LdapTemplate template = new LdapTemplate();
         template.setIgnorePartialResultException(true);
         ActiveDirectoryLdapAuthenticationProvider provider = new ActiveDirectoryLdapAuthenticationProvider(DOMAIN, URL);
+        provider.setSearchFilter(SEARCH_FILTER);
         provider.setConvertSubErrorCodesToExceptions(true);
         provider.setUseAuthenticationRequestCredentials(true);
         return provider;

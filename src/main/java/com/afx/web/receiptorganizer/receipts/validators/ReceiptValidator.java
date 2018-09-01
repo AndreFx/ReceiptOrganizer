@@ -1,4 +1,4 @@
-package com.afx.web.receiptorganizer.userview.validators;
+package com.afx.web.receiptorganizer.receipts.validators;
 
 import com.afx.web.receiptorganizer.types.Receipt;
 import org.springframework.stereotype.Component;
@@ -6,8 +6,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.math.BigDecimal;
 
 @Component
 public class ReceiptValidator implements Validator {

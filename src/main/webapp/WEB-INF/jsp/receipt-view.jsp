@@ -12,9 +12,9 @@
 <html lang="en">
 <head>
     <!-- SITE URLS -->
-    <spring:url var="baseHomeUrl" value="/home/"/>
-    <spring:url var="searchUrl" value="/home/search"/>
-    <spring:url var="editReceiptUrl" value="/receipts/${receiptId}/update"/>
+    <spring:url var="receiptIndexUrl" value="/receipts/"/>
+    <spring:url var="searchUrl" value="/receipts/"/>
+    <spring:url var="updateReceiptUrl" value="/receipts/${receiptId}"/>
     <spring:url var="deleteReceiptUrl" value="/receipts/${receiptId}/delete"/>
     <spring:url var="logoutUrl" value="/logout"/>
     <spring:url var="settingsUrl" value="/users/settings"/>
@@ -87,14 +87,12 @@
 </head>
 <body>
     <div class="wrapper">
-        <jsp:include page="/WEB-INF/jsp/sidebar.jsp">
-            <jsp:param name="baseHomeUrl" value="${baseHomeUrl}"/>
-        </jsp:include>
+        <jsp:include page="/WEB-INF/jsp/sidebar.jsp"/>
         <div id="content">
             <jsp:include page="navbar.jsp"/>
             <div class="content-body">
-                <img class="receipt-edit-image modal-image" alt="${receipt.title} Image" src='<c:out value="${receiptViewImageUrl}"/>'>
-                <form:form autocomplete="off" modelAttribute="receipt" method="post" action="${editReceiptUrl}?${_csrf.parameterName}=${_csrf.token}" class="form-horizontal" enctype="multipart/form-data">
+                <img class="receipt-edit-image modal-image" alt="${receipt.title} Image" src="${receiptViewImageUrl}">
+                <form:form autocomplete="off" modelAttribute="receipt" method="post" action="${updateReceiptUrl}" class="form-horizontal">
                     <div class="form-group alert alert-danger center-full-width error-container" id="editReceiptErrorContainer">
                         <div class="col-lg-10" id="editReceiptErrors"></div>
                     </div>
@@ -130,7 +128,7 @@
                                 <form:input id="edititems${i.index}.quantity" path="items[${i.index}].quantity" type="text" placeholder="" value="${receiptItem.quantity}" class="form-control"/>
                             </div>
                             <div class="col-lg-2">
-                                <fmt:formatNumber value='${receiptItem.unitPrice}' type="currency" currencySymbol="" var="formattedUnitPrice"/>
+                                <fmt:formatNumber value='${receiptItem.unitPrice}' type="number" minFractionDigits="2" maxFractionDigits="2" var="formattedUnitPrice"/>
                                 <form:input id="edititems${i.index}.unitPrice" path="items[${i.index}].unitPrice" type="text" placeholder="" value="${formattedUnitPrice}" class="form-control"/>
                             </div>
                             <div class="col-lg-2">
@@ -170,14 +168,14 @@
                     <div class="form-group">
                         <form:label path="total" class="col-lg-2 control-label">Tax</form:label>
                         <div class="col-lg-10">
-                            <fmt:formatNumber value='${receipt.tax}' type="currency" currencySymbol="" var="formattedEditTax"/>
+                            <fmt:formatNumber value='${receipt.tax}' type="number" minFractionDigits="2" maxFractionDigits="2" var="formattedEditTax"/>
                             <form:input path="tax" id="editTax" type="text" value="${formattedEditTax}" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <form:label path="total" class="col-lg-2 control-label">Total</form:label>
                         <div class="col-lg-10">
-                            <fmt:formatNumber value='${receipt.total}' type="currency" currencySymbol="" var="formattedEditTotal"/>
+                            <fmt:formatNumber value='${receipt.total}' type="number" minFractionDigits="2" maxFractionDigits="2" var="formattedEditTotal"/>
                             <form:input path="total" id="editTotal" type="text" value="${formattedEditTotal}" class="form-control"/>
                         </div>
                     </div>
@@ -201,12 +199,7 @@
                                 <div class="btn-group-container">
                                     <div class="receipt-submit-container">
                                         <div class="file-input-container">
-                                            <span class="btn green fileinput-button">
-                                                <i class="fa fa-plus fa fa-white"></i>
-                                                <span>Change Receipt Image</span>
-                                                <form:input path="multipartFile" id="editMultipartFile" class="multipart-input" type="file" accept="image/*,application/pdf"/>
-                                            </span>
-                                            <form:label path="multipartFile">No file chosen</form:label>
+                                            <span class="receipt-image-file-name">${receipt.originalFileName}</span>
                                         </div>
                                         <div>
                                             <form:button id="receiptEditSubmit" class="btn btn-send form-save">Save Changes</form:button>
@@ -234,7 +227,6 @@
                                 <p class="text-center">Are you sure you want to delete the receipt: ${receipt.title}?</p>
                             </div>
                             <div class="modal-footer">
-                                <!-- TODO Fix csrf token to not be in the url -->
                                 <form:form id="deleteReceiptForm" autocomplete="off" action="${deleteReceiptUrl}" method="post" class="form-horizontal">
                                     <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
                                     <button class="btn btn-secondary">Yes</button>
@@ -248,10 +240,5 @@
             <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
         </div>
     </div>
-    <div class="snackbar">
-        <span id="snackbarText"></span>
-    </div>
-    <jsp:include page="/WEB-INF/jsp/image-modal.jsp"/>
-    <jsp:include page="/WEB-INF/jsp/loader.jsp"/>
 </body>
 </html>

@@ -32,7 +32,7 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler {
     Private fields
      */
 
-    @Value("${defaultPaginationSize}")
+    @Value("${users.defaultPaginationSize}")
     private String DEFAULT_PAGE_SIZE;
 
     @Autowired
@@ -87,7 +87,7 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler {
 
     private void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String targetUrl = "/home/";
+        String targetUrl = "/receipts/";
 
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }

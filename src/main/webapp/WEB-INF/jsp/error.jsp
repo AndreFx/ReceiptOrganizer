@@ -10,7 +10,7 @@
 <html lang="en">
 <head>
     <!-- SITE URLS -->
-    <spring:url var="baseHomeUrl" value="/home/"/>
+    <spring:url var="receiptIndexUrl" value="/receipts/"/>
     <spring:url var="logoutUrl" value="/logout"/>
     <spring:url var="settingsUrl" value="/users/settings"/>
     <spring:url value="/resources/images/systemError.jpg" var="errorImage"/>
@@ -73,14 +73,20 @@
 </head>
 <body>
     <div class="wrapper">
-        <jsp:include page="/WEB-INF/jsp/sidebar.jsp">
-            <jsp:param name="baseHomeUrl" value="${baseHomeUrl}"/>
-        </jsp:include>
-        <div id="content">
-            <jsp:include page="navbar.jsp"/>
+        <c:if test="${showSidebar}">
+            <jsp:include page="/WEB-INF/jsp/sidebar.jsp"/>
+        </c:if>
+        <div id="content"
+        <c:if test="${!showSidebar}">
+            style="width: 100%"
+        </c:if>>
+            <c:if test="${showNavbar}">
+                <jsp:include page="navbar.jsp"/>
+            </c:if>
             <div class="content-body">
                 <img class="error-image" src="${errorImage}" alt="System Error">
                 <p class="text-center">${errorMessage}</p>
+                <a class="center-block text-center" href="${returnLink}">Return</a>
 
                 <!--
                 Exception:  ${exception.message}
@@ -92,7 +98,5 @@
             </div>
         </div>
     </div>
-    <jsp:include page="/WEB-INF/jsp/image-modal.jsp"/>
-    <jsp:include page="/WEB-INF/jsp/loader.jsp"/>
 </body>
 </html>

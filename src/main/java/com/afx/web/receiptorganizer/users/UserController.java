@@ -61,7 +61,9 @@ public class UserController {
      */
 
     @RequestMapping(value="/getUserPhoto", method = RequestMethod.GET)
-    public void getUserImage(@ModelAttribute("user") User user, @RequestParam("thumbnail") boolean scale, HttpServletResponse response) {
+    public void getUserImage(@ModelAttribute("user") User user,
+                             @RequestParam("thumbnail") boolean scale,
+                             HttpServletResponse response) {
 
         try {
             InputStream in;
@@ -99,7 +101,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "/settings/update", method = RequestMethod.POST)
-    public String changeUserSettings(@Valid @ModelAttribute("user") User user, BindingResult result, RedirectAttributes ra) {
+    public String changeUserSettings(@Valid @ModelAttribute("user") User user,
+                                     BindingResult result,
+                                     RedirectAttributes ra) {
 
         if (!result.hasErrors()) {
             try {
@@ -138,7 +142,7 @@ public class UserController {
             return "settings";
         }
 
-        return "redirect:/home/";
+        return "redirect:/receipts/";
     }
 
     @RequestMapping(value = "/settings", method = RequestMethod.GET)

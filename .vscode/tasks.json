@@ -1,0 +1,42 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        { 
+            "label": "deploy",
+            "version": "0.1.0", 
+            "command": "mvn clean package wildfly:deploy", 
+            "isShellCommand": true, 
+            "showOutput": "always"
+        },
+        { 
+            "label": "test",
+            "version": "0.1.0", 
+            "command": "mvn clean test", 
+            "isShellCommand": true, 
+            "showOutput": "always"
+        },
+        { 
+            "label": "redeploy",
+            "version": "0.1.0", 
+            "command": "mvn clean package wildfly:redeploy", 
+            "isShellCommand": true, 
+            "showOutput": "always"
+        },
+        { 
+            "label": "undeploy",
+            "version": "0.1.0", 
+            "command": "mvn clean package wildfly:undeploy", 
+            "isShellCommand": true, 
+            "showOutput": "always"
+        },
+        { 
+            "label": "run debug",
+            "version": "0.1.0", 
+            "command": "sh ~/Documents/jboss-eap-7.0/bin/standalone.sh --debug", 
+            "isShellCommand": true, 
+            "showOutput": "always"
+        }
+    ]
+}
