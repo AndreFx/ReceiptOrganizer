@@ -17,7 +17,7 @@
         },
         { 
             "label": "test",
-            "command": "mvn clean test", 
+            "command": "mvn clean test -P local-test", 
             "isShellCommand": true, 
             "showOutput": "always"
         },
