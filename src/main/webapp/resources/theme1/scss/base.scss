@@ -1,0 +1,108 @@
+
+@import 'navbar';
+@import 'sidebar';
+@import 'content';
+@import 'footer';
+@import 'mediaqueries';
+@import 'snackbar';
+@import 'form';
+@import 'login';
+
+/* ---------------------------------------------------
+    WRAPPER STYLES
+----------------------------------------------------- */
+.wrapper {
+    display: flex;
+}
+.overlay {
+    opacity: 0;
+    background-color: rgb(1, 1, 1);
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1059;
+    transition: opacity .25s ease-in-out;
+}
+.overlay.cover {
+    opacity: 0.7
+}
+
+/* ---------------------------------------------------
+    MISC. STYLES
+----------------------------------------------------- */
+html,
+body {
+    background: #efefef;
+    font-family: 'Varela Round', sans-serif;
+}
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+div.inline {
+    display: inline-block;
+}
+.center-full-width {
+    width: 100%;
+    margin-right: auto !important;
+    margin-left: auto !important;
+}
+.full-width {
+    width: 100%;
+}
+a.full-width {
+    display:inline-block;
+}
+.vertical-align-text {
+    vertical-align: middle !important;
+}
+.bottom-stack-order {
+    z-index: 0 !important;
+}
+
+/*
+Spinning loader
+ */
+
+.spinner {
+    animation: rotator 1.4s linear infinite;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 1060;
+    margin-left: -33px;
+    margin-top: -33px;
+}
+.path {
+    stroke-dasharray: 187;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    animation:
+            dash 1.4s ease-in-out infinite,
+            colors 5.6s ease-in-out infinite;
+}
+@keyframes rotator {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(270deg); }
+}
+@keyframes colors {
+    0% { stroke: #4285F4; }
+    25% { stroke: #DE3E35; }
+    50% { stroke: #F7C223; }
+    75% { stroke: #1B9A59; }
+    100% { stroke: #4285F4; }
+}
+@keyframes dash {
+    0% { stroke-dashoffset: 187; }
+    50% {
+        stroke-dashoffset: 46.75;
+        transform:rotate(135deg);
+    }
+    100% {
+        stroke-dashoffset: 187;
+        transform:rotate(450deg);
+    }
+}

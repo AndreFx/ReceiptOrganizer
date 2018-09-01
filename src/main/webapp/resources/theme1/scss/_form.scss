@@ -1,0 +1,139 @@
+/* ---------------------------------------------------
+    FORM STYLES
+----------------------------------------------------- */
+
+/**
+Item Styles
+ */
+ .control-table-label {
+    padding-top: 7px;
+    margin: 0;
+}
+
+/**
+Error handling
+ */
+.error-container {
+    display: none;
+}
+
+/**
+Buttons
+ */
+.form-control:focus {
+    border-color: #bb0000;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(187,0,0,.6);
+}
+.edit-item-delete-button, .new-item-delete-button {
+    float: right;
+}
+.form-save {
+    margin-left: 20px;
+}
+.fileinput-button {
+    background: none repeat scroll 0 0 #eeeeee;
+    border: 1px solid #e6e6e6;
+    float: left;
+    margin-right: 10px;
+    overflow: hidden;
+    position: relative;
+}
+.fileinput-button input {
+    cursor: pointer;
+    direction: ltr;
+    font-size: 23px;
+    margin: 0;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate(-300px, 0px) scale(4);
+}
+* html .fileinput-button {
+    line-height: 24px;
+    margin: 1px -3px 0 0;
+}
+* + html .fileinput-button {
+    margin: 1px 0 0;
+    padding: 2px 15px;
+}
+.btn-group-container {
+    display: inline-block;
+    line-height: 35px;
+}
+.receipt-edit-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.file-input-container {
+    display: inline-block;
+    line-height: 35px;
+    vertical-align: middle;
+}
+.receipt-submit-container {
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+}
+.btn-send, .btn-send:hover {
+    background: none repeat scroll 0 0 #bb0000;
+    color: #fff;
+}
+.btn-send:hover {
+    background: none repeat scroll 0 0 #bb0000;
+}
+/**
+Receipt OCR Form
+ */
+.receipt-ocr-form {
+    position: relative;
+    padding: 25% 20px;
+    text-align: center;
+}
+#receiptImage {
+    display: none;
+}
+.receipt-ocr-form button {
+    display: block;
+    padding: 8px 16px;
+    margin: 40px auto 0;
+}
+.receipt-ocr-form.has-advanced-upload {
+    background-color: white;
+    outline: 2px dashed black;
+    outline-offset: -10px;
+}
+.receipt-ocr-form.has-advanced-upload .ocr-drag-and-drop {
+    display: inline;
+}
+.receipt-ocr-form.has-dragover {
+    outline-color: #bb0000;
+}
+.receipt-ocr-form label:hover strong {
+    color: #bb0000
+}
+.receipt-ocr-form {
+    font-size: 18px;
+}
+.receipt-ocr-form.is-error #receiptOcrFormUpload {
+    display: none;
+}
+#receiptOcrFormError {
+    display: none;
+}
+.receipt-ocr-form.is-error #receiptOcrFormError {
+    display: block;
+}
+.receipt-ocr-form a {
+    color: #333333;
+    font-weight: 700;
+}
+.receipt-ocr-form a:hover {
+    color: #bb0000;
+    text-decoration: none;
+}
+.receipt-image-file-name {
+    font-family: "Open Sans",sans-serif;
+    font-weight: 400;
+}
