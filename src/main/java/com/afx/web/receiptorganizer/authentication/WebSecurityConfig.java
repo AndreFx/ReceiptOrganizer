@@ -47,18 +47,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-          /*
-           * Set up your spring security config here. For example...
-          */
-        http.authorizeRequests().antMatchers("/resources/**", "/login").permitAll()
-                .and().authorizeRequests().anyRequest().authenticated()
-                .and().formLogin().loginPage("/login").permitAll().successHandler(authSuccess)
-                .and().logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccess).logoutSuccessUrl("/login?logout").invalidateHttpSession(true);
-          /*
+        /*
            * Use HTTPs for ALL requests
           */
         http.requiresChannel().anyRequest().requiresSecure();
         http.portMapper().http(httpPort).mapsTo(httpsPort);
+        
+        http.authorizeRequests().antMatchers("/resources/**", "/login").permitAll()
+                .and().authorizeRequests().anyRequest().authenticated()
+                .and().formLogin().loginPage("/login").permitAll().successHandler(authSuccess)
+                .and().logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccess).logoutSuccessUrl("/login?logout").invalidateHttpSession(true);
     }
 
     @Override
