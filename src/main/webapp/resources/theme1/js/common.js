@@ -2,12 +2,16 @@
 
 function createItemDeleteButtonHandlers(parent, labelId, divId, number) {
     console.log("Assigning delete handler to: " + "#" + labelId + number + ", " + "#" + divId + number);
-    $(parent).on("mouseenter", "#" + labelId + number + ", " + "#" + divId + number, {value: number}, function(event) {
+    $(parent).on("mouseenter", "#" + labelId + number + ", " + "#" + divId + number, {
+        value: number
+    }, function(event) {
         //Show delete button on hover of label
         console.log("Showing delete item button");
         $("#" + labelId + event.data.value).hide();
         $("#" + divId + event.data.value).show();
-    }).on("mouseleave", "#" + labelId + number + ", " + "#" + divId + number, {value: number}, function(event) {
+    }).on("mouseleave", "#" + labelId + number + ", " + "#" + divId + number, {
+        value: number
+    }, function(event) {
         //Hide delete button once user's mouse fully leaves div
         console.log("Hiding delete item button");
         $("#" + labelId + event.data.value).show();
@@ -19,7 +23,7 @@ $(function() {
 
     /* Sidebar collapsing button */
 
-    $('#sidebarCollapse').on('click', function () {
+    $('#sidebarCollapse').on('click', function() {
         // open or close navbar
         $('#sidebar').toggleClass('active');
         $('#content').toggleClass('active');
@@ -40,7 +44,7 @@ $(function() {
 
         var d = new Date(value);
 
-        if (d.getMonth()+1 == parseInt(match[1], 10) && d.getDate() == parseInt(match[2], 10)) {
+        if (d.getMonth() + 1 == parseInt(match[1], 10) && d.getDate() == parseInt(match[2], 10)) {
             return true;
         }
         return false;

@@ -88,6 +88,9 @@
 .login-form .login-button.clicked.success {
     color: #2ecc71;
 }
+.login-form .login-button.clicked.error {
+    color: #e74c3c;
+}
 /*=== Form - Main Message ===*/
 .login-form-main-message {
     background: #ffffff;

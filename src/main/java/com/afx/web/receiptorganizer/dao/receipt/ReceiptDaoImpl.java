@@ -50,7 +50,6 @@ public class ReceiptDaoImpl implements ReceiptDao {
     Data access methods
      */
 
-    @SuppressWarnings("unchecked")
     public int addReceipt(String username, Receipt receipt) {
         TransactionDefinition def = new DefaultTransactionDefinition();
         TransactionStatus status = transactionManager.getTransaction(def);

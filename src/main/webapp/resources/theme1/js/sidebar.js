@@ -13,7 +13,7 @@ $(function() {
         $('.snackbar').addClass('show');
         $('#snackbarText').text(message);
 
-        setTimeout(function(){
+        setTimeout(function() {
             $('.snackbar').removeClass('show');
             $('#snackbarText').text('');
         }, snackbarTimeout);
@@ -61,12 +61,12 @@ $(function() {
 
         submitHandler: function(form) {
             $.ajax({
-                url : '/ReceiptOrganizer/labels/create',
+                url: '/ReceiptOrganizer/labels/create',
                 type: "POST",
-                data : $(form).serialize(),
-                success : function(res) {
+                data: $(form).serialize(),
+                success: function(res) {
                     var success = false;
-                    if(res.success){
+                    if (res.success) {
                         var labelName = $('#createLabel').find("input[name='name']").val().trim();
                         insertLabelListSorted(labelName);
                         addLabelMultiselect(labelName);
@@ -216,7 +216,7 @@ $(function() {
         $(newRow).find("input[id='items0.name']").attr("id", "items" + (currentRowNum - 1) + ".name")
             .attr("name", "items[" + (currentRowNum - 1) + "].name");
         $(newRow).find("input[id='items0.quantity']").attr("id", "items" + (currentRowNum - 1) + ".quantity")
-            .attr("name", "items[" + (currentRowNum - 1)+ "].quantity");
+            .attr("name", "items[" + (currentRowNum - 1) + "].quantity");
         $(newRow).find("input[id='items0.unitPrice']").attr("id", "items" + (currentRowNum - 1) + ".unitPrice")
             .attr("name", "items[" + (currentRowNum - 1) + "].unitPrice");
         $(newRow).find("input[id='items0.warrantyLength']").attr("id", "items" + (currentRowNum - 1) + ".warrantyLength")
@@ -541,15 +541,15 @@ $(function() {
             $editor = $('#editor');
 
         $.ajax({
-            url : '/ReceiptOrganizer/labels/update',
+            url: '/ReceiptOrganizer/labels/update',
             type: "POST",
-            data : {
+            data: {
                 oldLabelName: $editor.find("input[name='oldLabelName']").val(),
                 newLabelName: $editor.find("input[name='newLabelName']").val()
             },
-            success : function(res) {
+            success: function(res) {
 
-                if(res.success){
+                if (res.success) {
                     $('#labelEditErrorContainer').hide();
                     //Update text
                     var labelName = $editor.find('input[name="newLabelName"]').val().trim();
@@ -579,12 +579,12 @@ $(function() {
         var labelName = $(this).find('input[name="labelName"]').val();
 
         $.ajax({
-            url : '/ReceiptOrganizer/labels/delete',
+            url: '/ReceiptOrganizer/labels/delete',
             type: "POST",
-            data : $(this).serialize(),
-            success : function(res) {
+            data: $(this).serialize(),
+            success: function(res) {
 
-                if(res.success){
+                if (res.success) {
                     $('.label-name').find('span').each(function() {
                         if (this.textContent === labelName) {
                             $(this).parent().parent().parent().parent().parent().remove();
@@ -621,8 +621,8 @@ $(function() {
     });
 
     $('#addReceipt').on('shown.bs.modal', function() {
-        $("#title").trigger("focus");
-    })
+            $("#title").trigger("focus");
+        })
         .on('hidden.bs.modal', function() {
             console.log('Receipt modal closed.');
 
@@ -653,8 +653,8 @@ $(function() {
         });
 
     $('#addLabel').on('shown.bs.modal', function() {
-        $("#name").trigger("focus");
-    })
+            $("#name").trigger("focus");
+        })
         .on('hidden.bs.modal', function() {
             console.log('Label modal closed.');
 
@@ -668,8 +668,8 @@ $(function() {
         });
 
     $('#deleteLabelModal').on('shown.bs.modal', function() {
-        $("#deleteCancelButton").trigger("focus");
-    })
+            $("#deleteCancelButton").trigger("focus");
+        })
         .on('hidden.bs.modal', function() {
             console.log('Edit Label modal closed.');
 
@@ -686,12 +686,12 @@ $(function() {
         return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
     };
 
-    var $visionForm     = $('.receipt-ocr-form'),
-        $visionInput    = $('.receipt-ocr-form input[type="file"]'),
-        $label          = $('.receipt-ocr-form label#receiptImageLabel'),
-        $overlay        = $('#overlay'),
-        $spinner        = $('.spinner'),
-        $restart        = $('.receipt-ocr-form-restart'),
+    var $visionForm = $('.receipt-ocr-form'),
+        $visionInput = $('.receipt-ocr-form input[type="file"]'),
+        $label = $('.receipt-ocr-form label#receiptImageLabel'),
+        $overlay = $('#overlay'),
+        $spinner = $('.spinner'),
+        $restart = $('.receipt-ocr-form-restart'),
         $visionErrorMsg = $('#receiptOcrFormError span'),
         moveToReceiptForm = false,
         showFileName = function(files) {
@@ -712,9 +712,9 @@ $(function() {
             dragCounter = 0;
 
         $visionForm.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        })
+                e.preventDefault();
+                e.stopPropagation();
+            })
             .on('dragenter', function() {
                 dragCounter++;
                 $visionForm.addClass('has-dragover');
@@ -820,8 +820,8 @@ $(function() {
     });
 
     $restart.on('click', function(e) {
-       e.preventDefault();
-       resetVisionForm();
-       $visionInput.trigger('click');
+        e.preventDefault();
+        resetVisionForm();
+        $visionInput.trigger('click');
     });
 });

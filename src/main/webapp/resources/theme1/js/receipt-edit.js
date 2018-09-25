@@ -165,7 +165,7 @@ $(function() {
         $(newRow).find("input[id='edititems0.name']").attr("id", "edititems" + (editCurrentRowNum - 1) + ".name")
             .attr("name", "items[" + (editCurrentRowNum - 1) + "].name");
         $(newRow).find("input[id='edititems0.quantity']").attr("id", "edititems" + (editCurrentRowNum - 1) + ".quantity")
-            .attr("name", "items[" + (editCurrentRowNum - 1)+ "].quantity");
+            .attr("name", "items[" + (editCurrentRowNum - 1) + "].quantity");
         $(newRow).find("input[id='edititems0.unitPrice']").attr("id", "edititems" + (editCurrentRowNum - 1) + ".unitPrice")
             .attr("name", "items[" + (editCurrentRowNum - 1) + "].unitPrice");
         $(newRow).find("input[id='edititems0.warrantyLength']").attr("id", "edititems" + (editCurrentRowNum - 1) + ".warrantyLength")

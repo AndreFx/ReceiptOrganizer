@@ -3,40 +3,48 @@
     // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
-        { 
+        {
             "label": "deploy",
-            "command": "mvn clean package wildfly:deploy -Dmaven.test.skip=true", 
-            "isShellCommand": true, 
+            "command": "mvn clean package wildfly:deploy -Dmaven.test.skip=true",
+            "isShellCommand": true,
             "showOutput": "always"
         },
-        { 
+        {
             "label": "build",
-            "command": "mvn clean install -Dmaven.test.skip=true", 
-            "isShellCommand": true, 
-            "showOutput": "always"
+            "command": "mvn clean install -Dmaven.test.skip=true",
+            "isShellCommand": true,
+            "showOutput": "always",
+            "problemMatcher": []
         },
-        { 
+        {
             "label": "test",
-            "command": "mvn clean test -P local-test", 
-            "isShellCommand": true, 
+            "command": "mvn clean test -P local-test",
+            "isShellCommand": true,
             "showOutput": "always"
         },
-        { 
+        {
             "label": "redeploy",
-            "command": "mvn clean package wildfly:redeploy -Dmaven.test.skip=true", 
-            "isShellCommand": true, 
-            "showOutput": "always"
+            "command": "mvn package wildfly:redeploy -Dmaven.test.skip=true",
+            "isShellCommand": true,
+            "showOutput": "always",
+            "problemMatcher": []
         },
-        { 
+        {
             "label": "undeploy",
-            "command": "mvn clean package wildfly:undeploy -Dmaven.test.skip=true", 
-            "isShellCommand": true, 
+            "command": "mvn clean package wildfly:undeploy -Dmaven.test.skip=true",
+            "isShellCommand": true,
             "showOutput": "always"
         },
-        { 
+        {
+            "label": "beautify",
+            "command": "js-beautify -r ../ReceiptOrganizer/src/main/webapp/resources/theme1/js/*.js",
+            "isShellCommand": true,
+            "showOutput": "always"
+        },
+        {
             "label": "run debug",
-            "command": "sh ~/Documents/Github/ReceiptOrganizer/run_debug.sh", 
-            "isShellCommand": true, 
+            "command": "sh ~/Documents/Github/ReceiptOrganizer/run_debug.sh",
+            "isShellCommand": true,
             "showOutput": "always"
         }
     ]
