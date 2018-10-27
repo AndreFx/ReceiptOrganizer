@@ -1,0 +1,249 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import Drawer from '@material-ui/core/Drawer';
+import Divider from '@material-ui/core/Divider';
+import Snackbar from '@material-ui/core/Snackbar';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import EditIcon from '@material-ui/icons/Edit';
+import CategoryIcon from '@material-ui/icons/Category'
+import IconButton from '@material-ui/core/IconButton';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+
+//Custom imports
+import { DRAWER_WIDTH, SNACKBAR_VERTICAL, SNACKBAR_HORIZONTAL, SNACKBAR_AUTOHIDE_DURATION_DEFAULT } from '../../common/constants';
+import LinearIndeterminate from './loading/linearIndeterminate';
+import NavContainer from '../containers/navContainer';
+import LabelListContainer from '../containers/labelListContainer';
+import CreateLabelListContainer from '../containers/createLabelListContainer';
+import SnackbarContentWrapper from './snackbar/snackbarContentWrapper';
+import DialogWrapper from './dialog/dialogWrapper';
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        flexWrap: 'wrap',
+        height: '100vh',
+        zIndex: 1,
+        overflow: 'hidden',
+        position: 'relative',
+        display: 'flex',
+    },
+    toolbar: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        padding: '0 8px',
+        ...theme.mixins.toolbar,
+    },
+    content: {
+        flexGrow: 1,
+        backgroundColor: theme.palette.background.default,
+        padding: theme.spacing.unit * 3,
+    },
+    fab: {
+        position: 'absolute',
+        bottom: theme.spacing.unit * 2,
+        right: theme.spacing.unit * 2,
+    },
+    button: {
+        margin: theme.spacing.unit,
+    },
+    menuButton: {
+        marginLeft: 12,
+        marginRight: 36,
+    },
+    drawerPaper: {
+        position: 'relative',
+        whiteSpace: 'nowrap',
+        width: DRAWER_WIDTH,
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
+    drawerPaperClose: {
+        overflowX: 'hidden',
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        width: theme.spacing.unit * 7,
+        [theme.breakpoints.up('sm')]: {
+            width: theme.spacing.unit * 9,
+        },
+    },
+    toolbar: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        padding: '0 8px',
+        ...theme.mixins.toolbar,
+    },
+    extendedIcon: {
+        marginRight: theme.spacing.unit,
+    },
+    loading: {
+        height: '98vh'
+    }
+});
+
+class OrganizerApp extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: true,
+            lastSnackbar: null
+        };
+
+        //Bind functions in constructor so a new function isn't made in every render
+        this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
+        this.handleDrawerClose = this.handleDrawerClose.bind(this);
+        this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
+        this.handleSnackbarExited = this.handleSnackbarExited.bind(this);
+    }
+
+    handleDrawerOpen() {
+        this.setState({ open: true });
+    };
+
+    handleDrawerClose() {
+        this.setState({ open: false });
+    };
+
+    handleSnackbarClose(event, reason) {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.props.finishCurrentSnackbar();
+    }
+
+    handleSnackbarExited() {
+        if (this.props.snackbarQueueLength > 0) {
+            this.props.processSnackbarQueue();
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.currentSnackbar && this.props.currentSnackbar != this.state.lastSnackbar) {
+            //Keep last snackbar so we don't lose it while closing a snackbar
+            this.setState({
+                lastSnackbar: this.props.currentSnackbar
+            });
+        }
+    }
+
+    render() {
+        const { classes, theme, isLoading, currentSnackbar, snackbarOpen, dialog } = this.props;
+        let autohideDuration = SNACKBAR_AUTOHIDE_DURATION_DEFAULT;
+        let variant = '';
+        let msg = '';
+        let actions = [];
+        let handlers = [];
+        let handlerParams = [];
+
+        //Keeps last snackbar information for the duration of it closing
+        //This keeps the ui from removing actions, messages, variants, etc while closing a snackbar
+        if (!currentSnackbar && this.state.lastSnackbar) {
+            variant = this.state.lastSnackbar.variant;
+            msg = this.state.lastSnackbar.msg;
+            actions = this.state.lastSnackbar.actions;
+            handlers = this.state.lastSnackbar.handlers;
+            handlerParams = this.state.lastSnackbar.handlerParams;
+        }
+
+        if (currentSnackbar) {
+            autohideDuration = currentSnackbar.autohideDuration;
+        }
+
+        return (
+            <div>
+                {isLoading && (<LinearIndeterminate />)}
+                <div className={classNames(classes.root, isLoading && classes.loading)}>
+                    <NavContainer open={this.state.open} onDrawerBtnClick={this.handleDrawerOpen} />
+                    <Drawer
+                        variant="permanent"
+                        classes={{
+                            paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
+                        }}
+                        open={this.state.open}
+                    >
+                        <div className={classes.toolbar}>
+                            <IconButton onClick={this.handleDrawerClose}>
+                                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                            </IconButton>
+                        </div>
+                        <Divider />
+                        <List>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <CategoryIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Categories" />
+                            </ListItem>
+                        </List>
+                        <Divider />
+                        <LabelListContainer />
+                        <Divider />
+                        <CreateLabelListContainer />
+                    </Drawer>
+                    <main className={classes.content}>
+                        <div className={classes.toolbar} />
+                        <Typography noWrap>{'You think water moves fast? You should see ice.'}</Typography>
+                    </main>
+                    <Button variant="extendedFab" aria-label="Add" className={classes.fab} color="primary">
+                        <EditIcon className={classes.extendedIcon} />
+                        Add Receipt
+                    </Button>
+                    <Snackbar
+                        anchorOrigin={{ 
+                            vertical: SNACKBAR_VERTICAL,
+                            horizontal: SNACKBAR_HORIZONTAL
+                        }}
+                        open={snackbarOpen}
+                        autoHideDuration={currentSnackbar ? autohideDuration : null}
+                        onClose={this.handleSnackbarClose}
+                        onExited={this.handleSnackbarExited}
+                    >
+                        <SnackbarContentWrapper
+                            onClose={this.handleSnackbarClose}
+                            variant={currentSnackbar ? currentSnackbar.variant : variant}
+                            message={currentSnackbar ? currentSnackbar.msg : msg}
+                            actions={currentSnackbar ? currentSnackbar.actions : actions}
+                            handlers={currentSnackbar ? currentSnackbar.handlers : handlers}
+                            handlerParams={currentSnackbar ? currentSnackbar.handlerParams : handlerParams}
+                        />
+                    </Snackbar >
+                    <DialogWrapper 
+                        isLoading={isLoading}
+                        open={dialog.open}  
+                        title={dialog.title}
+                        close={dialog.close}
+                        submit={dialog.submit}
+                        options={dialog.options}
+                    />
+                </div>
+            </div>
+        );
+    }
+}
+
+OrganizerApp.propTypes = {
+    classes: PropTypes.object.isRequired,
+    theme: PropTypes.object.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    processSnackbarQueue: PropTypes.func.isRequired,
+    finishCurrentSnackbar: PropTypes.func.isRequired,
+    dialog: PropTypes.object.isRequired
+};
+
+export default withStyles(styles, { withTheme: true })(OrganizerApp);

@@ -4,13 +4,21 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "deploy",
-            "command": "mvn clean package wildfly:deploy -Dmaven.test.skip=true",
+            "label": "package",
+            "command": "mvn package -Dmaven.test.skip=true",
             "isShellCommand": true,
-            "showOutput": "always"
+            "showOutput": "always",
+            "problemMatcher": []
         },
         {
-            "label": "build",
+            "label": "client-build",
+            "command": "npm run build && cp -TR ./src/main/webapp/resources/theme1/js/ ./target/ReceiptOrganizer-1.0.2-SNAPSHOT/Resources/theme1/js",
+            "isShellCommand": true,
+            "showOutput": "always",
+            "problemMatcher": []
+        },
+        {
+            "label": "full-build",
             "command": "mvn clean install -Dmaven.test.skip=true",
             "isShellCommand": true,
             "showOutput": "always",
@@ -23,29 +31,38 @@
             "showOutput": "always"
         },
         {
-            "label": "redeploy",
-            "command": "mvn package wildfly:redeploy -Dmaven.test.skip=true",
+            "label": "deploy client only",
+            "command": "cp -TR target/ReceiptOrganizer-1.0.2-SNAPSHOT ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war && rm ../../jboss-eap-7.0/standalone/deployments/*.deployed && touch ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war.dodeploy",
             "isShellCommand": true,
             "showOutput": "always",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "dependsOn": [
+                "client-build"
+            ]
         },
         {
-            "label": "undeploy",
-            "command": "mvn clean package wildfly:undeploy -Dmaven.test.skip=true",
+            "label": "deploy full",
+            "command": "cp -TR target/ReceiptOrganizer-1.0.2-SNAPSHOT ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war && rm ../../jboss-eap-7.0/standalone/deployments/*.deployed && touch ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war.dodeploy",
             "isShellCommand": true,
-            "showOutput": "always"
+            "showOutput": "always",
+            "problemMatcher": [],
+            "dependsOn": [
+                "full-build"
+            ]
         },
         {
             "label": "beautify",
             "command": "js-beautify -r ../ReceiptOrganizer/src/main/webapp/resources/theme1/js/*.js",
             "isShellCommand": true,
-            "showOutput": "always"
+            "showOutput": "always",
+            "problemMatcher": []
         },
         {
             "label": "run debug",
             "command": "sh ~/Documents/Github/ReceiptOrganizer/run_debug.sh",
             "isShellCommand": true,
-            "showOutput": "always"
+            "showOutput": "always",
+            "problemMatcher": []
         }
     ]
 }

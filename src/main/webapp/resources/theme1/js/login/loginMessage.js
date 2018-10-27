@@ -1,4 +1,4 @@
-const React = require('react');
+import React from 'react';
 
 class LoginMessage extends React.Component {
 
@@ -32,4 +32,4 @@ class LoginMessage extends React.Component {
     }
 }
 
-module.exports = LoginMessage;
+export default LoginMessage;

@@ -9,7 +9,7 @@ public class Label {
     Private fields
      */
 
-    @Size(max = 50)
+    @Size(min = 1, max = 50)
     @Pattern(regexp = "^(?!All Receipts$)^(.*)|(?!\\S+)")
     private String name;
 

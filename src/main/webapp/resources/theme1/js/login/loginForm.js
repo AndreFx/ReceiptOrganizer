@@ -1,8 +1,6 @@
-const React = require('react');
-const LoginMessage = require('./loginMessage');
-
-const invalidUsernameMessage = 'Username is required';
-const invalidPasswordMessage = 'Password is required';
+import React from 'react';
+import LoginMessage from './loginMessage';
+import { INVALID_PASSWORD_MESSAGE, INVALID_USERNAME_MESSAGE } from '../common/constants'
 
 class LoginForm extends React.Component {
 
@@ -16,18 +14,18 @@ class LoginForm extends React.Component {
             passwordValid: false,
             formValid: false
         }
-    }
+    };
 
-    handleUserInput(event) {
+    handleUserInput = event => {
         const name = event.target.name;
         const value = event.target.value;
         this.setState({
             [name]: value,
             successfulSubmit: undefined
         }, () => { this.validateField(name, value) });
-    }
+    };
 
-    validateField(fieldName, value) {
+    validateField = (fieldName, value) => {
         let fieldValidationErrors = this.state.formErrors;
         let usernameValid = this.state.usernameValid;
         let passwordValid = this.state.passwordValid;
@@ -35,11 +33,11 @@ class LoginForm extends React.Component {
         switch(fieldName) {
             case 'username':
                 usernameValid = value.length !== 0;
-                fieldValidationErrors.username = usernameValid ? '' : invalidUsernameMessage;
+                fieldValidationErrors.username = usernameValid ? '' : INVALID_USERNAME_MESSAGE;
                 break;
             case 'password':
                 passwordValid = value.length !== 0;
-                fieldValidationErrors.password = passwordValid ? '' : invalidPasswordMessage;
+                fieldValidationErrors.password = passwordValid ? '' : INVALID_PASSWORD_MESSAGE;
                 break;
             default:
                 break;
@@ -50,13 +48,13 @@ class LoginForm extends React.Component {
             usernameValid: usernameValid,
             passwordValid: passwordValid
         }, this.validateForm);
-    }
+    };
 
-    validateForm() {
+    validateForm = () => {
         this.setState({formValid: this.state.usernameValid && this.state.passwordValid});
-    }
+    };
 
-    handleSubmit(event) {
+    handleSubmit = event => {
         const validForm = this.state.formValid;
         if (validForm) {
             console.log('Valid login form submitted, sending to server');
@@ -70,11 +68,11 @@ class LoginForm extends React.Component {
 
             if (this.state.username.length === 0) {
                 usernameValid = false;
-                fieldValidationErrors.username = invalidUsernameMessage;
+                fieldValidationErrors.username = INVALID_USERNAME_MESSAGE;
             }
             if (this.state.password.length === 0) {
                 passwordValid = false;
-                fieldValidationErrors.password = invalidPasswordMessage;
+                fieldValidationErrors.password = INVALID_PASSWORD_MESSAGE;
             }
 
             this.setState({
@@ -84,14 +82,14 @@ class LoginForm extends React.Component {
             });
             event.preventDefault();
         }
-    }
+    };
 
-    onEnterPressed(event) {
+    onEnterPressed = event => {
         if (event.keyCode == 13 && event.shiftKey == false) {
             event.preventDefault();
             this.loginButton.click();
         }
-    }
+    };
 
     render() {
         const submitStatus = this.state.successfulSubmit;
@@ -132,7 +130,7 @@ class LoginForm extends React.Component {
                 </form>
             </div>
         );
-    }
+    };
 }
 
-module.exports = LoginForm;
+export default LoginForm;

@@ -1,6 +1,6 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
-const LoginForm = require('./loginForm');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import LoginForm from './loginForm';
 
 class LoginApp extends React.Component {
 
@@ -26,5 +26,5 @@ class LoginApp extends React.Component {
 var root = document.getElementById('react');
 ReactDOM.render(
     <LoginApp {...(root.dataset)}/>, 
-    document.getElementById('react')
-)
+    root
+);

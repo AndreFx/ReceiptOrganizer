@@ -1,6 +1,10 @@
 package com.afx.web.receiptorganizer.labels.responses;
 
-public class LabelJsonResponse {
+import com.afx.web.receiptorganizer.types.Label;
+
+import java.util.List;
+
+public class GetLabelsJsonResponse {
 
     /*
     Private fields
@@ -8,6 +12,7 @@ public class LabelJsonResponse {
 
     private boolean success;
     private String message;
+    private List<Label> labels;
 
     /*
     Getters and setters
@@ -27,5 +32,13 @@ public class LabelJsonResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public List<Label> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<Label> labels) {
+        this.labels = labels;
     }
 }
