@@ -14,7 +14,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.MediaType;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -73,20 +72,19 @@ public class LabelControllerTests {
     @Test
     public void createLabel_ShouldCreateNewLabelWithInputName() throws Exception {
         String username = "TestUsername";
-        String labelName = "Test";
 
         User user = new User();
         user.setUsername(username);
 
         mockMvc.perform((post("/labels/create")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("name", labelName)
+                .contentType(TestUtils.APPLICATION_JSON_UTF8)
+                .content("{\"name\": \"Test\"}")
                 .sessionAttr("user", user))
         )
             .andExpect(status().isOk())
             .andExpect(content().contentType(TestUtils.APPLICATION_JSON_UTF8))
             .andExpect(jsonPath("$.success", is(true)))
-            .andExpect(jsonPath("$.errorMessage", is(messageSource.getMessage("label.add.success",
+            .andExpect(jsonPath("$.message", is(messageSource.getMessage("label.add.success",
                     null,
                     Locale.US))));
 
