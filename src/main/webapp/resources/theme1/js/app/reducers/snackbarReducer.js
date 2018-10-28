@@ -10,7 +10,7 @@ export const SNACKBAR_INITIAL_STATE = {
 function snackbarReducer(state = initialState, action) {
     switch(action.type) {
         case PROCESS_SNACKBAR_QUEUE:
-            if (state.snackbarQueue.length != 0 && state.snackbarQueue.length > 1) {
+            if (state.snackbarQueue.length > 1) {
                 return Object.assign({}, state, {
                     currentSnackbar: state.snackbarQueue[0],
                     snackbarOpen: true,
@@ -18,7 +18,7 @@ function snackbarReducer(state = initialState, action) {
                         ...state.snackbarQueue.slice(1)
                     ]
                 });
-            } else if (state.snackbarQueue.length != 0) {
+            } else if (state.snackbarQueue.length == 1) {
                 return Object.assign({}, state, {
                     currentSnackbar: state.snackbarQueue[0],
                     snackbarOpen: true,
@@ -29,16 +29,11 @@ function snackbarReducer(state = initialState, action) {
             }
         case FINISH_CURRENT_SNACKBAR:
             return Object.assign({}, state, {
-                currentSnackbar: null,
-                snackbarOpen: false,
-                snackbarQueue: [
-                    ...state.snackbarQueue
-                ]
+                snackbarOpen: false
             });
         case ADD_SNACKBAR:
             if (state.snackbarOpen) {
                 return Object.assign({}, state, {
-                    currentSnackbar: null,
                     snackbarOpen: false,
                     snackbarQueue: [
                         ...state.snackbarQueue,

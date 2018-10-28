@@ -13,11 +13,24 @@ export const LABEL_MENU_OPTIONS = [
 ];
 
 /* Create Label UI Text */
-export const CREATE_LABEL_UI_TITLE = 'Create Label';
+export const CREATE_LABEL_UI_TITLE = 'Create Category';
 export const CREATE_LABEL_DIALOG_HELP = 'Categorize your receipts! Enter a unique name below to begin categorizing your receipts.';
-export const CREATE_LABEL_DIALOG_INPUT_PLACEHOLDER = "Label Name";
+export const CREATE_LABEL_DIALOG_INPUT_PLACEHOLDER = 'Category Name';
 export const CREATE_LABEL_CANCEL = 'Cancel';
 export const CREATE_LABEL_SUBMIT = 'Create';
+
+/* Edit Label UI Text */
+export const EDIT_LABEL_DIALOG_TITLE = 'Edit Category';
+export const EDIT_LABEL_DIALOG_HELP = 'Enter a new unique name below to replace ';
+export const EDIT_LABEL_DIALOG_INPUT_PLACEHOLDER = 'New Category Name';
+export const EDIT_LABEL_CANCEL = 'Cancel';
+export const EDIT_LABEL_SUBMIT = 'Update';
+
+/* Delete Label UI Text */
+export const DELETE_LABEL_DIALOG_TITLE = 'Delete Category';
+export const DELETE_LABEL_DIALOG_HELP = 'Are you sure want to delete ';
+export const DELETE_LABEL_CANCEL = 'No';
+export const DELETE_LABEL_SUBMIT = 'Yes';
 
 //Dialog Defaults
 
@@ -49,9 +62,12 @@ export const SNACKBAR_ACTION_RETRY = 'Retry';
 export const LOGOUT_URL = '/ReceiptOrganizer/logout';
 export const SEARCH_URL = '/ReceiptOrganizer/receipts';
 export const SETTINGS_URL = '/ReceiptOrganizer/users/settings';
+
+/* Labels */
 export const GET_LABELS_URL = '/ReceiptOrganizer/labels/';
 export const ADD_LABEL_URL = '/ReceiptOrganizer/labels/create';
 export const DELETE_LABEL_URL = '/ReceiptOrganizer/labels/delete';
+export const EDIT_LABEL_URL = '/ReceiptOrganizer/labels/update';
 
 //Service Errors
 export const SERVER_ERROR = 'Unable to reach server';

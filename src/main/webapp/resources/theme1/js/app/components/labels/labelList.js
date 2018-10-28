@@ -18,7 +18,7 @@ class LabelList extends React.Component {
     }
 
     render () {
-        const { labels, deleteLabel, csrfToken, csrfHeaderName } = this.props;
+        const { labels, deleteLabel, editLabel, csrfToken, csrfHeaderName, openDialog, closeDialog } = this.props;
 
         return (
             <List>
@@ -30,7 +30,10 @@ class LabelList extends React.Component {
                             num={ind} 
                             csrfHeaderName={csrfHeaderName}
                             csrfToken={csrfToken}
-                            deleteLabel={deleteLabel} 
+                            deleteLabel={deleteLabel}
+                            editLabel={editLabel}
+                            openDialog={openDialog}
+                            closeDialog={closeDialog}
                         />
                     )
                 }
@@ -48,7 +51,8 @@ LabelList.propTypes = {
     csrfHeaderName: PropTypes.string.isRequired,
     csrfToken: PropTypes.string.isRequired,
     fetchLabels: PropTypes.func.isRequired,
-    deleteLabel: PropTypes.func.isRequired
+    deleteLabel: PropTypes.func.isRequired,
+    editLabel: PropTypes.func.isRequired
 };
 
 export default LabelList;

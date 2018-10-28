@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import _ from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -22,7 +23,7 @@ import { DRAWER_WIDTH, SNACKBAR_VERTICAL, SNACKBAR_HORIZONTAL, SNACKBAR_AUTOHIDE
 import LinearIndeterminate from './loading/linearIndeterminate';
 import NavContainer from '../containers/navContainer';
 import LabelListContainer from '../containers/labelListContainer';
-import CreateLabelListContainer from '../containers/createLabelListContainer';
+import CreateLabelListContainer from '../containers/createLabelButtonWrapperContainer';
 import SnackbarContentWrapper from './snackbar/snackbarContentWrapper';
 import DialogWrapper from './dialog/dialogWrapper';
 
@@ -100,8 +101,7 @@ class OrganizerApp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: true,
-            lastSnackbar: null
+            open: true
         };
 
         //Bind functions in constructor so a new function isn't made in every render
@@ -109,6 +109,8 @@ class OrganizerApp extends React.Component {
         this.handleDrawerClose = this.handleDrawerClose.bind(this);
         this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
         this.handleSnackbarExited = this.handleSnackbarExited.bind(this);
+
+        this.lastSnackbar = {};
     }
 
     handleDrawerOpen() {
@@ -124,6 +126,7 @@ class OrganizerApp extends React.Component {
             return;
         }
 
+        this.lastSnackbar = this.props.currentSnackbar;
         this.props.finishCurrentSnackbar();
     }
 
@@ -134,31 +137,23 @@ class OrganizerApp extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.currentSnackbar && this.props.currentSnackbar != this.state.lastSnackbar) {
+        if (this.props.currentSnackbar && this.props.currentSnackbar !== this.state.lastSnackbar) {
             //Keep last snackbar so we don't lose it while closing a snackbar
-            this.setState({
-                lastSnackbar: this.props.currentSnackbar
-            });
+            
         }
     }
 
     render() {
         const { classes, theme, isLoading, currentSnackbar, snackbarOpen, dialog } = this.props;
         let autohideDuration = SNACKBAR_AUTOHIDE_DURATION_DEFAULT;
-        let variant = '';
-        let msg = '';
-        let actions = [];
-        let handlers = [];
-        let handlerParams = [];
+        let adjustedSnackbar = {};
 
-        //Keeps last snackbar information for the duration of it closing
-        //This keeps the ui from removing actions, messages, variants, etc while closing a snackbar
-        if (!currentSnackbar && this.state.lastSnackbar) {
-            variant = this.state.lastSnackbar.variant;
-            msg = this.state.lastSnackbar.msg;
-            actions = this.state.lastSnackbar.actions;
-            handlers = this.state.lastSnackbar.handlers;
-            handlerParams = this.state.lastSnackbar.handlerParams;
+        //lastSnackbar gets set on close, so when lastSnackbar and currentSnackbar aren't equal,
+        //we need to hold onto the lastSnackbar while closing
+        if (!open && !_.isEqual(this.lastSnackbar, currentSnackbar)) {
+            adjustedSnackbar = this.lastSnackbar;
+        } else {
+            adjustedSnackbar = currentSnackbar;
         }
 
         if (currentSnackbar) {
@@ -210,18 +205,21 @@ class OrganizerApp extends React.Component {
                             horizontal: SNACKBAR_HORIZONTAL
                         }}
                         open={snackbarOpen}
-                        autoHideDuration={currentSnackbar ? autohideDuration : null}
+                        autoHideDuration={adjustedSnackbar ? autohideDuration : null}
                         onClose={this.handleSnackbarClose}
                         onExited={this.handleSnackbarExited}
                     >
-                        <SnackbarContentWrapper
-                            onClose={this.handleSnackbarClose}
-                            variant={currentSnackbar ? currentSnackbar.variant : variant}
-                            message={currentSnackbar ? currentSnackbar.msg : msg}
-                            actions={currentSnackbar ? currentSnackbar.actions : actions}
-                            handlers={currentSnackbar ? currentSnackbar.handlers : handlers}
-                            handlerParams={currentSnackbar ? currentSnackbar.handlerParams : handlerParams}
-                        />
+                        {
+                            adjustedSnackbar &&
+                            <SnackbarContentWrapper
+                                onClose={this.handleSnackbarClose}
+                                variant={adjustedSnackbar.variant}
+                                message={adjustedSnackbar.msg}
+                                actions={adjustedSnackbar.actions}
+                                handlers={adjustedSnackbar.handlers}
+                                handlerParams={adjustedSnackbar.handlerParams}
+                            />
+                        }
                     </Snackbar >
                     <DialogWrapper 
                         isLoading={isLoading}

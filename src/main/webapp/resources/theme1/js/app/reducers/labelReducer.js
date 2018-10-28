@@ -5,7 +5,9 @@ import {
     RECEIVE_ADD_LABEL,
     REQUEST_ADD_LABEL,
     RECEIVE_DELETE_LABEL,
-    REQUEST_DELETE_LABEL
+    REQUEST_DELETE_LABEL,
+    REQUEST_EDIT_LABEL,
+    RECEIVE_EDIT_LABEL
 } from '../actions/labels/labelListActions';
 
 function compare(a, b) {
@@ -59,9 +61,27 @@ function labels(state = {
                     isLoading: false
                 });
             }
+        case RECEIVE_EDIT_LABEL:
+            if (action.success) {
+                return Object.assign({}, state, {
+                    isLoading: false,
+                    items: [
+                        ...state.items.map(function(value, index, arr) {
+                            return {
+                                name: value.name === action.oldLabelName ? action.newLabelName : value.name
+                            };
+                        }).sort(compare)
+                    ]
+                });
+            } else {
+                return Object.assign({}, state, {
+                    isLoading: false
+                });
+            }
         case REQUEST_LABELS:
         case REQUEST_ADD_LABEL:
         case REQUEST_DELETE_LABEL:
+        case REQUEST_EDIT_LABEL:
             return Object.assign({}, state, {
                 isLoading: true
             });

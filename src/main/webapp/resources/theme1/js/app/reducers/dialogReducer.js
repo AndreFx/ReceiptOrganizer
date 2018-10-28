@@ -6,18 +6,14 @@ export const DIALOG_INITIAL_STATE = {
     title: null,
     close: null,
     submit: null,
-    options: {}
+    options: null
 };
 
 function dialogReducer(state = initialState, action) {
     switch(action.type) {
         case CLOSE_DIALOG:
             return Object.assign({}, state, {
-                open: false,
-                title: null,
-                submit: null,
-                close: null,
-                options: {}
+                open: false
             });
         case OPEN_DIALOG:
             return Object.assign({}, state, {

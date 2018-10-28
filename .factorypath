@@ -13,7 +13,7 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-web/5.0.9.RELEASE/spring-web-5.0.9.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-jdbc/5.0.9.RELEASE/spring-jdbc-5.0.9.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-tx/5.0.9.RELEASE/spring-tx-5.0.9.RELEASE.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/data/spring-data-commons/2.0.10.RELEASE/spring-data-commons-2.0.10.RELEASE.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/data/spring-data-commons/2.1.1.RELEASE/spring-data-commons-2.1.1.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-context/5.0.9.RELEASE/spring-context-5.0.9.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/ldap/spring-ldap-core/2.3.2.RELEASE/spring-ldap-core-2.3.2.RELEASE.jar" enabled="true" runInBatchMode="false"/>
@@ -21,9 +21,9 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/security/spring-security-ldap/5.0.8.RELEASE/spring-security-ldap-5.0.8.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/security/spring-security-config/5.0.8.RELEASE/spring-security-config-5.0.8.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/security/spring-security-web/5.0.8.RELEASE/spring-security-web-5.0.8.RELEASE.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/core/jackson-databind/2.9.4/jackson-databind-2.9.4.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/core/jackson-databind/2.9.7/jackson-databind-2.9.7.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/core/jackson-annotations/2.9.0/jackson-annotations-2.9.0.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/core/jackson-core/2.9.4/jackson-core-2.9.4.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/core/jackson-core/2.9.7/jackson-core-2.9.7.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/google/cloud/google-cloud-vision/1.14.0/google-cloud-vision-1.14.0.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty-tcnative-boringssl-static/2.0.6.Final/netty-tcnative-boringssl-static-2.0.6.Final.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/google/cloud/google-cloud-core/1.14.0/google-cloud-core-1.14.0.jar" enabled="true" runInBatchMode="false"/>

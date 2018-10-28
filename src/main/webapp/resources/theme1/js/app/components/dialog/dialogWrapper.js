@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import update from 'react-addons-update';
+import _ from 'lodash';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -14,9 +15,7 @@ class DialogWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            inputVals: {},
-            lastTitle : null,
-            lastOptions: {}
+            inputVals: {}
         }
 
         this.textFieldRefs = [];
@@ -24,6 +23,7 @@ class DialogWrapper extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onEnterPressed = this.onEnterPressed.bind(this);
         this.handleUserInput = this.handleUserInput.bind(this);
+        this.handleTextFieldRefUpdate = this.handleTextFieldRefUpdate.bind(this);
     };
 
     handleClose() {
@@ -47,17 +47,29 @@ class DialogWrapper extends React.Component {
                 }
             });
         }
-        
+    }
+
+    handleTextFieldRefUpdate(ref, index) {
+        //ref callback prop gets called when a component is destroyed
+        //We remove it from the array to ensure a full reset if this component isn't destroyed
+        //between different dialog props
+        if (!ref) {
+            this.textFieldRefs.filter(function(el, ind) {
+                return ind !== index;
+            });
+        } else {
+            this.textFieldRefs[index] = ref;
+        }
     }
 
     onEnterPressed(event) {
         if (event.keyCode == 13 && event.shiftKey == false) {
+            event.preventDefault();
             this.handleSubmit();
         }
     }
 
     handleSubmit() {
-        let self = this;
         let finalVals = this.state.inputVals;
 
         //Ensures default values get submitted if not modified
@@ -70,29 +82,10 @@ class DialogWrapper extends React.Component {
         this.handleClose();
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.title && this.props.title != this.state.lastTitle) {
-            //Keep last snackbar so we don't lose it while closing a snackbar
-            this.setState({
-                lastTitle: this.props.title,
-                lastOptions: this.props.options
-            });
-        }
-    }
-
     render() {
         const { isLoading, open, title, options } = this.props;
-
         let self = this;
-        let savedTitle = title;
-        let savedOptions = options;
-
-        //Keeps last snackbar information for the duration of it closing
-        //This keeps the ui from removing actions, messages, variants, etc while closing a snackbar
-        if (!title && this.state.lastOptions) {
-            savedTitle = this.state.lastTitle,
-            savedOptions = this.state.lastOptions
-        }
+        let mOptions = options ? options : {};
 
         return (
             <Dialog
@@ -102,13 +95,12 @@ class DialogWrapper extends React.Component {
                 disableEscapeKeyDown={isLoading}
                 aria-labelledby="form-dialog-title"
             >
-                <DialogTitle id="form-dialog-title">{savedTitle}</DialogTitle>
-                { savedOptions.dialogText || (savedOptions.textFields && savedOptions.textFields.length != 0) ? 
+                <DialogTitle id="form-dialog-title">{title}</DialogTitle>
                     <DialogContent>
-                        {savedOptions.dialogText ? <DialogContentText>{savedOptions.dialogText}</DialogContentText> : null}
+                        {mOptions.dialogText && <DialogContentText>{mOptions.dialogText}</DialogContentText>}
                         {
-                            savedOptions.textFields ?
-                            savedOptions.textFields.map(function(el, ind, arr) {
+                            (mOptions.textFields && mOptions.textFields.length != 0) &&
+                            mOptions.textFields.map(function(el, ind, arr) {
                                 if (arr.length - 1 == ind) {
                                     return (
                                         <TextField
@@ -123,7 +115,7 @@ class DialogWrapper extends React.Component {
                                             onKeyDown={self.onEnterPressed}
                                             disabled={isLoading}
                                             defaultValue={el.defaultValue}
-                                            ref={ref => self.textFieldRefs[ind] = ref}
+                                            ref={ref => self.handleTextFieldRefUpdate(ref, ind)}
                                         />
                                     );
                                 } else {
@@ -139,24 +131,19 @@ class DialogWrapper extends React.Component {
                                             onChange={self.onChange} 
                                             disabled={isLoading}
                                             defaultValue={el.defaultValue}
-                                            ref={ref => self.textFieldRefs[ind] = ref}
+                                            ref={ref => self.handleTextFieldRefUpdate(ref, ind)}
                                         />
                                     );
                                 }
                             })
-                            :
-                            null
                         }
                     </DialogContent>
-                    :
-                    null
-                }
                 <DialogActions>
                     <Button onClick={this.handleClose} color="primary" disabled={isLoading}>
-                        {savedOptions.cancelText ? savedOptions.cancelText : DIALOG_CANCEL}
+                        {mOptions.cancelText ? mOptions.cancelText : DIALOG_CANCEL}
                     </Button>
                     <Button onClick={this.handleSubmit} color="primary" disabled={isLoading}>
-                        {savedOptions.submitText ? savedOptions.submitText : DIALOG_SUBMIT}
+                        {mOptions.submitText ? mOptions.submitText : DIALOG_SUBMIT}
                     </Button>
                 </DialogActions>
             </Dialog>

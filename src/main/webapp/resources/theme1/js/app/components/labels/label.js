@@ -14,7 +14,18 @@ import {
     ITEM_HEIGHT,
     LABEL_MENU_OPTIONS,
     LABEL_MENU_DELETE,
-    LABEL_MENU_EDIT
+    LABEL_MENU_EDIT,
+    EDIT_LABEL_DIALOG_HELP,
+    EDIT_LABEL_DIALOG_INPUT_PLACEHOLDER,
+    EDIT_LABEL_CANCEL,
+    EDIT_LABEL_SUBMIT,
+    EDIT_LABEL_DIALOG_TITLE,
+    SNACKBAR_ACTION_RETRY,
+    SNACKBAR_AUTOHIDE_DISABLED,
+    DELETE_LABEL_DIALOG_HELP,
+    DELETE_LABEL_CANCEL,
+    DELETE_LABEL_SUBMIT,
+    DELETE_LABEL_DIALOG_TITLE
 } from '../../../common/constants';
 
 class Label extends React.Component {
@@ -28,6 +39,9 @@ class Label extends React.Component {
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
+        this.handleEditClick = this.handleEditClick.bind(this);
+        this.handleEditSubmit = this.handleEditSubmit.bind(this);
+        this.handleDeleteSubmit = this.handleDeleteSubmit.bind(this);
     }
 
     handleClick(event) {
@@ -39,17 +53,56 @@ class Label extends React.Component {
     };
 
     handleDeleteClick() {
-        let self = this;
+        let options = {
+            dialogText: DELETE_LABEL_DIALOG_HELP + this.props.name + "?",
+            cancelText: DELETE_LABEL_CANCEL,
+            submitText: DELETE_LABEL_SUBMIT
+        };
 
+        this.handleClose();
+        this.props.openDialog(DELETE_LABEL_DIALOG_TITLE, this.handleDeleteSubmit, this.props.closeDialog, options);
+        
+    }
+
+    handleDeleteSubmit() {
         this.props.deleteLabel(
             this.props.name,
             this.props.csrfHeaderName,
             this.props.csrfToken
-        ).then(function(response) {
-            self.setState({ anchorEl: null });
-        }).catch(function(error) {
-            self.setState({ anchorEl: null });
-        });
+        );
+    }
+
+    handleEditClick(event, oldCategoryName) {
+        let options = {
+            dialogText: EDIT_LABEL_DIALOG_HELP + this.props.name,
+            textFields: [
+                {
+                    label: EDIT_LABEL_DIALOG_INPUT_PLACEHOLDER,
+                    defaultValue: oldCategoryName ? oldCategoryName : this.props.name
+                }
+            ],
+            cancelText: EDIT_LABEL_CANCEL,
+            submitText: EDIT_LABEL_SUBMIT
+        };
+
+        this.handleClose();
+        this.props.openDialog(EDIT_LABEL_DIALOG_TITLE, this.handleEditSubmit, this.props.closeDialog, options);
+    }
+
+    handleEditSubmit({ NewCategoryName }) {
+        this.props.editLabel(
+            NewCategoryName,
+            this.props.name,
+            [
+                SNACKBAR_ACTION_RETRY
+            ],
+            [
+                this.handleEditClick
+            ],
+            SNACKBAR_AUTOHIDE_DISABLED,
+            this.props.csrfHeaderName,
+            this.props.csrfToken
+        );
     }
 
     render() {
@@ -58,7 +111,10 @@ class Label extends React.Component {
         const open = Boolean(anchorEl);
 
         return (
-            <ListItem button key={num}>
+            <ListItem 
+                button 
+                key={num} 
+            >
                 <ListItemIcon>
                     <ReceiptIcon />
                 </ListItemIcon>
@@ -91,7 +147,7 @@ class Label extends React.Component {
                                 );
                             case LABEL_MENU_EDIT:
                                 return (
-                                    <MenuItem key={option} onClick={this.handleClose}>
+                                    <MenuItem key={option} onClick={this.handleEditClick}>
                                         {option}
                                     </MenuItem>
                                 );
@@ -108,7 +164,10 @@ Label.propTypes = {
     num: PropTypes.number.isRequired,
     csrfToken: PropTypes.string.isRequired,
     csrfHeaderName: PropTypes.string.isRequired,
-    deleteLabel: PropTypes.func.isRequired
+    deleteLabel: PropTypes.func.isRequired,
+    editLabel: PropTypes.func.isRequired,
+    openDialog: PropTypes.func.isRequired,
+    closeDialog: PropTypes.func.isRequired
 };
 
 export default Label;

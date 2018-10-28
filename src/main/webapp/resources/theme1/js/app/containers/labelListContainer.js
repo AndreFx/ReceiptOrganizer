@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
 
 //Custom imports
-import { fetchLabels, deleteLabel } from '../actions/labels/labelListActions';
+import { fetchLabels, deleteLabel, editLabel } from '../actions/labels/labelListActions';
+import { openDialog, closeDialog } from '../actions/ui/dialog/dialogActions';
 import LabelList from '../components/labels/labelList';
 
 function mapStateToProps(state) {
@@ -19,6 +20,15 @@ function mapDispatchToProps(dispatch) {
         },
         deleteLabel: (labelName, csrfHeaderName, csrfToken) => {
             return dispatch(deleteLabel(labelName, csrfHeaderName, csrfToken));
+        },
+        editLabel: (newLabelName, oldLabelName, actions, handlers, autohideDuration, csrfHeaderName, csrfToken) => {
+            return dispatch(editLabel(newLabelName, oldLabelName, actions, handlers, autohideDuration, csrfHeaderName, csrfToken));
+        },
+        closeDialog: () => {
+            return dispatch(closeDialog());
+        },
+        openDialog: (title, submit, close, options) => {
+            return dispatch(openDialog(title, submit, close, options));
         }
     }
 }

@@ -16,7 +16,7 @@ import {
     CREATE_LABEL_DIALOG_INPUT_PLACEHOLDER
 } from '../../../common/constants';
 
-class CreateLabelList extends React.Component {
+class CreateLabelButtonWrapper extends React.Component {
     constructor(props) {
         super(props);
 
@@ -36,14 +36,14 @@ class CreateLabelList extends React.Component {
             ],
             cancelText: CREATE_LABEL_CANCEL,
             submitText: CREATE_LABEL_SUBMIT
-        }
+        };
 
         this.props.openDialog(CREATE_LABEL_UI_TITLE, this.handleSubmit, this.props.closeDialog, options);
     }
 
-    handleSubmit({ LabelName }) {
+    handleSubmit({ CategoryName }) {
         this.props.addLabel(
-            LabelName,
+            CategoryName,
             [
                 SNACKBAR_ACTION_RETRY
             ],
@@ -70,7 +70,7 @@ class CreateLabelList extends React.Component {
     }
 }
 
-CreateLabelList.propTypes = {
+CreateLabelButtonWrapper.propTypes = {
     csrfHeaderName: PropTypes.string.isRequired,
     csrfToken: PropTypes.string.isRequired,
     isLoading: PropTypes.bool.isRequired,
@@ -78,4 +78,4 @@ CreateLabelList.propTypes = {
     closeDialog: PropTypes.func.isRequired
 };
 
-export default CreateLabelList;
+export default CreateLabelButtonWrapper;
