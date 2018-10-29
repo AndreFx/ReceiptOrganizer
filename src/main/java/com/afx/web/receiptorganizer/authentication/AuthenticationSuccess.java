@@ -87,7 +87,7 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler {
 
     private void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String targetUrl = "/receipts/";
+        String targetUrl = "/";
 
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }

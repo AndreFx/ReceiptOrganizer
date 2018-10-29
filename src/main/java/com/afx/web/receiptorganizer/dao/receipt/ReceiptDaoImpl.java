@@ -1,8 +1,18 @@
 package com.afx.web.receiptorganizer.dao.receipt;
 
+import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.afx.web.receiptorganizer.types.Label;
 import com.afx.web.receiptorganizer.types.Receipt;
 import com.afx.web.receiptorganizer.types.ReceiptFile;
 import com.afx.web.receiptorganizer.types.ReceiptItem;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +30,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 @Qualifier("receiptDao")
@@ -333,14 +336,19 @@ public class ReceiptDaoImpl implements ReceiptDao {
         return result;
     }
 
-    public int getTotalNumUserReceiptsForLabels(String username, List<String> labels) {
+    public int getTotalNumUserReceiptsForLabels(String username, List<Label> labels) {
         Integer result;
+        List<String> labelNames = new ArrayList<String>();
+
+        for (Label label : labels) {
+            labelNames.add(label.getName());
+        }
 
         try {
             SqlParameterSource parameters;
             String countQuery;
 
-            if (labels.size() == 0) {
+            if (labelNames.size() == 0) {
                 //Get all user receipts
                 parameters = new MapSqlParameterSource("username", username);
                 countQuery = "SELECT Count(*) AS Count " +
@@ -351,8 +359,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
             } else {
                 //Get receipts for specific labels
                 parameters = new MapSqlParameterSource("username", username)
-                        .addValue("labelnames", labels)
-                        .addValue("labelnameslength", labels.size());
+                        .addValue("labelnames", labelNames)
+                        .addValue("labelnameslength", labelNames.size());
                 countQuery = "SELECT COUNT(RECEIPT_RESULTS.ReceiptId) AS Count " +
                         "FROM (SELECT DISTINCT RECEIPT.ReceiptId As ReceiptId " +
                         "FROM USER_RECEIPTS " +
@@ -411,13 +419,18 @@ public class ReceiptDaoImpl implements ReceiptDao {
         return receipts;
     }
 
-    public List<Receipt> getRangeUserReceiptsForLabels(String username, List<String> labels, int start, int numRows) {
+    public List<Receipt> getRangeUserReceiptsForLabels(String username, List<Label> labels, int start, int numRows) {
         List<Receipt> receipts;
+        List<String> labelNames = new ArrayList<String>();
+
+        for (Label label : labels) {
+            labelNames.add(label.getName());
+        }
 
         try {
             SqlParameterSource parameters;
             String query;
-            if (labels.size() == 0) {
+            if (labelNames.size() == 0) {
                 //Get all user receipts
                 parameters = new MapSqlParameterSource("username", username)
                         .addValue("startrow", start)
@@ -437,8 +450,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
             } else {
                 //Get receipts for specific label
                 parameters = new MapSqlParameterSource("username", username)
-                        .addValue("labelnames", labels)
-                        .addValue("labelnameslength", labels.size())
+                        .addValue("labelnames", labelNames)
+                        .addValue("labelnameslength", labelNames.size())
                         .addValue("startrow", start)
                         .addValue("numrows", numRows);
                 query = "SELECT TOP_RECEIPTS.ReceiptId, Title, Date, Total, Name, Quantity, UnitPrice " +

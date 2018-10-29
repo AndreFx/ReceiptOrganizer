@@ -12,13 +12,11 @@ class LabelList extends React.Component {
     }
 
     componentDidMount() {
-        this.props.fetchLabels().catch(function(error) {
-            console.error('Caught fetch labels error: ' + error);
-        });
+        this.props.fetchLabels();
     }
 
     render () {
-        const { labels, deleteLabel, editLabel, csrfToken, csrfHeaderName, openDialog, closeDialog } = this.props;
+        const { labels, deleteLabel, editLabel, csrfToken, csrfHeaderName, openDialog, closeDialog, updateActiveLabels, activeLabels, query, currentReceiptPage } = this.props;
 
         return (
             <List>
@@ -26,7 +24,7 @@ class LabelList extends React.Component {
                     labels.map((l, ind) => 
                         <Label 
                             key={ind} 
-                            name={l.name} 
+                            label={l} 
                             num={ind} 
                             csrfHeaderName={csrfHeaderName}
                             csrfToken={csrfToken}
@@ -34,6 +32,10 @@ class LabelList extends React.Component {
                             editLabel={editLabel}
                             openDialog={openDialog}
                             closeDialog={closeDialog}
+                            updateActiveLabels={updateActiveLabels}
+                            activeLabels={activeLabels}
+                            query={query}
+                            currentReceiptPage={currentReceiptPage}
                         />
                     )
                 }
@@ -52,7 +54,8 @@ LabelList.propTypes = {
     csrfToken: PropTypes.string.isRequired,
     fetchLabels: PropTypes.func.isRequired,
     deleteLabel: PropTypes.func.isRequired,
-    editLabel: PropTypes.func.isRequired
+    editLabel: PropTypes.func.isRequired,
+    updateActiveLabels: PropTypes.func.isRequired
 };
 
 export default LabelList;

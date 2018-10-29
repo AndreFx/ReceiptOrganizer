@@ -32,6 +32,10 @@ export const DELETE_LABEL_DIALOG_HELP = 'Are you sure want to delete ';
 export const DELETE_LABEL_CANCEL = 'No';
 export const DELETE_LABEL_SUBMIT = 'Yes';
 
+/* Active label actions */
+export const REMOVE_ACTIVE_LABEL = 'REMOVE';
+export const ADD_ACTIVE_LABEL = 'ADD';
+
 //Dialog Defaults
 
 /* Default Text */
@@ -68,6 +72,9 @@ export const GET_LABELS_URL = '/ReceiptOrganizer/labels/';
 export const ADD_LABEL_URL = '/ReceiptOrganizer/labels/create';
 export const DELETE_LABEL_URL = '/ReceiptOrganizer/labels/delete';
 export const EDIT_LABEL_URL = '/ReceiptOrganizer/labels/update';
+
+/* Receipts */
+export const GET_RECEIPTS_URL = '/ReceiptOrganizer/receipts/';
 
 //Service Errors
 export const SERVER_ERROR = 'Unable to reach server';

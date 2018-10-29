@@ -26,6 +26,7 @@ import LabelListContainer from '../containers/labelListContainer';
 import CreateLabelListContainer from '../containers/createLabelButtonWrapperContainer';
 import SnackbarContentWrapper from './snackbar/snackbarContentWrapper';
 import DialogWrapper from './dialog/dialogWrapper';
+import ReceiptViewOptionBar from './content/receiptViewOptionBar';
 
 const styles = theme => ({
     root: {
@@ -144,9 +145,23 @@ class OrganizerApp extends React.Component {
     }
 
     render() {
-        const { classes, theme, isLoading, currentSnackbar, snackbarOpen, dialog } = this.props;
+        const { 
+            classes, 
+            theme, 
+            //isLoading, 
+            currentSnackbar, 
+            snackbarOpen, 
+            dialog, 
+            updateActiveLabels,
+            currentReceiptPage, 
+            activeLabels, 
+            query,
+            csrfHeaderName, 
+            csrfToken
+        } = this.props;
         let autohideDuration = SNACKBAR_AUTOHIDE_DURATION_DEFAULT;
         let adjustedSnackbar = {};
+        let isLoading = false; //TODO: Reimplement the loading bar to be less annoying
 
         //lastSnackbar gets set on close, so when lastSnackbar and currentSnackbar aren't equal,
         //we need to hold onto the lastSnackbar while closing
@@ -193,7 +208,14 @@ class OrganizerApp extends React.Component {
                     </Drawer>
                     <main className={classes.content}>
                         <div className={classes.toolbar} />
-                        <Typography noWrap>{'You think water moves fast? You should see ice.'}</Typography>
+                        <ReceiptViewOptionBar
+                            activeLabels={activeLabels}
+                            csrfHeaderName={csrfHeaderName}
+                            csrfToken={csrfToken}
+                            updateActiveLabels={updateActiveLabels}
+                            query={query}
+                            currentReceiptPage={currentReceiptPage}
+                        />
                     </main>
                     <Button variant="extendedFab" aria-label="Add" className={classes.fab} color="primary">
                         <EditIcon className={classes.extendedIcon} />
@@ -241,7 +263,8 @@ OrganizerApp.propTypes = {
     isLoading: PropTypes.bool.isRequired,
     processSnackbarQueue: PropTypes.func.isRequired,
     finishCurrentSnackbar: PropTypes.func.isRequired,
-    dialog: PropTypes.object.isRequired
+    dialog: PropTypes.object.isRequired,
+    updateActiveLabels: PropTypes.func.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(OrganizerApp);

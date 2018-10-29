@@ -31,7 +31,7 @@
             "showOutput": "always"
         },
         {
-            "label": "deploy client only",
+            "label": "deploy-build client only",
             "command": "cp -TR target/ReceiptOrganizer-1.0.2-SNAPSHOT ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war && rm ../../jboss-eap-7.0/standalone/deployments/*.deployed && touch ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war.dodeploy",
             "isShellCommand": true,
             "showOutput": "always",
@@ -41,7 +41,7 @@
             ]
         },
         {
-            "label": "deploy full",
+            "label": "deploy-build full",
             "command": "cp -TR target/ReceiptOrganizer-1.0.2-SNAPSHOT ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war && rm ../../jboss-eap-7.0/standalone/deployments/*.deployed && touch ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war.dodeploy",
             "isShellCommand": true,
             "showOutput": "always",

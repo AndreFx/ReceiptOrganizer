@@ -1,8 +1,25 @@
 package com.afx.web.receiptorganizer.receipts;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.afx.web.receiptorganizer.dao.label.LabelDao;
 import com.afx.web.receiptorganizer.dao.receipt.ReceiptDao;
 import com.afx.web.receiptorganizer.exceptions.types.ReceiptNotFoundException;
+import com.afx.web.receiptorganizer.receipts.requests.GetReceiptsRequest;
+import com.afx.web.receiptorganizer.receipts.responses.ReceiptsJsonResponse;
 import com.afx.web.receiptorganizer.receipts.responses.VisionJsonResponse;
 import com.afx.web.receiptorganizer.receipts.types.LogoAndDocumentResponse;
 import com.afx.web.receiptorganizer.receipts.types.receiptparsers.ReceiptParser;
@@ -14,42 +31,46 @@ import com.afx.web.receiptorganizer.types.ReceiptFile;
 import com.afx.web.receiptorganizer.types.User;
 import com.afx.web.receiptorganizer.utilities.ImageThumbnailCreator;
 import com.afx.web.receiptorganizer.utilities.PDFImageCreator;
-import com.google.cloud.vision.v1.*;
+import com.google.cloud.vision.v1.AnnotateImageRequest;
+import com.google.cloud.vision.v1.AnnotateImageResponse;
+import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
+import com.google.cloud.vision.v1.EntityAnnotation;
+import com.google.cloud.vision.v1.Feature;
+import com.google.cloud.vision.v1.Image;
+import com.google.cloud.vision.v1.ImageAnnotatorClient;
+import com.google.cloud.vision.v1.TextAnnotation;
 import com.google.protobuf.ByteString;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-@Controller
+@RestController
 @RequestMapping("receipts")
-@SessionAttributes(value={"user"})
+@SessionAttributes(value = { "user" })
 public class ReceiptController {
 
     /*
-    Constants
+     * Constants
      */
 
     @Value("${labels.maxActive}")
@@ -62,13 +83,13 @@ public class ReceiptController {
     private int THUMBNAIL_WIDTH;
 
     /*
-    Private static variables
+     * Private static variables
      */
 
     private static Logger logger = LogManager.getLogger(ReceiptController.class);
 
     /*
-    Private fields
+     * Private fields
      */
 
     @Autowired
@@ -78,13 +99,16 @@ public class ReceiptController {
     private LabelDao labelDao;
 
     @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
     private ReceiptValidator receiptValidator;
 
     @Autowired
     private ReceiptParserFactory receiptParserFactory;
 
     /*
-    Binding methods
+     * Binding methods
      */
 
     @InitBinder("newReceipt")
@@ -102,17 +126,18 @@ public class ReceiptController {
     }
 
     /*
-    Controller methods
+     * Controller methods
      */
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String index(HttpServletRequest request,
-                        @RequestParam(value = "searchString", required = false) String searchString,
-                        @RequestParam(value = "requestLabels", required = false) List<String> requestLabels,
-                        @RequestParam(value = "page", required = false) Integer page,
-                        @ModelAttribute("user") User user,
-                        ModelMap model) {
-        logger.debug("Serving user: " + user.getUsername() + " request for home screen.");
+    // TODO: Clean up this method
+    @RequestMapping(value = "/", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
+    public ReceiptsJsonResponse index(@ModelAttribute("user") User user, @RequestBody GetReceiptsRequest request,
+            Locale locale) {
+        logger.debug("Serving user: " + user.getUsername() + " request for receipts");
+        ReceiptsJsonResponse response = new ReceiptsJsonResponse();
+        List<Label> requestLabels = request.getActiveLabels();
+        String query = request.getQuery();
+        Integer page = request.getPageNum();
 
         List<Receipt> receipts = null;
         int totalNumReceipts;
@@ -123,8 +148,8 @@ public class ReceiptController {
             requestLabels.remove(MAX_ACTIVE_LABELS);
         }
 
-        if (searchString != null) {
-            StringBuilder temp = new StringBuilder(searchString);
+        if (query != null) {
+            StringBuilder temp = new StringBuilder(query);
             temp.insert(0, '%');
             temp.append('%');
             totalNumReceipts = this.receiptDao.getTotalNumUserReceiptsFromString(user.getUsername(), temp.toString());
@@ -133,11 +158,11 @@ public class ReceiptController {
                 page = 1;
             }
             if (totalNumReceipts != 0) {
-                receipts = this.receiptDao.findRangeUserReceiptsFromString(user.getUsername(),
-                        temp.toString(), user.getPaginationSize() * (page - 1), user.getPaginationSize());
+                receipts = this.receiptDao.findRangeUserReceiptsFromString(user.getUsername(), temp.toString(),
+                        user.getPaginationSize() * (page - 1), user.getPaginationSize());
             }
         } else {
-            searchString = "";
+            query = "";
             totalNumReceipts = this.receiptDao.getTotalNumUserReceiptsForLabels(user.getUsername(), requestLabels);
 
             if (page == null || page < 1 || page > Math.ceil(totalNumReceipts / (float) user.getPaginationSize())) {
@@ -149,32 +174,13 @@ public class ReceiptController {
             }
         }
 
-        //Get all user labels and receipts associated with requestLabels
-        List<Label> userLabels = this.labelDao.getAllUserLabels(user.getUsername());
+        response.setReceipts(receipts);
+        response.setSuccess(true);
+        response.setMessage(messageSource.getMessage("receipt.fetch.success", null, locale));
+        response.setNumPages((int) Math.ceil(totalNumReceipts / (float) user.getPaginationSize()));
+        response.setTotalNumReceipts(totalNumReceipts);
 
-        model.addAttribute("userLabels", userLabels);
-        model.addAttribute("receipts", receipts);
-        model.addAttribute("newReceipt", new Receipt());
-        model.addAttribute("newLabel", new Label());
-        model.addAttribute("activeLabels", requestLabels);
-        model.addAttribute("searchString", "");
-        model.addAttribute("numPages", Math.ceil(totalNumReceipts / (float) user.getPaginationSize()));
-        model.addAttribute("currentPage", page);
-        model.addAttribute("pageSize", user.getPaginationSize());
-        model.addAttribute("numThumbnailItems", MAX_RECEIPT_THUMBNAIL_ITEMS);
-        model.addAttribute("numReceipts", totalNumReceipts);
-        model.addAttribute("searchString", searchString);
-
-        //Save last index query string
-        String queryString = request.getQueryString();
-        request.getSession().removeAttribute("lastReceiptQuery");
-        if (queryString == null) {
-            request.getSession().setAttribute("lastReceiptQuery", "");
-        } else {
-            request.getSession().setAttribute("lastReceiptQuery", queryString);
-        }
-
-        return "receipts";
+        return response;
     }
 
     @RequestMapping(value = "/{receiptId}", method = RequestMethod.GET)
@@ -197,10 +203,8 @@ public class ReceiptController {
     }
 
     @RequestMapping(value = "/{receiptId}/image", method = RequestMethod.GET)
-    public void getImage(HttpServletResponse response,
-                         @PathVariable(value = "receiptId") int id,
-                         @RequestParam("thumbnail") boolean scale,
-                         @ModelAttribute("user") User user) {
+    public void getImage(HttpServletResponse response, @PathVariable(value = "receiptId") int id,
+            @RequestParam("thumbnail") boolean scale, @ModelAttribute("user") User user) {
         logger.debug("User: " + user.getUsername() + " requesting image for receipt: " + id);
 
         try {
@@ -220,15 +224,14 @@ public class ReceiptController {
             IOUtils.copy(in, response.getOutputStream());
             response.flushBuffer();
             in.close();
-        } catch(IOException e) {
+        } catch (IOException e) {
             logger.error("Unable to send image id: " + id + " response to user: " + user.getUsername());
         }
     }
 
     @RequestMapping(value = "/{receiptId}/file", method = RequestMethod.GET)
-    public void getFile(@PathVariable(value = "receiptId") int id,
-                                @ModelAttribute("user") User user,
-                                HttpServletResponse response) {
+    public void getFile(@PathVariable(value = "receiptId") int id, @ModelAttribute("user") User user,
+            HttpServletResponse response) {
         logger.debug("User: " + user.getUsername() + " requesting file for receipt: " + id);
 
         try {
@@ -250,21 +253,19 @@ public class ReceiptController {
             IOUtils.copy(in, response.getOutputStream());
             response.flushBuffer();
             in.close();
-        } catch(IOException e) {
+        } catch (IOException e) {
             logger.error("Unable to send image id: " + id + " response to user: " + user.getUsername());
         }
     }
 
     @RequestMapping(value = "/{receiptId}", method = RequestMethod.POST)
-    public String update(HttpServletRequest request,
-                         @PathVariable(value = "receiptId") int id,
-                         @ModelAttribute("user") User user,
-                         @ModelAttribute("receipt") Receipt receipt) {
+    public String update(HttpServletRequest request, @PathVariable(value = "receiptId") int id,
+            @ModelAttribute("user") User user, @ModelAttribute("receipt") Receipt receipt) {
         logger.debug("User: " + user.getUsername() + " updating receipt with id: " + id);
         receipt.setReceiptId(id);
 
         try {
-            //Remove invalid receipt item entries
+            // Remove invalid receipt item entries
             receipt.removeInvalidReceiptItems();
             String description = receipt.getDescription().replace("\r", "");
             receipt.setDescription(description);
@@ -282,9 +283,8 @@ public class ReceiptController {
     }
 
     @RequestMapping(value = "/{receiptId}/delete", method = RequestMethod.POST)
-    public String delete(HttpServletRequest request,
-                         @PathVariable(value = "receiptId") int id,
-                         @ModelAttribute("user") User user) {
+    public String delete(HttpServletRequest request, @PathVariable(value = "receiptId") int id,
+            @ModelAttribute("user") User user) {
         logger.debug("User: " + user.getUsername() + " deleting receipt with id: " + id);
 
         this.receiptDao.deleteReceipt(user.getUsername(), id);
@@ -293,11 +293,11 @@ public class ReceiptController {
         return "redirect:/receipts/?" + query;
     }
 
-    @RequestMapping(value = "/", produces={MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
+    @RequestMapping(value = "/create", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
     @ResponseBody
     public VisionJsonResponse create(@RequestParam("receiptImage") MultipartFile receiptImage,
-                                     @RequestParam(value = "skipOcr", required = false) String skipOcr,
-                                     @ModelAttribute("user") User user) throws Exception {
+            @RequestParam(value = "skipOcr", required = false) String skipOcr, @ModelAttribute("user") User user)
+            throws Exception {
         logger.debug("User: " + user.getUsername() + " performing OCR on file: " + receiptImage.getOriginalFilename());
 
         VisionJsonResponse response = new VisionJsonResponse();
@@ -308,7 +308,8 @@ public class ReceiptController {
         if (!receiptImage.isEmpty()) {
             byte[] imageAsBytes = receiptImage.getBytes();
 
-            if (receiptImage.getContentType() != null && !receiptImage.getContentType().equals("application/pdf") && skipOcr == null) {
+            if (receiptImage.getContentType() != null && !receiptImage.getContentType().equals("application/pdf")
+                    && skipOcr == null) {
                 LogoAndDocumentResponse ocrResponse = doOCR(imageAsBytes);
                 try {
                     ReceiptParser parser = this.receiptParserFactory.getReceiptParser(ocrResponse.getLogoDescription());
@@ -317,15 +318,16 @@ public class ReceiptController {
                     logger.error("Failed to convert user: " + user.getUsername() + " image for storage on database.");
                     throw new RuntimeException(iox.getMessage());
                 }
-            } else if (receiptImage.getContentType() != null && receiptImage.getContentType().equals("application/pdf")) {
+            } else if (receiptImage.getContentType() != null
+                    && receiptImage.getContentType().equals("application/pdf")) {
                 errorMsg = "Unable to perform OCR on pdf files. Autofill disabled for this receipt.";
-                //Setup receipt
+                // Setup receipt
                 data = new Receipt();
                 BufferedImage image;
                 InputStream imageAsStream = receiptImage.getInputStream();
                 image = PDFImageCreator.createImageOfPDFPage(imageAsStream, data.getOriginalFileName(), 0);
 
-                //Convert pdf image back to bytes
+                // Convert pdf image back to bytes
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 ImageIO.write(image, "jpg", outputStream);
                 outputStream.flush();
@@ -335,17 +337,19 @@ public class ReceiptController {
                 data.setReceiptFullImage(pdfImageAsBytes);
                 data.setReceiptPDF(imageAsBytes);
 
-                //Create byte array for thumbnail
-                data.setReceiptThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
+                // Create byte array for thumbnail
+                data.setReceiptThumbnail(
+                        ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
             } else {
-                //Skip ocr selected on nonpdf file
+                // Skip ocr selected on nonpdf file
                 data = new Receipt();
                 BufferedImage image;
                 InputStream imageAsStream = receiptImage.getInputStream();
 
                 image = ImageIO.read(imageAsStream);
                 data.setReceiptFullImage(imageAsBytes);
-                data.setReceiptThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
+                data.setReceiptThumbnail(
+                        ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
             }
 
             data.setReceiptId(this.receiptDao.addReceipt(user.getUsername(), data));
@@ -363,7 +367,7 @@ public class ReceiptController {
     }
 
     /*
-    Private static utility methods
+     * Private static utility methods
      */
 
     private static LogoAndDocumentResponse doOCR(byte[] image) throws Exception {
@@ -377,14 +381,10 @@ public class ReceiptController {
             List<AnnotateImageRequest> requests = new ArrayList<>();
             Image img = Image.newBuilder().setContent(imgBytes).build();
             Feature docFeat = Feature.newBuilder().setType(Feature.Type.DOCUMENT_TEXT_DETECTION).build();
-            AnnotateImageRequest docRequest = AnnotateImageRequest.newBuilder()
-                    .addFeatures(docFeat)
-                    .setImage(img)
+            AnnotateImageRequest docRequest = AnnotateImageRequest.newBuilder().addFeatures(docFeat).setImage(img)
                     .build();
             Feature lblFeat = Feature.newBuilder().setType(Feature.Type.LOGO_DETECTION).build();
-            AnnotateImageRequest lblRequest = AnnotateImageRequest.newBuilder()
-                    .addFeatures(lblFeat)
-                    .setImage(img)
+            AnnotateImageRequest lblRequest = AnnotateImageRequest.newBuilder().addFeatures(lblFeat).setImage(img)
                     .build();
             requests.add(lblRequest);
             requests.add(docRequest);
@@ -400,7 +400,7 @@ public class ReceiptController {
                     return retVal;
                 }
 
-                //Return top logo result and document text.
+                // Return top logo result and document text.
                 List<EntityAnnotation> logoAnnotations = res.getLogoAnnotationsList();
                 if (res.hasFullTextAnnotation()) {
                     TextAnnotation annotation = res.getFullTextAnnotation();

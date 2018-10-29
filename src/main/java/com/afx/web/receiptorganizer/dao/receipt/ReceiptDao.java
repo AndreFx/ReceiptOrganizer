@@ -1,5 +1,6 @@
 package com.afx.web.receiptorganizer.dao.receipt;
 
+import com.afx.web.receiptorganizer.types.Label;
 import com.afx.web.receiptorganizer.types.Receipt;
 import com.afx.web.receiptorganizer.types.ReceiptFile;
 
@@ -21,10 +22,10 @@ public interface ReceiptDao {
 
     int getTotalNumUserReceiptsFromString(String username, String searchString);
 
-    int getTotalNumUserReceiptsForLabels(String username, List<String> labels);
+    int getTotalNumUserReceiptsForLabels(String username, List<Label> labels);
 
     List<Receipt> findRangeUserReceiptsFromString(String username, String searchString, int start, int numRows);
 
-    List<Receipt> getRangeUserReceiptsForLabels(String username, List<String> labels, int start, int numRows);
+    List<Receipt> getRangeUserReceiptsForLabels(String username, List<Label> labels, int start, int numRows);
 
 }

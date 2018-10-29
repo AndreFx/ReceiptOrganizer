@@ -1,5 +1,7 @@
 package com.afx.web.receiptorganizer.authentication;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,8 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
-
-import java.util.Arrays;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -57,6 +58,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().anyRequest().authenticated()
                 .and().formLogin().loginPage("/login").permitAll().successHandler(authSuccess)
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccess).logoutSuccessUrl("/login?logout").invalidateHttpSession(true);
+
+        http.exceptionHandling().accessDeniedHandler(getAccessDeniedHandler());
     }
 
     @Override
@@ -83,5 +86,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         provider.setConvertSubErrorCodesToExceptions(true);
         provider.setUseAuthenticationRequestCredentials(true);
         return provider;
+    }
+
+    public AccessDeniedHandler getAccessDeniedHandler() {
+        return new MissingCsrfTokenAccessDeniedHandler();
     }
 }

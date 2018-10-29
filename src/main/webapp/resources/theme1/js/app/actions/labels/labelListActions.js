@@ -11,6 +11,7 @@ import {
     SUCCESS_SNACKBAR,
     EDIT_LABEL_URL
 } from '../../../common/constants';
+import { checkResponseStatus } from '../../utils/fetchUtils';
 import { addSnackbar } from '../ui/snackbar/snackbarActions';
 
 export const REQUEST_LABELS = 'REQUEST_LABELS';
@@ -301,13 +302,5 @@ export function editLabel(newLabelName, oldLabelName, actions, handlers, autohid
             dispatch(receiveEditLabel(newLabelName, oldLabelName, false, SERVER_ERROR));
             dispatch(addSnackbar(newSnackbar));
         });
-    }
-}
-
-//Utilities
-
-function checkResponseStatus(response) {
-    if (response.status != 200) {
-        throw new Error('Bad Response from Server');
     }
 }

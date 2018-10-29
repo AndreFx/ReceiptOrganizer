@@ -4,12 +4,16 @@ import { connect } from 'react-redux';
 import { fetchLabels, deleteLabel, editLabel } from '../actions/labels/labelListActions';
 import { openDialog, closeDialog } from '../actions/ui/dialog/dialogActions';
 import LabelList from '../components/labels/labelList';
+import { updateActiveLabels } from '../actions/receipts/receiptsActions';
 
 function mapStateToProps(state) {
     return {
         csrfHeaderName: state.csrf.csrfheadername,
         csrfToken: state.csrf.csrftoken,
-        labels: state.labels.items
+        labels: state.labels.items,
+        activeLabels: state.activeLabels.items,
+        query: state.ui.query,
+        currentReceiptPage: state.ui.currentReceiptPage
     };
 }
 
@@ -29,6 +33,9 @@ function mapDispatchToProps(dispatch) {
         },
         openDialog: (title, submit, close, options) => {
             return dispatch(openDialog(title, submit, close, options));
+        },
+        updateActiveLabels: (action, label, query, activeLabels, currentPage, csrfHeaderName, csrfToken) => {
+            return dispatch(updateActiveLabels(action, label, query, activeLabels, currentPage, csrfHeaderName, csrfToken));
         }
     }
 }

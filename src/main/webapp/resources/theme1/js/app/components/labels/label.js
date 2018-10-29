@@ -25,8 +25,11 @@ import {
     DELETE_LABEL_DIALOG_HELP,
     DELETE_LABEL_CANCEL,
     DELETE_LABEL_SUBMIT,
-    DELETE_LABEL_DIALOG_TITLE
+    DELETE_LABEL_DIALOG_TITLE,
+    ADD_ACTIVE_LABEL,
+    REMOVE_ACTIVE_LABEL
 } from '../../../common/constants';
+import { ListItemSecondaryAction } from '@material-ui/core';
 
 class Label extends React.Component {
     constructor(props) {
@@ -37,6 +40,7 @@ class Label extends React.Component {
 
         //Bind functions in constructor so a new function isn't made in every render
         this.handleClick = this.handleClick.bind(this);
+        this.handleItemClick = this.handleItemClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
         this.handleEditClick = this.handleEditClick.bind(this);
@@ -48,28 +52,43 @@ class Label extends React.Component {
         this.setState({ anchorEl: event.currentTarget });
     };
 
+    handleItemClick() {
+        this.props.updateActiveLabels(ADD_ACTIVE_LABEL, this.props.label, this.props.query, this.props.activeLabels, this.props.receiptCurrentPage, this.props.csrfHeaderName, this.props.csrfToken);
+    }
+
     handleClose() {
         this.setState({ anchorEl: null });
     };
 
     handleDeleteClick() {
         let options = {
-            dialogText: DELETE_LABEL_DIALOG_HELP + this.props.name + "?",
+            dialogText: DELETE_LABEL_DIALOG_HELP + this.props.label.name + "?",
             cancelText: DELETE_LABEL_CANCEL,
             submitText: DELETE_LABEL_SUBMIT
         };
 
         this.handleClose();
         this.props.openDialog(DELETE_LABEL_DIALOG_TITLE, this.handleDeleteSubmit, this.props.closeDialog, options);
-        
     }
 
     handleDeleteSubmit() {
-        this.props.deleteLabel(
-            this.props.name,
-            this.props.csrfHeaderName,
+        let self = this;
+        //Remove from active labels then delete
+        this.props.updateActiveLabels(
+            REMOVE_ACTIVE_LABEL, 
+            this.props.label, 
+            this.props.query, 
+            this.props.activeLabels, 
+            this.props.receiptCurrentPage, 
+            this.props.csrfHeaderName, 
             this.props.csrfToken
-        );
+        ).then(function(resp) {
+            self.props.deleteLabel(
+                self.props.label.name,
+                self.props.csrfHeaderName,
+                self.props.csrfToken
+            );
+        });
     }
 
     handleEditClick(event, oldCategoryName) {
@@ -92,7 +111,7 @@ class Label extends React.Component {
     handleEditSubmit({ NewCategoryName }) {
         this.props.editLabel(
             NewCategoryName,
-            this.props.name,
+            this.props.label.name,
             [
                 SNACKBAR_ACTION_RETRY
             ],
@@ -106,68 +125,73 @@ class Label extends React.Component {
     }
 
     render() {
-        const { name, num } = this.props;
+        const { label, num } = this.props;
         const { anchorEl } = this.state;
         const open = Boolean(anchorEl);
 
+        //TODO: Fix being able to click secondary action while drawer is collapsed
         return (
             <ListItem 
-                button 
-                key={num} 
+                button
+                key={num}
+                onClick={this.handleItemClick}
             >
                 <ListItemIcon>
                     <ReceiptIcon />
                 </ListItemIcon>
-                <ListItemText primary={name} />
-                <IconButton
-                    aria-label="Label Options"
-                    aria-haspopup="true"
-                    onClick={this.handleClick}
-                >
-                    <MoreVertIcon />
-                </IconButton>
-                <Menu
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={this.handleClose}
-                    PaperProps={{
-                        style: {
-                            maxHeight: ITEM_HEIGHT * 4.5,
-                            width: 200,
-                        },
-                    }}
-                >
-                    {LABEL_MENU_OPTIONS.map(option => {
-                        switch (option) {
-                            case LABEL_MENU_DELETE:
-                                return (
-                                    <MenuItem key={option} onClick={this.handleDeleteClick}>
-                                        {option}
-                                    </MenuItem>
-                                );
-                            case LABEL_MENU_EDIT:
-                                return (
-                                    <MenuItem key={option} onClick={this.handleEditClick}>
-                                        {option}
-                                    </MenuItem>
-                                );
-                        }
-                    })}
-                </Menu>
+                <ListItemText primary={label.name} />
+                <ListItemSecondaryAction>
+                    <IconButton
+                        aria-label="Label Options"
+                        aria-haspopup="true"
+                        onClick={this.handleClick}
+                    >
+                        <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={this.handleClose}
+                        PaperProps={{
+                            style: {
+                                maxHeight: ITEM_HEIGHT * 4.5,
+                                width: 200,
+                            },
+                        }}
+                    >
+                        {LABEL_MENU_OPTIONS.map(option => {
+                            switch (option) {
+                                case LABEL_MENU_DELETE:
+                                    return (
+                                        <MenuItem key={option} onClick={this.handleDeleteClick}>
+                                            {option}
+                                        </MenuItem>
+                                    );
+                                case LABEL_MENU_EDIT:
+                                    return (
+                                        <MenuItem key={option} onClick={this.handleEditClick}>
+                                            {option}
+                                        </MenuItem>
+                                    );
+                            }
+                        })}
+                    </Menu>
+                </ListItemSecondaryAction>
             </ListItem>
         );
     }
 }
 
 Label.propTypes = {
-    name: PropTypes.string.isRequired,
+    label: PropTypes.object.isRequired,
     num: PropTypes.number.isRequired,
     csrfToken: PropTypes.string.isRequired,
     csrfHeaderName: PropTypes.string.isRequired,
     deleteLabel: PropTypes.func.isRequired,
     editLabel: PropTypes.func.isRequired,
     openDialog: PropTypes.func.isRequired,
-    closeDialog: PropTypes.func.isRequired
+    closeDialog: PropTypes.func.isRequired,
+    updateActiveLabels: PropTypes.func.isRequired
 };
 
 export default Label;
