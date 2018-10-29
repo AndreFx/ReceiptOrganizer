@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -27,7 +28,8 @@ import {
     DELETE_LABEL_SUBMIT,
     DELETE_LABEL_DIALOG_TITLE,
     ADD_ACTIVE_LABEL,
-    REMOVE_ACTIVE_LABEL
+    REMOVE_ACTIVE_LABEL,
+    EDIT_ACTIVE_LABEL
 } from '../../../common/constants';
 import { ListItemSecondaryAction } from '@material-ui/core';
 
@@ -53,7 +55,16 @@ class Label extends React.Component {
     };
 
     handleItemClick() {
-        this.props.updateActiveLabels(ADD_ACTIVE_LABEL, this.props.label, this.props.query, this.props.activeLabels, this.props.receiptCurrentPage, this.props.csrfHeaderName, this.props.csrfToken);
+        this.props.updateActiveLabels(
+            ADD_ACTIVE_LABEL, 
+            this.props.label, 
+            null,
+            this.props.query, 
+            this.props.activeLabels, 
+            this.props.receiptCurrentPage, 
+            this.props.csrfHeaderName, 
+            this.props.csrfToken
+        );
     }
 
     handleClose() {
@@ -72,32 +83,45 @@ class Label extends React.Component {
     }
 
     handleDeleteSubmit() {
-        let self = this;
-        //Remove from active labels then delete
-        this.props.updateActiveLabels(
-            REMOVE_ACTIVE_LABEL, 
-            this.props.label, 
-            this.props.query, 
-            this.props.activeLabels, 
-            this.props.receiptCurrentPage, 
-            this.props.csrfHeaderName, 
-            this.props.csrfToken
-        ).then(function(resp) {
-            self.props.deleteLabel(
-                self.props.label.name,
-                self.props.csrfHeaderName,
-                self.props.csrfToken
+        let savedProps = this.props;
+
+        if (_.indexOf(this.props.activeLabels, this.props.label) != -1) {
+            //Remove from active labels after delete
+            this.props.deleteLabel(
+                this.props.label,
+                this.props.csrfHeaderName,
+                this.props.csrfToken
+            ).then(function(resp) {//TODO: Self is currently getting assigned to the next label in labellist, need to fix
+                savedProps.updateActiveLabels(
+                    REMOVE_ACTIVE_LABEL, 
+                    savedProps.label,
+                    null,
+                    savedProps.query, 
+                    savedProps.activeLabels, 
+                    savedProps.receiptCurrentPage, 
+                    savedProps.csrfHeaderName, 
+                    savedProps.csrfToken
+                );
+            });
+        } else {
+            this.props.deleteLabel(
+                this.props.label, 
+                this.props.csrfHeaderName,
+                this.props.csrfToken
             );
-        });
+        }
     }
 
-    handleEditClick(event, oldCategoryName) {
+    //This function will either be called by a snackbar as a retry, in which case userInputName will be
+    //The attempted new category name, or directly when the Edit menu item is clicked, which causes 
+    //userInputName to be undefined
+    handleEditClick(event, userInputName) {
         let options = {
-            dialogText: EDIT_LABEL_DIALOG_HELP + this.props.name,
+            dialogText: EDIT_LABEL_DIALOG_HELP + this.props.label.name,
             textFields: [
                 {
                     label: EDIT_LABEL_DIALOG_INPUT_PLACEHOLDER,
-                    defaultValue: oldCategoryName ? oldCategoryName : this.props.name
+                    defaultValue: userInputName ? userInputName : this.props.label.name
                 }
             ],
             cancelText: EDIT_LABEL_CANCEL,
@@ -109,19 +133,52 @@ class Label extends React.Component {
     }
 
     handleEditSubmit({ NewCategoryName }) {
-        this.props.editLabel(
-            NewCategoryName,
-            this.props.label.name,
-            [
-                SNACKBAR_ACTION_RETRY
-            ],
-            [
-                this.handleEditClick
-            ],
-            SNACKBAR_AUTOHIDE_DISABLED,
-            this.props.csrfHeaderName,
-            this.props.csrfToken
-        );
+        let savedProps = this.props; //this.props can change when react rerenders the component, need to save them for access asyncronously
+        let newCategory = {
+            name: NewCategoryName
+        };
+
+        if (_.indexOf(this.props.activeLabels, this.props.label) != -1) {
+            //If successful, updateActiveLabels
+            this.props.editLabel(
+                newCategory,
+                this.props.label,
+                [
+                    SNACKBAR_ACTION_RETRY
+                ],
+                [
+                    this.handleEditClick
+                ],
+                SNACKBAR_AUTOHIDE_DISABLED,
+                this.props.csrfHeaderName,
+                this.props.csrfToken
+            ).then(function(resp) {
+                savedProps.updateActiveLabels(
+                    EDIT_ACTIVE_LABEL, 
+                    savedProps.label, 
+                    newCategory,
+                    savedProps.query, 
+                    savedProps.activeLabels, 
+                    savedProps.receiptCurrentPage, 
+                    savedProps.csrfHeaderName, 
+                    savedProps.csrfToken
+                );
+            });
+        } else {
+            this.props.editLabel(
+                newCategory,
+                this.props.label,
+                [
+                    SNACKBAR_ACTION_RETRY
+                ],
+                [
+                    this.handleEditClick
+                ],
+                SNACKBAR_AUTOHIDE_DISABLED,
+                this.props.csrfHeaderName,
+                this.props.csrfToken
+            );
+        }
     }
 
     render() {

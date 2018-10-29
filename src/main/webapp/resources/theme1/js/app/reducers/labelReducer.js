@@ -36,9 +36,7 @@ function labels(state = {
                     isLoading: false,
                     items: [
                         ...state.items,
-                        {
-                            name: action.labelName
-                        }
+                        action.label
                     ].sort(compare)
                 });
             } else {
@@ -52,7 +50,7 @@ function labels(state = {
                     isLoading: false,
                     items: [
                         ...state.items.filter(function(value, index, arr) {
-                            return value.name !== action.labelName
+                            return value.name !== action.label.name
                         })
                     ]
                 });
@@ -67,9 +65,7 @@ function labels(state = {
                     isLoading: false,
                     items: [
                         ...state.items.map(function(value, index, arr) {
-                            return {
-                                name: value.name === action.oldLabelName ? action.newLabelName : value.name
-                            };
+                            return value.name === action.oldLabel.name ? action.newLabel : value;
                         }).sort(compare)
                     ]
                 });

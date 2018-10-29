@@ -28,8 +28,8 @@ function mapDispatchToProps(dispatch) {
         finishCurrentSnackbar: () => {
             dispatch(finishCurrentSnackbar());
         },
-        updateActiveLabels: (action, label, query, activeLabels, currentPage, csrfHeaderName, csrfToken) => {
-            return dispatch(updateActiveLabels(action, label, query, activeLabels, currentPage, csrfHeaderName, csrfToken));
+        updateActiveLabels: (action, label, newLabel, query, activeLabels, currentPage, csrfHeaderName, csrfToken) => {
+            return dispatch(updateActiveLabels(action, label, newLabel, query, activeLabels, currentPage, csrfHeaderName, csrfToken));
         }
     }
 }

@@ -1,17 +1,19 @@
 import fetch from 'cross-fetch';
 
 //Custom imports
-import { GET_RECEIPTS_URL, ADD_ACTIVE_LABEL, REMOVE_ACTIVE_LABEL, SERVER_ERROR, ERROR_SNACKBAR } from '../../../common/constants';
+import { GET_RECEIPTS_URL, ADD_ACTIVE_LABEL, REMOVE_ACTIVE_LABEL, SERVER_ERROR, ERROR_SNACKBAR, EDIT_ACTIVE_LABEL } from '../../../common/constants';
 import {
     requestAddActiveLabel,
     requestRemoveActiveLabel,
     receiveAddActiveLabel,
-    receiveRemoveActiveLabel
+    receiveRemoveActiveLabel,
+    requestEditActiveLabel,
+    receiveEditActiveLabel
 } from './activeLabelsActions';
 import { addSnackbar } from '../ui/snackbar/snackbarActions';
 import { checkResponseStatus } from '../../utils/fetchUtils';
 
-export function updateActiveLabels(action, label, query, activeLabels, currentPage, csrfHeaderName, csrfToken) {
+export function updateActiveLabels(action, label, newLabel, query, activeLabels, currentPage, csrfHeaderName, csrfToken) {
     return function(dispatch) {
         let requestActionCreator = null;
         let responseActionCreator = null;
@@ -34,6 +36,14 @@ export function updateActiveLabels(action, label, query, activeLabels, currentPa
                     return el.name !== label.name;
                 })
             ];
+        } else if (action === EDIT_ACTIVE_LABEL) {
+            requestActionCreator = requestEditActiveLabel;
+            responseActionCreator = receiveEditActiveLabel;
+            body.activeLabels = [
+                ...activeLabels.map(function(el, ind, arr) {
+                    return el.name === label.name ? newLabel : el;
+                })
+            ];
         }
 
         //Dispatch appropriate action
@@ -53,7 +63,11 @@ export function updateActiveLabels(action, label, query, activeLabels, currentPa
                 return response.json();
         })
         .then(function(json) {
-            dispatch(responseActionCreator(label, json.success, json.message));
+            if (action !== EDIT_ACTIVE_LABEL) {
+                dispatch(responseActionCreator(label, json.success, json.message));
+            } else {
+                dispatch(responseActionCreator(newLabel, label, json.success, json.message));
+            }
 
             return Promise.resolve(json);
         })
@@ -66,7 +80,11 @@ export function updateActiveLabels(action, label, query, activeLabels, currentPa
                 handlerParams: []
             };
 
-            dispatch(responseActionCreator(label, false, SERVER_ERROR));
+            if (action !== EDIT_ACTIVE_LABEL) {
+                dispatch(responseActionCreator(label, false, SERVER_ERROR));
+            } else {
+                dispatch(responseActionCreator(newLabel, label, false, SERVER_ERROR));
+            }
             dispatch(addSnackbar(newSnackbar));
         });
     }

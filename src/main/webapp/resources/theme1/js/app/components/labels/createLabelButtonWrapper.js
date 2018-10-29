@@ -42,8 +42,12 @@ class CreateLabelButtonWrapper extends React.Component {
     }
 
     handleSubmit({ CategoryName }) {
+        let label = {
+            name: CategoryName
+        };
+
         this.props.addLabel(
-            CategoryName,
+            label,
             [
                 SNACKBAR_ACTION_RETRY
             ],

@@ -3,7 +3,9 @@ import {
     REQUEST_ADD_ACTIVE_LABEL,
     RECEIVE_ADD_ACTIVE_LABEL, 
     RECEIVE_REMOVE_ACTIVE_LABEL,
-    REQUEST_REMOVE_ACTIVE_LABEL
+    REQUEST_REMOVE_ACTIVE_LABEL,
+    REQUEST_EDIT_ACTIVE_LABEL,
+    RECEIVE_EDIT_ACTIVE_LABEL
 } from '../actions/receipts/activeLabelsActions';
 
 function activeLabels(state = {
@@ -14,6 +16,7 @@ function activeLabels(state = {
     switch (action.type) {
         case REQUEST_ADD_ACTIVE_LABEL:
         case REQUEST_REMOVE_ACTIVE_LABEL:
+        case REQUEST_EDIT_ACTIVE_LABEL:
             return Object.assign({}, state, {
                 isLoading: true
             });
@@ -38,6 +41,21 @@ function activeLabels(state = {
                     items: [
                         ...state.items.filter(function(el, ind, arr) {
                             return el.name !== action.label.name;
+                        })
+                    ]
+                });
+            } else {
+                return Object.assign({}, state, {
+                    isLoading: false
+                });
+            }
+        case RECEIVE_EDIT_ACTIVE_LABEL:
+            if (action.success) {
+                return Object.assign({}, state, {
+                    isLoading: false,
+                    items: [
+                        ...state.items.map(function(value, index, arr) {
+                            return value.name === action.oldLabel.name ? action.newLabel : value;
                         })
                     ]
                 });

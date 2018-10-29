@@ -73,16 +73,16 @@ function requestAddLabel() {
     }
 }
 
-function receiveAddLabel(labelName, success, msg) {
+function receiveAddLabel(label, success, msg) {
     return {
         type: RECEIVE_ADD_LABEL,
-        labelName: labelName,
+        label: label,
         success: success,
         msg: msg
     }
 }
 
-export function addLabel(labelName, actions, handlers, autohideDuration, csrfHeaderName, csrfToken) {
+export function addLabel(label, actions, handlers, autohideDuration, csrfHeaderName, csrfToken) {
     return function(dispatch) {
         //Notify that we are beginning a fetch
         dispatch(requestAddLabel());
@@ -94,9 +94,7 @@ export function addLabel(labelName, actions, handlers, autohideDuration, csrfHea
                 'Content-Type': 'application/json',
                 [csrfHeaderName]: csrfToken //Must be sent in the header when using application/json
             },
-            body: JSON.stringify({
-                name: labelName
-            })
+            body: JSON.stringify(label)
         })
         .then(function(response) {
                 checkResponseStatus(response);
@@ -112,13 +110,13 @@ export function addLabel(labelName, actions, handlers, autohideDuration, csrfHea
                 autohideDuration: SNACKBAR_AUTOHIDE_DURATION_DEFAULT
             };
 
-            dispatch(receiveAddLabel(labelName, json.success, json.message));
+            dispatch(receiveAddLabel(label, json.success, json.message));
             if (!json.success) {
                 newSnackbar.actions = actions;
                 newSnackbar.handlers = handlers;
                 newSnackbar.handlerParams = [
                     [
-                        labelName
+                        label.name
                     ]
                 ];
                 newSnackbar.autohideDuration = autohideDuration;
@@ -136,13 +134,13 @@ export function addLabel(labelName, actions, handlers, autohideDuration, csrfHea
                 handlers: handlers,
                 handlerParams: [
                     [
-                        labelName
+                        label.name
                     ]
                 ],
                 autohideDuration: autohideDuration
             };
 
-            dispatch(receiveAddLabel(labelName, false, SERVER_ERROR));
+            dispatch(receiveAddLabel(label, false, SERVER_ERROR));
             dispatch(addSnackbar(newSnackbar));
         });
     }
@@ -154,16 +152,16 @@ function requestDeleteLabel() {
     }
 }
 
-function receiveDeleteLabel(labelName, success, msg) {
+function receiveDeleteLabel(label, success, msg) {
     return {
         type: RECEIVE_DELETE_LABEL,
-        labelName: labelName,
+        label: label,
         success: success,
         msg: msg
     }
 }
 
-export function deleteLabel(labelName, csrfHeaderName, csrfToken) {
+export function deleteLabel(label, csrfHeaderName, csrfToken) {
     return function(dispatch) {
         //Notify that we are beginning a fetch
         dispatch(requestDeleteLabel());
@@ -175,9 +173,7 @@ export function deleteLabel(labelName, csrfHeaderName, csrfToken) {
                 'Content-Type': 'application/json',
                 [csrfHeaderName]: csrfToken //Must be sent in the header when using application/json
             },
-            body: JSON.stringify({
-                name: labelName
-            })
+            body: JSON.stringify(label)
         })
         .then(function(response) {
                 checkResponseStatus(response);
@@ -193,7 +189,7 @@ export function deleteLabel(labelName, csrfHeaderName, csrfToken) {
                 autohideDuration: SNACKBAR_AUTOHIDE_DURATION_DEFAULT
             };
 
-            dispatch(receiveDeleteLabel(labelName, json.success, json.message));
+            dispatch(receiveDeleteLabel(label, json.success, json.message));
             dispatch(addSnackbar(newSnackbar));
 
             return Promise.resolve(json);
@@ -208,7 +204,7 @@ export function deleteLabel(labelName, csrfHeaderName, csrfToken) {
                 autohideDuration: SNACKBAR_AUTOHIDE_DURATION_DEFAULT
             };
 
-            dispatch(receiveDeleteLabel(labelName, false, SERVER_ERROR));
+            dispatch(receiveDeleteLabel(label, false, SERVER_ERROR));
             dispatch(addSnackbar(newSnackbar));
         });
     }
@@ -220,17 +216,17 @@ function requestEditLabel() {
     }
 }
 
-function receiveEditLabel(newLabelName, oldLabelName, success, msg) {
+function receiveEditLabel(newLabel, oldLabel, success, msg) {
     return {
         type: RECEIVE_EDIT_LABEL,
-        newLabelName: newLabelName,
-        oldLabelName: oldLabelName,
+        newLabel: newLabel,
+        oldLabel: oldLabel,
         success: success,
         msg: msg
     }
 }
 
-export function editLabel(newLabelName, oldLabelName, actions, handlers, autohideDuration, csrfHeaderName, csrfToken) {
+export function editLabel(newLabel, oldLabel, actions, handlers, autohideDuration, csrfHeaderName, csrfToken) {
     return function(dispatch) {
         //Notify that we are beginning a fetch
         dispatch(requestEditLabel());
@@ -243,12 +239,8 @@ export function editLabel(newLabelName, oldLabelName, actions, handlers, autohid
                 [csrfHeaderName]: csrfToken //Must be sent in the header when using application/json
             },
             body: JSON.stringify({
-                newLabel: {
-                    name: newLabelName
-                },
-                oldLabel: {
-                    name: oldLabelName
-                }
+                newLabel: newLabel,
+                oldLabel: oldLabel
             })
         })
         .then(function(response) {
@@ -266,14 +258,13 @@ export function editLabel(newLabelName, oldLabelName, actions, handlers, autohid
                 autohideDuration: SNACKBAR_AUTOHIDE_DURATION_DEFAULT
             };
 
-            dispatch(receiveEditLabel(newLabelName, oldLabelName, json.success, json.message));
+            dispatch(receiveEditLabel(newLabel, oldLabel, json.success, json.message));
             if (!json.success) {
                 newSnackbar.actions = actions;
                 newSnackbar.handlers = handlers;
                 newSnackbar.handlerParams = [
                     [
-                        newLabelName,
-                        oldLabelName
+                        newLabel.name
                     ]
                 ];
                 newSnackbar.autohideDuration = autohideDuration;
@@ -292,14 +283,13 @@ export function editLabel(newLabelName, oldLabelName, actions, handlers, autohid
                 handlers: handlers,
                 handlerParams: [
                     [
-                        newLabelName, 
-                        oldLabelName
+                        newLabel.name
                     ]
                 ],
                 autohideDuration: autohideDuration
             };
 
-            dispatch(receiveEditLabel(newLabelName, oldLabelName, false, SERVER_ERROR));
+            dispatch(receiveEditLabel(newLabel, oldLabel, false, SERVER_ERROR));
             dispatch(addSnackbar(newSnackbar));
         });
     }

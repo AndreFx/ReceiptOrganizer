@@ -34,8 +34,8 @@ function mapDispatchToProps(dispatch) {
         openDialog: (title, submit, close, options) => {
             return dispatch(openDialog(title, submit, close, options));
         },
-        updateActiveLabels: (action, label, query, activeLabels, currentPage, csrfHeaderName, csrfToken) => {
-            return dispatch(updateActiveLabels(action, label, query, activeLabels, currentPage, csrfHeaderName, csrfToken));
+        updateActiveLabels: (action, label, newLabel, query, activeLabels, currentPage, csrfHeaderName, csrfToken) => {
+            return dispatch(updateActiveLabels(action, label, newLabel, query, activeLabels, currentPage, csrfHeaderName, csrfToken));
         }
     }
 }

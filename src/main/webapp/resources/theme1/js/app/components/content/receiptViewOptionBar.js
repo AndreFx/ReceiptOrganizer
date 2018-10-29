@@ -27,7 +27,16 @@ class ReceiptViewOptionBar extends React.Component {
     }
 
     handleChipDelete(label) {
-        this.props.updateActiveLabels(REMOVE_ACTIVE_LABEL, label, this.props.query, this.props.activeLabels, this.props.currentReceiptPage, this.props.csrfHeaderName, this.props.csrfToken);
+        this.props.updateActiveLabels(
+            REMOVE_ACTIVE_LABEL,
+            label,
+            null,
+            this.props.query,
+            this.props.activeLabels,
+            this.props.currentReceiptPage,
+            this.props.csrfHeaderName,
+            this.props.csrfToken
+        );
     }
 
     render() {

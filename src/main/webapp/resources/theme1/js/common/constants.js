@@ -35,6 +35,7 @@ export const DELETE_LABEL_SUBMIT = 'Yes';
 /* Active label actions */
 export const REMOVE_ACTIVE_LABEL = 'REMOVE';
 export const ADD_ACTIVE_LABEL = 'ADD';
+export const EDIT_ACTIVE_LABEL = 'EDIT';
 
 //Dialog Defaults
 
