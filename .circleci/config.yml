@@ -38,5 +38,5 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run tests!
-      - run: mvn integration-test -P pipeline-test
+      - run: mvn test
 

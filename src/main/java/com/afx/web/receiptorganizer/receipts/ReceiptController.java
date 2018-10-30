@@ -167,7 +167,7 @@ public class ReceiptController {
     }
 
     @RequestMapping(value = "/{receiptId}", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
-    public ReceiptResponse get(@ModelAttribute("user") User user, Locale locale, @PathVariable(value = "receiptId") int id) {
+    public ReceiptResponse show(@ModelAttribute("user") User user, Locale locale, @PathVariable(value = "receiptId") int id) {
         logger.debug("User: " + user.getUsername() + " requesting receipt with id: " + id);
         ReceiptResponse response = new ReceiptResponse();
         Receipt receipt = this.receiptDao.getReceipt(user.getUsername(), id);
