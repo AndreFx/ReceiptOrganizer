@@ -9,7 +9,8 @@ import {
     SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
     ERROR_SNACKBAR,
     SUCCESS_SNACKBAR,
-    EDIT_LABEL_URL
+    EDIT_LABEL_URL,
+    CONTENT_TYPE_JSON
 } from '../../../common/constants';
 import { checkResponseStatus } from '../../utils/fetchUtils';
 import { addSnackbar } from '../ui/snackbar/snackbarActions';
@@ -90,8 +91,8 @@ export function addLabel(label, actions, handlers, autohideDuration, csrfHeaderN
         return fetch('https://' + window.location.host + ADD_LABEL_URL, {
             method: 'post',
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
+                'Accept': CONTENT_TYPE_JSON,
+                'Content-Type': CONTENT_TYPE_JSON,
                 [csrfHeaderName]: csrfToken //Must be sent in the header when using application/json
             },
             body: JSON.stringify(label)
@@ -169,8 +170,8 @@ export function deleteLabel(label, csrfHeaderName, csrfToken) {
         return fetch('https://' + window.location.host + DELETE_LABEL_URL, {
             method: 'post',
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
+                'Accept': CONTENT_TYPE_JSON,
+                'Content-Type': CONTENT_TYPE_JSON,
                 [csrfHeaderName]: csrfToken //Must be sent in the header when using application/json
             },
             body: JSON.stringify(label)
@@ -234,8 +235,8 @@ export function editLabel(newLabel, oldLabel, actions, handlers, autohideDuratio
         return fetch('https://' + window.location.host + EDIT_LABEL_URL, {
             method: 'post',
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
+                'Accept': CONTENT_TYPE_JSON,
+                'Content-Type': CONTENT_TYPE_JSON,
                 [csrfHeaderName]: csrfToken //Must be sent in the header when using application/json
             },
             body: JSON.stringify({

@@ -91,7 +91,7 @@ class Label extends React.Component {
                 this.props.label,
                 this.props.csrfHeaderName,
                 this.props.csrfToken
-            ).then(function(resp) {//TODO: Self is currently getting assigned to the next label in labellist, need to fix
+            ).then(function(resp) {
                 savedProps.updateActiveLabels(
                     REMOVE_ACTIVE_LABEL, 
                     savedProps.label,

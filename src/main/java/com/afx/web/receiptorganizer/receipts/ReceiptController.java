@@ -12,23 +12,19 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import com.afx.web.receiptorganizer.dao.label.LabelDao;
 import com.afx.web.receiptorganizer.dao.receipt.ReceiptDao;
-import com.afx.web.receiptorganizer.exceptions.types.ReceiptNotFoundException;
-import com.afx.web.receiptorganizer.receipts.requests.GetReceiptsRequest;
-import com.afx.web.receiptorganizer.receipts.responses.ReceiptsJsonResponse;
-import com.afx.web.receiptorganizer.receipts.responses.VisionJsonResponse;
 import com.afx.web.receiptorganizer.receipts.types.LogoAndDocumentResponse;
 import com.afx.web.receiptorganizer.receipts.types.receiptparsers.ReceiptParser;
 import com.afx.web.receiptorganizer.receipts.types.receiptparsers.factories.ReceiptParserFactory;
+import com.afx.web.receiptorganizer.receipts.types.requests.CreateReceiptRequest;
+import com.afx.web.receiptorganizer.receipts.types.responses.ReceiptResponse;
+import com.afx.web.receiptorganizer.receipts.types.responses.ReceiptsResponse;
+import com.afx.web.receiptorganizer.receipts.types.responses.VisionResponse;
 import com.afx.web.receiptorganizer.receipts.validators.ReceiptValidator;
-import com.afx.web.receiptorganizer.types.Label;
 import com.afx.web.receiptorganizer.types.Receipt;
-import com.afx.web.receiptorganizer.types.ReceiptFile;
 import com.afx.web.receiptorganizer.types.User;
+import com.afx.web.receiptorganizer.types.responses.BaseResponse;
 import com.afx.web.receiptorganizer.utilities.ImageThumbnailCreator;
 import com.afx.web.receiptorganizer.utilities.PDFImageCreator;
 import com.google.cloud.vision.v1.AnnotateImageRequest;
@@ -41,7 +37,6 @@ import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.TextAnnotation;
 import com.google.protobuf.ByteString;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +45,6 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.MediaType;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -59,10 +53,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("receipts")
@@ -73,8 +65,6 @@ public class ReceiptController {
      * Constants
      */
 
-    @Value("${labels.maxActive}")
-    private int MAX_ACTIVE_LABELS;
     @Value("${receipts.maxThumbnailItems}")
     private int MAX_RECEIPT_THUMBNAIL_ITEMS;
     @Value("${receipts.thumbnailHeight}")
@@ -94,9 +84,6 @@ public class ReceiptController {
 
     @Autowired
     private ReceiptDao receiptDao;
-
-    @Autowired
-    private LabelDao labelDao;
 
     @Autowired
     private MessageSource messageSource;
@@ -128,204 +115,134 @@ public class ReceiptController {
     /*
      * Controller methods
      */
-
-    // TODO: Clean up this method
-    @RequestMapping(value = "/", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
-    public ReceiptsJsonResponse index(@ModelAttribute("user") User user, @RequestBody GetReceiptsRequest request,
-            Locale locale) {
+    @RequestMapping(value = "/", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
+    public ReceiptsResponse index(@ModelAttribute("user") User user, 
+            Locale locale,
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) List<String> activeLabelNames,
+            @RequestParam(required = false) Integer pageNum) {
         logger.debug("Serving user: " + user.getUsername() + " request for receipts");
-        ReceiptsJsonResponse response = new ReceiptsJsonResponse();
-        List<Label> requestLabels = request.getActiveLabels();
-        String query = request.getQuery();
-        Integer page = request.getPageNum();
-
+        ReceiptsResponse response = new ReceiptsResponse();
         List<Receipt> receipts = null;
         int totalNumReceipts;
 
-        if (requestLabels == null) {
-            requestLabels = new ArrayList<>();
-        } else if (requestLabels.size() > MAX_ACTIVE_LABELS) {
-            requestLabels.remove(MAX_ACTIVE_LABELS);
+        if (activeLabelNames == null) {
+            activeLabelNames = new ArrayList<String>();
         }
 
+        //TODO: Combine these two. We should be searching with both at the same time
         if (query != null) {
             StringBuilder temp = new StringBuilder(query);
             temp.insert(0, '%');
             temp.append('%');
             totalNumReceipts = this.receiptDao.getTotalNumUserReceiptsFromString(user.getUsername(), temp.toString());
 
-            if (page == null || page < 1 || page > Math.ceil(totalNumReceipts / (float) user.getPaginationSize())) {
-                page = 1;
+            if (pageNum == null || pageNum < 1 || pageNum > Math.ceil(totalNumReceipts / (float) user.getPaginationSize())) {
+                pageNum = 1;
             }
             if (totalNumReceipts != 0) {
                 receipts = this.receiptDao.findRangeUserReceiptsFromString(user.getUsername(), temp.toString(),
-                        user.getPaginationSize() * (page - 1), user.getPaginationSize());
+                        user.getPaginationSize() * (pageNum - 1), user.getPaginationSize());
             }
         } else {
             query = "";
-            totalNumReceipts = this.receiptDao.getTotalNumUserReceiptsForLabels(user.getUsername(), requestLabels);
+            totalNumReceipts = this.receiptDao.getTotalNumUserReceiptsForLabels(user.getUsername(), activeLabelNames);
 
-            if (page == null || page < 1 || page > Math.ceil(totalNumReceipts / (float) user.getPaginationSize())) {
-                page = 1;
+            if (pageNum == null || pageNum < 1 || pageNum > Math.ceil(totalNumReceipts / (float) user.getPaginationSize())) {
+                pageNum = 1;
             }
             if (totalNumReceipts != 0) {
-                receipts = this.receiptDao.getRangeUserReceiptsForLabels(user.getUsername(), requestLabels,
-                        user.getPaginationSize() * (page - 1), user.getPaginationSize());
+                receipts = this.receiptDao.getRangeUserReceiptsForLabels(user.getUsername(), activeLabelNames,
+                        user.getPaginationSize() * (pageNum - 1), user.getPaginationSize());
             }
         }
 
         response.setReceipts(receipts);
         response.setSuccess(true);
-        response.setMessage(messageSource.getMessage("receipt.fetch.success", null, locale));
+        response.setMessage(messageSource.getMessage("receipt.index.success", null, locale));
         response.setNumPages((int) Math.ceil(totalNumReceipts / (float) user.getPaginationSize()));
         response.setTotalNumReceipts(totalNumReceipts);
 
         return response;
     }
 
-    @RequestMapping(value = "/{receiptId}", method = RequestMethod.GET)
-    public String show(@PathVariable(value = "receiptId") int id, @ModelAttribute("user") User user, ModelMap model) {
-        logger.debug("User: " + user.getUsername() + " viewing receipt with id: " + id);
-        List<Label> labels = this.labelDao.getAllUserLabels(user.getUsername());
+    @RequestMapping(value = "/{receiptId}", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
+    public ReceiptResponse get(@ModelAttribute("user") User user, Locale locale, @PathVariable(value = "receiptId") int id) {
+        logger.debug("User: " + user.getUsername() + " requesting receipt with id: " + id);
+        ReceiptResponse response = new ReceiptResponse();
         Receipt receipt = this.receiptDao.getReceipt(user.getUsername(), id);
         if (receipt == null) {
-            throw new ReceiptNotFoundException(id);
+            response.setSuccess(false);
+            response.setMessage(messageSource.getMessage("receipt.show.failure", null, locale));
+        } else {
+            response.setSuccess(true);
+            response.setMessage(messageSource.getMessage("receipt.show.success", null, locale));
         }
 
-        model.addAttribute("userLabels", labels);
-        model.addAttribute("receipt", receipt);
-        model.addAttribute("newReceipt", new Receipt());
-        model.addAttribute("newLabel", new Label());
-        model.addAttribute("receiptId", id);
-        model.addAttribute("receiptFile", receipt.getOriginalFileName());
-
-        return "receipt-view";
+        return response;
     }
 
-    @RequestMapping(value = "/{receiptId}/image", method = RequestMethod.GET)
-    public void getImage(HttpServletResponse response, @PathVariable(value = "receiptId") int id,
-            @RequestParam("thumbnail") boolean scale, @ModelAttribute("user") User user) {
-        logger.debug("User: " + user.getUsername() + " requesting image for receipt: " + id);
-
-        try {
-            ReceiptFile receiptImage;
-            InputStream in;
-
-            if (scale) {
-                receiptImage = this.receiptDao.getReceiptImage(user.getUsername(), id, true);
-            } else {
-                receiptImage = this.receiptDao.getReceiptImage(user.getUsername(), id, false);
-            }
-
-            in = new ByteArrayInputStream(receiptImage.getReceiptFile());
-            response.setContentType(receiptImage.getMIME());
-            response.setHeader("content-Disposition", "inline; filename=" + id + "image.jpeg");
-            response.setContentLength(receiptImage.getReceiptFile().length);
-            IOUtils.copy(in, response.getOutputStream());
-            response.flushBuffer();
-            in.close();
-        } catch (IOException e) {
-            logger.error("Unable to send image id: " + id + " response to user: " + user.getUsername());
-        }
-    }
-
-    @RequestMapping(value = "/{receiptId}/file", method = RequestMethod.GET)
-    public void getFile(@PathVariable(value = "receiptId") int id, @ModelAttribute("user") User user,
-            HttpServletResponse response) {
-        logger.debug("User: " + user.getUsername() + " requesting file for receipt: " + id);
-
-        try {
-            InputStream in;
-            ReceiptFile receiptFile = this.receiptDao.getReceiptFile(user.getUsername(), id);
-
-            in = new ByteArrayInputStream(receiptFile.getReceiptFile());
-
-            String s = "content-Disposition";
-            if (!receiptFile.getMIME().equals("application/pdf")) {
-                response.setContentType(receiptFile.getMIME());
-                response.setHeader(s, "inline; filename=" + id + "image.jpeg");
-            } else {
-                response.setContentType(receiptFile.getMIME());
-                response.setHeader(s, "inline; filename=" + id + "file.pdf");
-            }
-
-            response.setContentLength(receiptFile.getReceiptFile().length);
-            IOUtils.copy(in, response.getOutputStream());
-            response.flushBuffer();
-            in.close();
-        } catch (IOException e) {
-            logger.error("Unable to send image id: " + id + " response to user: " + user.getUsername());
-        }
-    }
-
-    @RequestMapping(value = "/{receiptId}", method = RequestMethod.POST)
-    public String update(HttpServletRequest request, @PathVariable(value = "receiptId") int id,
-            @ModelAttribute("user") User user, @ModelAttribute("receipt") Receipt receipt) {
+    @RequestMapping(value = "/{receiptId}/edit", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
+    public BaseResponse update(@ModelAttribute("user") User user, Locale locale, @PathVariable(value = "receiptId") int id, @RequestBody Receipt updatedReceipt) {
         logger.debug("User: " + user.getUsername() + " updating receipt with id: " + id);
-        receipt.setReceiptId(id);
+        boolean success = false;
+        String message = "";
 
-        try {
-            // Remove invalid receipt item entries
-            receipt.removeInvalidReceiptItems();
-            String description = receipt.getDescription().replace("\r", "");
-            receipt.setDescription(description);
-
-            this.receiptDao.editReceipt(user.getUsername(), receipt);
-
-            logger.debug("User: " + user.getUsername() + " successfully updated receipt: " + id);
-        } catch (DataAccessException e) {
-            logger.error("Error description: " + e.getMessage());
-            throw new ReceiptNotFoundException(id);
+        if (updatedReceipt.getId() != id) {
+            try {
+                this.receiptDao.editReceipt(user.getUsername(), updatedReceipt);
+    
+                success = true;
+                message = messageSource.getMessage("receipt.edit.success", null, locale);
+                logger.debug("User: " + user.getUsername() + " successfully updated receipt: " + id);
+            } catch (DataAccessException e) {
+                logger.error("Error description: " + e.getMessage());
+                message = messageSource.getMessage("receipt.edit.failure", null, locale);
+            }
+        } else {
+            message = messageSource.getMessage("receipt.edit.failure.invalidid", null, locale);
         }
 
-        String query = (String) request.getSession().getAttribute("lastReceiptQuery");
-        return "redirect:/receipts/?" + query;
+        return new BaseResponse(success, message);
     }
 
-    @RequestMapping(value = "/{receiptId}/delete", method = RequestMethod.POST)
-    public String delete(HttpServletRequest request, @PathVariable(value = "receiptId") int id,
-            @ModelAttribute("user") User user) {
+    @RequestMapping(value = "/{receiptId}/delete", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
+    public BaseResponse delete(@ModelAttribute("user") User user, Locale locale, @PathVariable(value = "receiptId") int id) {
         logger.debug("User: " + user.getUsername() + " deleting receipt with id: " + id);
 
         this.receiptDao.deleteReceipt(user.getUsername(), id);
 
-        String query = (String) request.getSession().getAttribute("lastReceiptQuery");
-        return "redirect:/receipts/?" + query;
+        return new BaseResponse(true, messageSource.getMessage("receipt.delete.success", null, locale));
     }
 
     @RequestMapping(value = "/create", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
-    @ResponseBody
-    public VisionJsonResponse create(@RequestParam("receiptImage") MultipartFile receiptImage,
-            @RequestParam(value = "skipOcr", required = false) String skipOcr, @ModelAttribute("user") User user)
-            throws Exception {
-        logger.debug("User: " + user.getUsername() + " performing OCR on file: " + receiptImage.getOriginalFilename());
+    public VisionResponse create(@ModelAttribute("user") User user, Locale locale, @RequestBody CreateReceiptRequest request) throws Exception {
+        Receipt receipt = request.getReceipt();
+        logger.debug("User: " + user.getUsername() + " performing OCR on file: " + receipt.getFileName());
 
-        VisionJsonResponse response = new VisionJsonResponse();
+        VisionResponse response = new VisionResponse();
         boolean success = false;
-        String errorMsg = "";
+        String message = "";
         Receipt data = null;
 
-        if (!receiptImage.isEmpty()) {
-            byte[] imageAsBytes = receiptImage.getBytes();
+        if (receipt.getFile().length != 0) {
 
-            if (receiptImage.getContentType() != null && !receiptImage.getContentType().equals("application/pdf")
-                    && skipOcr == null) {
-                LogoAndDocumentResponse ocrResponse = doOCR(imageAsBytes);
+            if (receipt.getMIME() != null && !receipt.getMIME().equals("application/pdf") && request.getSkipOCR() == false) {
+                LogoAndDocumentResponse ocrResponse = doOCR(receipt.getFile());
                 try {
                     ReceiptParser parser = this.receiptParserFactory.getReceiptParser(ocrResponse.getLogoDescription());
-                    data = parser.getReceipt(receiptImage, ocrResponse);
+                    data = parser.parseReceipt(receipt, ocrResponse);
                 } catch (IOException iox) {
                     logger.error("Failed to convert user: " + user.getUsername() + " image for storage on database.");
                     throw new RuntimeException(iox.getMessage());
                 }
-            } else if (receiptImage.getContentType() != null
-                    && receiptImage.getContentType().equals("application/pdf")) {
-                errorMsg = "Unable to perform OCR on pdf files. Autofill disabled for this receipt.";
+            } else if (receipt.getMIME() != null && receipt.getMIME().equals("application/pdf")) {
+                message = messageSource.getMessage("receipt.create.pdf", null, locale);
                 // Setup receipt
                 data = new Receipt();
                 BufferedImage image;
-                InputStream imageAsStream = receiptImage.getInputStream();
-                image = PDFImageCreator.createImageOfPDFPage(imageAsStream, data.getOriginalFileName(), 0);
+                InputStream imageAsStream = new ByteArrayInputStream(receipt.getFile());
+                image = PDFImageCreator.createImageOfPDFPage(imageAsStream, data.getFileName(), 0);
 
                 // Convert pdf image back to bytes
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -334,34 +251,32 @@ public class ReceiptController {
                 byte[] pdfImageAsBytes = outputStream.toByteArray();
                 outputStream.close();
 
-                data.setReceiptFullImage(pdfImageAsBytes);
-                data.setReceiptPDF(imageAsBytes);
+                data.setOriginalFile(receipt.getFile());
+                data.setFile(pdfImageAsBytes);
 
                 // Create byte array for thumbnail
-                data.setReceiptThumbnail(
-                        ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
+                data.setThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
             } else {
                 // Skip ocr selected on nonpdf file
                 data = new Receipt();
                 BufferedImage image;
-                InputStream imageAsStream = receiptImage.getInputStream();
+                InputStream imageAsStream = new ByteArrayInputStream(receipt.getFile());
 
                 image = ImageIO.read(imageAsStream);
-                data.setReceiptFullImage(imageAsBytes);
-                data.setReceiptThumbnail(
-                        ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
+                data.setFile(receipt.getFile());
+                data.setThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
             }
 
-            data.setReceiptId(this.receiptDao.addReceipt(user.getUsername(), data));
+            data.setId(this.receiptDao.addReceipt(user.getUsername(), data));
             success = true;
         } else {
             logger.info("User: " + user.getUsername() + " attempted to upload empty file.");
-            errorMsg = "Receipt image is required.";
+            message = messageSource.getMessage("receipt.create.failure.nofile", null, locale);;
         }
 
         response.setSuccess(success);
-        response.setErrorMessage(errorMsg);
-        response.setData(data);
+        response.setMessage(message);
+        response.setNewReceipt(data);
 
         return response;
     }

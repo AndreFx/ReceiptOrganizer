@@ -5,9 +5,9 @@ import java.util.Locale;
 import javax.validation.Valid;
 
 import com.afx.web.receiptorganizer.dao.label.LabelDao;
-import com.afx.web.receiptorganizer.labels.requests.EditLabelRequest;
-import com.afx.web.receiptorganizer.labels.responses.GetLabelsJsonResponse;
-import com.afx.web.receiptorganizer.labels.responses.LabelJsonResponse;
+import com.afx.web.receiptorganizer.labels.types.requests.EditLabelRequest;
+import com.afx.web.receiptorganizer.labels.types.responses.LabelsResponse;
+import com.afx.web.receiptorganizer.types.responses.BaseResponse;
 import com.afx.web.receiptorganizer.types.Label;
 import com.afx.web.receiptorganizer.types.User;
 
@@ -51,27 +51,27 @@ public class LabelController {
      */
 
     @RequestMapping(value = "/", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
-    public GetLabelsJsonResponse getLabels(@ModelAttribute("user") User user, Locale locale) {
+    public LabelsResponse getLabels(@ModelAttribute("user") User user, Locale locale) {
         logger.debug("User: " + user.getUsername() + " requesting their labels");
-        GetLabelsJsonResponse response = new GetLabelsJsonResponse();
+        LabelsResponse response = new LabelsResponse();
 
         try {
             response.setLabels(this.labelDao.getAllUserLabels(user.getUsername()));
             response.setSuccess(true);
-            response.setMessage(messageSource.getMessage("label.fetch.success", null, locale));
+            response.setMessage(messageSource.getMessage("label.index.success", null, locale));
             logger.debug("User: " + user.getUsername() + " fetched labels");
         } catch (DataAccessException e) {
             response.setSuccess(false);
-            response.setMessage(messageSource.getMessage("label.fetch.failure", null, locale));
+            response.setMessage(messageSource.getMessage("label.index.failure", null, locale));
         }
 
         return response;
     }
 
     @RequestMapping(value = "/create", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
-    public LabelJsonResponse createLabel(@ModelAttribute("user") User user, @Valid @RequestBody Label label,
+    public BaseResponse createLabel(@ModelAttribute("user") User user, @Valid @RequestBody Label label,
             BindingResult result, Locale locale) {
-        LabelJsonResponse response = new LabelJsonResponse();
+        BaseResponse response = new BaseResponse();
         logger.debug("User: " + user.getUsername() + " creating new label: " + label.getName());
         label.setName(label.getName().trim());
 
@@ -79,24 +79,24 @@ public class LabelController {
             try {
                 this.labelDao.addLabel(user.getUsername(), label);
                 response.setSuccess(true);
-                response.setMessage(messageSource.getMessage("label.add.success", null, locale));
+                response.setMessage(messageSource.getMessage("label.create.success", null, locale));
                 logger.debug("User: " + user.getUsername() + " created new label: " + label.getName());
             } catch (DataAccessException e) {
                 response.setSuccess(false);
-                response.setMessage(messageSource.getMessage("label.add.failure.notunique", null, locale));
+                response.setMessage(messageSource.getMessage("label.create.failure.notunique", null, locale));
             }
         } else {
             response.setSuccess(false);
-            response.setMessage(messageSource.getMessage("label.add.failure.invalid", null, locale));
+            response.setMessage(messageSource.getMessage("label.create.failure.invalid", null, locale));
         }
 
         return response;
     }
 
     @RequestMapping(value = "/delete", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
-    public LabelJsonResponse deleteLabel(@ModelAttribute("user") User user, @Valid @RequestBody Label label,
+    public BaseResponse deleteLabel(@ModelAttribute("user") User user, @Valid @RequestBody Label label,
         BindingResult result, Locale locale) {
-        LabelJsonResponse response = new LabelJsonResponse();
+        BaseResponse response = new BaseResponse();
         logger.debug("User: " + user.getUsername() + " deleting label: " + label.getName());
 
         if (!result.hasErrors()) {
@@ -118,8 +118,8 @@ public class LabelController {
     }
 
     @RequestMapping(value = "/update", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
-    public LabelJsonResponse editLabel(@ModelAttribute("user") User user, @Valid @RequestBody EditLabelRequest request, BindingResult result, Locale locale) {
-        LabelJsonResponse response = new LabelJsonResponse();
+    public BaseResponse editLabel(@ModelAttribute("user") User user, @Valid @RequestBody EditLabelRequest request, BindingResult result, Locale locale) {
+        BaseResponse response = new BaseResponse();
 
         Label newLabel = request.getNewLabel();
         Label oldLabel = request.getOldLabel();

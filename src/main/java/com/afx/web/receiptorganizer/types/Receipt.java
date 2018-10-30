@@ -1,7 +1,6 @@
 package com.afx.web.receiptorganizer.types;
 
-import org.springframework.web.multipart.MultipartFile;
-
+import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -14,30 +13,25 @@ public class Receipt {
     Private fields
      */
 
-    private Integer receiptId;
-
+    private Integer id;
     @Size(max = 50)
     private String title;
     private Date date;
     private BigDecimal tax;
     private BigDecimal total;
-
     @Size(max = 2000)
     private String description;
-
     @Size(max = 50)
     private String vendor;
     private String[] labels;
+    @Valid
     private List<ReceiptItem> items = new ArrayList<>();
-
-    //Receipt Upload Data
-
-    private byte[] receiptPDF;
-    private byte[] receiptFullImage;
-    private byte[] receiptThumbnail;
+    private byte[] file;
+    private byte[] originalFile;
+    private byte[] thumbnail;
     private String MIME;
-    private MultipartFile multipartFile;
-    private String originalFileName;
+    private String originalMIME;
+    private String fileName;
 
     /*
     Constructors
@@ -47,20 +41,6 @@ public class Receipt {
         //Set defaults for new forms
         total = new BigDecimal(0.00);
         tax = new BigDecimal(0.00);
-    }
-
-    /*
-    Public methods
-     */
-
-    public void removeInvalidReceiptItems() {
-        for (int i = 0; i < items.size(); i++) {
-            ReceiptItem item = items.get(i);
-            if (item.getName() == null && item.getQuantity() == 0 &&
-                    item.getWarrantyLength() == 0 && item.getUnitPrice() == null) {
-                items.remove(i);
-            }
-        }
     }
 
     /*
@@ -123,28 +103,28 @@ public class Receipt {
         this.vendor = vendor;
     }
 
-    public byte[] getReceiptPDF() {
-        return receiptPDF;
+    public byte[] getFile() {
+        return file;
     }
 
-    public void setReceiptPDF(byte[] receiptPDF) {
-        this.receiptPDF = receiptPDF;
+    public void setFile(byte[] file) {
+        this.file = file;
     }
 
-    public byte[] getReceiptFullImage() {
-        return receiptFullImage;
+    public byte[] getOriginalFile() {
+        return originalFile;
     }
 
-    public void setReceiptFullImage(byte[] receiptFullImage) {
-        this.receiptFullImage = receiptFullImage;
+    public void setOriginalFile(byte[] originalFile) {
+        this.originalFile = originalFile;
     }
 
-    public byte[] getReceiptThumbnail() {
-        return receiptThumbnail;
+    public byte[] getThumbnail() {
+        return thumbnail;
     }
 
-    public void setReceiptThumbnail(byte[] receiptThumbnail) {
-        this.receiptThumbnail = receiptThumbnail;
+    public void setThumbnail(byte[] thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public String getMIME() {
@@ -155,20 +135,20 @@ public class Receipt {
         this.MIME = MIME;
     }
 
-    public MultipartFile getMultipartFile() {
-        return multipartFile;
+    public String getOriginalMIME() {
+        return originalMIME;
     }
 
-    public void setMultipartFile(MultipartFile multipartFile) {
-        this.multipartFile = multipartFile;
+    public void setOriginalMIME(String originalMIME) {
+        this.originalMIME = originalMIME;
     }
 
-    public String getOriginalFileName() {
-        return originalFileName;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setOriginalFileName(String originalFileName) {
-        this.originalFileName = originalFileName;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String[] getLabels() {
@@ -179,11 +159,11 @@ public class Receipt {
         this.labels = labels;
     }
 
-    public Integer getReceiptId() {
-        return receiptId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setReceiptId(Integer receiptId) {
-        this.receiptId = receiptId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

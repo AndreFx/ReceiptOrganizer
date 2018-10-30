@@ -23,7 +23,7 @@ class LabelList extends React.Component {
                 {
                     labels.map((l, ind) => 
                         <Label 
-                            key={ind} 
+                            key={l.name} 
                             label={l} 
                             num={ind} 
                             csrfHeaderName={csrfHeaderName}

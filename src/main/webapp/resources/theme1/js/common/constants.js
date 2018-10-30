@@ -63,7 +63,10 @@ export const INFO_SNACKBAR = 'info';
 /* Snackbar Actions */
 export const SNACKBAR_ACTION_RETRY = 'Retry';
 
-//URLS
+//Network Requests
+export const CONTENT_TYPE_JSON = 'application/json';
+
+/* URLS */
 export const LOGOUT_URL = '/ReceiptOrganizer/logout';
 export const SEARCH_URL = '/ReceiptOrganizer/receipts';
 export const SETTINGS_URL = '/ReceiptOrganizer/users/settings';

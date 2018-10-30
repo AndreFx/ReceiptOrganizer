@@ -106,7 +106,7 @@ class DialogWrapper extends React.Component {
                                         <TextField
                                             autoFocus
                                             margin="dense"
-                                            key={ind}
+                                            key={el.label.name}
                                             id={el.label.replace(/\s/g,'')}
                                             label={el.label}
                                             type="text"
@@ -123,7 +123,7 @@ class DialogWrapper extends React.Component {
                                         <TextField
                                             autoFocus
                                             margin="dense"
-                                            key={ind}
+                                            key={el.label.name}
                                             id={"dialogTextField" + ind}
                                             label={el.label}
                                             type="text"

@@ -3,14 +3,11 @@ package com.afx.web.receiptorganizer.dao.receipt;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.afx.web.receiptorganizer.types.Label;
 import com.afx.web.receiptorganizer.types.Receipt;
-import com.afx.web.receiptorganizer.types.ReceiptFile;
 import com.afx.web.receiptorganizer.types.ReceiptItem;
 
 import org.apache.logging.log4j.LogManager;
@@ -69,8 +66,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
         try {
             //Insert into RECEIPT table first.
             String sql = "INSERT INTO RECEIPT " +
-                    "VALUES (:title, :vendor, :description, :date, :tax, :total, :receiptFullImage, :receiptThumbnail, " +
-                    ":receiptPDF, :originalFileName, :MIME)";
+                    "VALUES (:title, :vendor, :description, :date, :tax, :total, :file, :thumbnail, " +
+                    ":originalFile, :fileName, :MIME, :originalMIME)";
             keyHolder = new GeneratedKeyHolder();
 
             //BeanPropertySqlParameterSource uses reflection to map the fields to the params, make sure no other object
@@ -78,7 +75,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
             this.jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(receipt), keyHolder);
 
             //Insert into RECEIPT_ITEM
-            receipt.setReceiptId(keyHolder.getKey().intValue());
+            receipt.setId(keyHolder.getKey().intValue());
             Map<String, ?>[] receiptItemBatchParams = getReceiptItemBatchParams(receipt);
             if (receiptItemBatchParams != null) {
                 String receiptItemSql = "INSERT INTO RECEIPT_ITEM " +
@@ -95,7 +92,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
             this.jdbcTemplate.update(userReceiptsSql, userReceiptParameters);
 
             //Insert into RECEIPT_LABELS
-            receipt.setReceiptId(keyHolder.getKey().intValue());
+            receipt.setId(keyHolder.getKey().intValue());
             Map<String, ?>[] batchParams = getLabelBatchParams(username, receipt);
             String batchSql = "INSERT INTO RECEIPT_LABELS " +
                     "VALUES (:receiptid, :username, :labelname)";
@@ -144,7 +141,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
             String sql;
 
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("receiptid", receipt.getReceiptId());
+            parameters.put("receiptid", receipt.getId());
             parameters.put("title", receipt.getTitle());
             parameters.put("description", receipt.getDescription());
             parameters.put("date", receipt.getDate());
@@ -159,7 +156,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
 
             //Remove old labels from RECEIPT_LABELS
             Map<String, Object> removeLabelParameters = new HashMap<>();
-            removeLabelParameters.put("receiptid", receipt.getReceiptId());
+            removeLabelParameters.put("receiptid", receipt.getId());
             removeLabelParameters.put("username", username);
             String removeLabelSql = "DELETE FROM RECEIPT_LABELS " +
                     "WHERE ReceiptId = :receiptid " +
@@ -174,7 +171,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
 
             //Remove old items from RECEIPT_ITEMS
             Map<String, Object> removeItemParameters = new HashMap<>();
-            removeItemParameters.put("receiptid", receipt.getReceiptId());
+            removeItemParameters.put("receiptid", receipt.getId());
             String removeItemSql = "DELETE FROM RECEIPT_ITEM " +
                     "WHERE ReceiptId = :receiptid";
             this.jdbcTemplate.update(removeItemSql, removeItemParameters);
@@ -203,7 +200,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
 
         try {
             SqlParameterSource parameters = new MapSqlParameterSource("receiptid", receiptId).addValue("username", username);
-            String query = "SELECT RECEIPT.ReceiptId, Title, Description, Date, Tax, Total, OriginalFileName " +
+            String query = "SELECT RECEIPT.ReceiptId, Title, Description, Date, Tax, Total, OriginalFileName, OriginalFile, FullImage, ImageThumbnail, MIME, OriginalFileMIME " +
                     "FROM USER_RECEIPTS " +
                     "INNER JOIN RECEIPT " +
                     "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
@@ -259,58 +256,6 @@ public class ReceiptDaoImpl implements ReceiptDao {
         return userReceipt;
     }
 
-    public ReceiptFile getReceiptImage(String username, int receiptId, boolean thumbnail) {
-        ReceiptFile receiptImage = null;
-
-        try {
-            SqlParameterSource parameters = new MapSqlParameterSource("receiptid", receiptId).addValue("username", username);
-            String query;
-
-            if (thumbnail) {
-                query = "SELECT RECEIPT.ReceiptId, ImageThumbnail, OriginalFileMIME " +
-                        "FROM USER_RECEIPTS " +
-                        "INNER JOIN RECEIPT " +
-                        "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
-                        "WHERE Receipt.ReceiptId = :receiptid " +
-                        "AND USER_RECEIPTS.Username = :username";
-            } else {
-                query = "SELECT RECEIPT.ReceiptId, FullImage, OriginalFileMIME " +
-                        "FROM USER_RECEIPTS " +
-                        "INNER JOIN RECEIPT " +
-                        "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
-                        "WHERE Receipt.ReceiptId = :receiptid " +
-                        "AND USER_RECEIPTS.Username = :username";
-            }
-
-            receiptImage = this.jdbcTemplate.queryForObject(query, parameters, new ReceiptFileRowMapper());
-        } catch (DataAccessException e) {
-            logger.error("Unable to fetch user receipt from database. Error: " + e.getMessage());
-        }
-
-        return receiptImage;
-    }
-
-    public ReceiptFile getReceiptFile(String username, int receiptId) {
-        ReceiptFile receiptFile = null;
-
-        try {
-            SqlParameterSource parameters = new MapSqlParameterSource("receiptid", receiptId).addValue("username", username);
-            //Selects the originalfile column if not null, or the image column if originalfile is null
-            String query = "SELECT RECEIPT.ReceiptId, ISNULL(OriginalFile, FullImage), OriginalFileMIME " +
-                        "FROM USER_RECEIPTS " +
-                        "INNER JOIN RECEIPT " +
-                        "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
-                        "WHERE Receipt.ReceiptId = :receiptid " +
-                        "AND USER_RECEIPTS.Username = :username";
-
-            receiptFile = this.jdbcTemplate.queryForObject(query, parameters, new ReceiptFileRowMapper());
-        } catch (DataAccessException e) {
-            logger.error("Unable to fetch user receipt from database. Error: " + e.getMessage());
-        }
-
-        return receiptFile;
-    }
-
     public int getTotalNumUserReceiptsFromString(String username, String searchString) {
         Integer result;
 
@@ -336,13 +281,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
         return result;
     }
 
-    public int getTotalNumUserReceiptsForLabels(String username, List<Label> labels) {
+    public int getTotalNumUserReceiptsForLabels(String username, List<String> labelNames) {
         Integer result;
-        List<String> labelNames = new ArrayList<String>();
-
-        for (Label label : labels) {
-            labelNames.add(label.getName());
-        }
 
         try {
             SqlParameterSource parameters;
@@ -419,13 +359,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
         return receipts;
     }
 
-    public List<Receipt> getRangeUserReceiptsForLabels(String username, List<Label> labels, int start, int numRows) {
+    public List<Receipt> getRangeUserReceiptsForLabels(String username, List<String> labelNames, int start, int numRows) {
         List<Receipt> receipts;
-        List<String> labelNames = new ArrayList<String>();
-
-        for (Label label : labels) {
-            labelNames.add(label.getName());
-        }
 
         try {
             SqlParameterSource parameters;
@@ -435,18 +370,16 @@ public class ReceiptDaoImpl implements ReceiptDao {
                 parameters = new MapSqlParameterSource("username", username)
                         .addValue("startrow", start)
                         .addValue("numrows", numRows);
-                query = "SELECT TOP_RECEIPTS.ReceiptId, Title, Date, Total, Name, Quantity, UnitPrice " +
-                        "FROM (SELECT DISTINCT RECEIPT.ReceiptId, Title, Date, Total " +
+                query = "SELECT TOP_RECEIPTS.ReceiptId " +
+                        "FROM (SELECT DISTINCT RECEIPT.ReceiptId " +
                         "                    FROM USER_RECEIPTS " +
                         "                    INNER JOIN RECEIPT " +
                         "                    ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
                         "                    WHERE Username = :username " +
-                        "                    ORDER BY RECEIPT.Title " +
+                        "                    ORDER BY RECEIPT.ReceiptId " +
                         "                    OFFSET :startrow ROWS " +
                         "                    FETCH NEXT :numrows ROWS ONLY) AS TOP_RECEIPTS " +
-                        "LEFT OUTER JOIN RECEIPT_ITEM " +
-                        "ON TOP_RECEIPTS.ReceiptId = RECEIPT_ITEM.ReceiptId " +
-                        "ORDER BY TOP_RECEIPTS.Title";
+                        "ORDER BY TOP_RECEIPTS.ReceiptId";
             } else {
                 //Get receipts for specific label
                 parameters = new MapSqlParameterSource("username", username)
@@ -454,7 +387,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
                         .addValue("labelnameslength", labelNames.size())
                         .addValue("startrow", start)
                         .addValue("numrows", numRows);
-                query = "SELECT TOP_RECEIPTS.ReceiptId, Title, Date, Total, Name, Quantity, UnitPrice " +
+                query = "SELECT TOP_RECEIPTS.ReceiptId" +
                         "FROM (SELECT DISTINCT RECEIPT.ReceiptId, Title, Date, Total " +
                         "                    FROM USER_RECEIPTS " +
                         "                    INNER JOIN RECEIPT " +
@@ -471,9 +404,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
                         "                    ORDER BY RECEIPT.Title " +
                         "                    OFFSET :startrow ROWS " +
                         "                    FETCH NEXT :numrows ROWS ONLY) AS TOP_RECEIPTS " +
-                        "LEFT OUTER JOIN RECEIPT_ITEM " +
-                        "ON TOP_RECEIPTS.ReceiptId = RECEIPT_ITEM.ReceiptId " +
-                        "ORDER BY TOP_RECEIPTS.Title";
+                        "ORDER BY TOP_RECEIPTS.ReceiptId";
             }
 
             receipts = this.jdbcTemplate.query(query, parameters, new ReceiptResultSetExtractor());
@@ -496,7 +427,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
             batchParams = new HashMap[receipt.getLabels().length];
             for (int i = 0; i < receipt.getLabels().length; i++) {
                 Map<String, Object> temp = new HashMap<>();
-                temp.put("receiptid", receipt.getReceiptId());
+                temp.put("receiptid", receipt.getId());
                 temp.put("username", username);
                 temp.put("labelname", receipt.getLabels()[i]);
                 batchParams[i] = temp;
@@ -516,7 +447,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
             for (int i = 0; i < receipt.getItems().size(); i++) {
                 List<ReceiptItem> items = receipt.getItems();
                 Map<String, Object> temp = new HashMap<>();
-                temp.put("receiptid", receipt.getReceiptId());
+                temp.put("receiptid", receipt.getId());
                 temp.put("itemnumber", i);
                 temp.put("name", items.get(i).getName());
                 temp.put("quantity", items.get(i).getQuantity());

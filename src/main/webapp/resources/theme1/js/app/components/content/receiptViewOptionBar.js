@@ -42,13 +42,12 @@ class ReceiptViewOptionBar extends React.Component {
     render() {
         const { activeLabels, query, currentReceiptPage, classes } = this.props;
 
-        //TODO: Insert query string before chips
         return (
             <div className={classes.root}>
                 {
                     activeLabels.map((l, ind) =>
                         <Chip
-                            key={ind}
+                            key={l.name}
                             color="primary"
                             label={l.name}
                             onDelete={e => this.handleChipDelete(l)}

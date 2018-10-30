@@ -3,7 +3,6 @@ package com.afx.web.receiptorganizer.exceptions;
 import javax.servlet.http.HttpServletRequest;
 
 import com.afx.web.receiptorganizer.exceptions.types.ExceptionResponse;
-import com.afx.web.receiptorganizer.exceptions.types.ReceiptNotFoundException;
 
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.DataAccessException;
@@ -40,18 +39,6 @@ public class GlobalExceptionHandlerController {
 
         response.setExceptionMessage(e.getMessage());
         response.setErrorMessage(DEFAULT_ERROR_MESSAGE);
-
-        return response;
-    }
-
-    @ResponseBody
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(ReceiptNotFoundException.class)
-    public ExceptionResponse handleReceiptNotFound(ReceiptNotFoundException e, Model model){
-        ExceptionResponse response = new ExceptionResponse();
-
-        response.setExceptionMessage(e.getMessage());
-        response.setErrorMessage("Unable to find receipt with id: " + e.getId() + "\nPlease contact your system administrator.");
 
         return response;
     }

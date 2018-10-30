@@ -43,8 +43,8 @@ public class AdvanceAutoReceiptParser extends ReceiptParserBase implements Recei
 
     //This could potentially be several different methods, one for each autofill
     @Override
-    public Receipt getReceipt(MultipartFile receiptImage, LogoAndDocumentResponse visionResponse) throws IOException {
-        Receipt receipt = super.getReceipt(receiptImage, visionResponse);
+    public Receipt parseReceipt(Receipt receipt, LogoAndDocumentResponse visionResponse) throws IOException {
+        Receipt data = super.parseReceipt(receipt, visionResponse);
 
         //Get date
         Matcher dateM = Pattern.compile(DATE_REGEX).matcher(visionResponse.getDocumentText());
@@ -53,7 +53,7 @@ public class AdvanceAutoReceiptParser extends ReceiptParserBase implements Recei
             String match = dateM.group();
             SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
             try {
-                receipt.setDate(formatter.parse(match));
+                data.setDate(formatter.parse(match));
             } catch (ParseException pe) {
                 logger.error("Unable to parse date for receipt.");
             }
@@ -69,10 +69,10 @@ public class AdvanceAutoReceiptParser extends ReceiptParserBase implements Recei
             }
 
             try {
-                receipt.setTotal(new BigDecimal(match));
+                data.setTotal(new BigDecimal(match));
             } catch (NumberFormatException nfe) {
                 logger.info("Unable to convert: " + match + " to BigDecimal for receipt total.");
-                receipt.setTotal(new BigDecimal("0.00"));
+                data.setTotal(new BigDecimal("0.00"));
             }
         }
 
@@ -81,10 +81,10 @@ public class AdvanceAutoReceiptParser extends ReceiptParserBase implements Recei
         if (taxM.find()) {
             String match = taxM.group(taxM.groupCount());
             try {
-                receipt.setTax(new BigDecimal(match));
+                data.setTax(new BigDecimal(match));
             } catch (NumberFormatException nfe) {
                 logger.info("Unable to convert: " + match + " to BigDecimal for receipt tax.");
-                receipt.setTax(new BigDecimal("0.00"));
+                data.setTax(new BigDecimal("0.00"));
             }
         }
 
@@ -122,9 +122,9 @@ public class AdvanceAutoReceiptParser extends ReceiptParserBase implements Recei
             items.add(item);
         }
 
-        receipt.setItems(items);
+        data.setItems(items);
 
-        return receipt;
+        return data;
     }
 
 }

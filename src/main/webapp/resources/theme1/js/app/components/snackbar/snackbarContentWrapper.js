@@ -58,8 +58,8 @@ function SnackbarContentWrapper(props) {
         if (element === SNACKBAR_ACTION_RETRY) {
             snackbarActions.push(
                 <Button 
-                    key="retry"
-                    aria-label={"Retry"}
+                    key={SNACKBAR_ACTION_RETRY}
+                    aria-label={SNACKBAR_ACTION_RETRY}
                     color="inherit" 
                     size="small"
                     onClick={(e) => { onClose(e); handlers[index](e, ...handlerParams[index]); }}

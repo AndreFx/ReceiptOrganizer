@@ -1,4 +1,4 @@
-package com.afx.web.receiptorganizer.labels.requests;
+package com.afx.web.receiptorganizer.labels.types.requests;
 
 import javax.validation.Valid;
 

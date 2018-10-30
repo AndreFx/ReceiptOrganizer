@@ -84,7 +84,7 @@ public class LabelControllerTests {
             .andExpect(status().isOk())
             .andExpect(content().contentType(TestUtils.APPLICATION_JSON_UTF8))
             .andExpect(jsonPath("$.success", is(true)))
-            .andExpect(jsonPath("$.message", is(messageSource.getMessage("label.add.success",
+            .andExpect(jsonPath("$.message", is(messageSource.getMessage("label.create.success",
                     null,
                     Locale.US))));
 

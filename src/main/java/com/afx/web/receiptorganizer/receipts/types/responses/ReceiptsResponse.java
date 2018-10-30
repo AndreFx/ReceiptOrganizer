@@ -1,10 +1,11 @@
-package com.afx.web.receiptorganizer.receipts.responses;
+package com.afx.web.receiptorganizer.receipts.types.responses;
 
 import com.afx.web.receiptorganizer.types.Receipt;
+import com.afx.web.receiptorganizer.types.responses.BaseResponse;
 
 import java.util.List;
 
-public class ReceiptsJsonResponse {
+public class ReceiptsResponse extends BaseResponse {
 
     /*
      * Private fields
@@ -13,8 +14,6 @@ public class ReceiptsJsonResponse {
     private List<Receipt> receipts;
     private Integer numPages;
     private Integer totalNumReceipts;
-    private boolean success;
-    private String message;
 
     /*
      * Getters and setters
@@ -42,21 +41,5 @@ public class ReceiptsJsonResponse {
 
     public void setTotalNumReceipts(Integer totalNumReceipts) {
         this.totalNumReceipts = totalNumReceipts;
-    }
-
-    public boolean getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 }

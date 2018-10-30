@@ -20,7 +20,7 @@ class LoginMessage extends React.Component {
             errorContainer = <div className="login-form-main-message show invalid" id="form-errors-container">
                                 {Object.keys(validateErrors).map((key, index) => {
                                     if (validateErrors[key].length > 0) {
-                                        return (<div key={index} >{validateErrors[key]}</div>);
+                                        return (<div key={key} >{validateErrors[key]}</div>);
                                     }
                                 })}
                             </div>;

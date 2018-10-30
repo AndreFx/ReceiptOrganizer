@@ -8,7 +8,8 @@ public class ReceiptItem {
     Private fields
      */
 
-    private int itemNumber;
+     //TODO: Validation
+    private Integer itemNumber;
     private String name;
     private int quantity;
     private BigDecimal unitPrice;

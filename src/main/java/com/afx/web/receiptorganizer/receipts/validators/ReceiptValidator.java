@@ -1,11 +1,11 @@
 package com.afx.web.receiptorganizer.receipts.validators;
 
 import com.afx.web.receiptorganizer.types.Receipt;
+
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class ReceiptValidator implements Validator {
@@ -18,9 +18,9 @@ public class ReceiptValidator implements Validator {
         Receipt receipt = (Receipt) target;
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "receipt.title.required");
 
-        MultipartFile file = receipt.getMultipartFile();
-        if (file == null || file.isEmpty()) {
-            errors.rejectValue("multipartFile", "receipt.file.required");
+        byte[] file = receipt.getFile();
+        if (file == null || file.length == 0) {
+            errors.rejectValue("file", "receipt.file.required");
         }
     }
 }

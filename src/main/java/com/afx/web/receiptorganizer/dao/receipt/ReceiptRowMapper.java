@@ -10,13 +10,15 @@ public class ReceiptRowMapper implements RowMapper<Receipt> {
 
     public Receipt mapRow(ResultSet rs, int rowNum) throws SQLException {
         Receipt receipt = new Receipt();
-        receipt.setReceiptId(rs.getInt("ReceiptId"));
+        receipt.setId(rs.getInt("ReceiptId"));
         receipt.setTitle(rs.getString("Title"));
         receipt.setDescription(rs.getString("Description"));
         receipt.setDate(rs.getDate("Date"));
         receipt.setTax(rs.getBigDecimal("Tax"));
         receipt.setTotal(rs.getBigDecimal("Total"));
-        receipt.setOriginalFileName(rs.getString("OriginalFileName"));
+        receipt.setFileName(rs.getString("OriginalFileName"));
+        receipt.setFile(rs.getBytes("FullImage"));
+        receipt.setMIME(rs.getString("OriginalFileMIME"));
         return receipt;
     }
 }

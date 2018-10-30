@@ -29,7 +29,7 @@ public class ReceiptResultSetExtractor  implements ResultSetExtractor<List<Recei
 
                 currentReceipt = new Receipt();
                 currentReceiptItems = new ArrayList<>();
-                currentReceipt.setReceiptId(currentId);
+                currentReceipt.setId(currentId);
                 currentReceipt.setTitle(rs.getString("Title"));
                 currentReceipt.setDate(rs.getDate("Date"));
                 currentReceipt.setTotal(rs.getBigDecimal("Total"));
