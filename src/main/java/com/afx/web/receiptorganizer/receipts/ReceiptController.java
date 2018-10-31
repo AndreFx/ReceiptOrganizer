@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
 
 import com.afx.web.receiptorganizer.dao.receipt.ReceiptDao;
 import com.afx.web.receiptorganizer.receipts.types.LogoAndDocumentResponse;
@@ -19,10 +20,11 @@ import com.afx.web.receiptorganizer.receipts.types.receiptparsers.ReceiptParser;
 import com.afx.web.receiptorganizer.receipts.types.receiptparsers.factories.ReceiptParserFactory;
 import com.afx.web.receiptorganizer.receipts.types.requests.CreateReceiptRequest;
 import com.afx.web.receiptorganizer.receipts.types.responses.ReceiptResponse;
-import com.afx.web.receiptorganizer.receipts.types.responses.ReceiptsResponse;
+import com.afx.web.receiptorganizer.receipts.types.responses.ReceiptsPage;
 import com.afx.web.receiptorganizer.receipts.types.responses.VisionResponse;
 import com.afx.web.receiptorganizer.receipts.validators.ReceiptValidator;
 import com.afx.web.receiptorganizer.types.Receipt;
+import com.afx.web.receiptorganizer.types.ReceiptFile;
 import com.afx.web.receiptorganizer.types.User;
 import com.afx.web.receiptorganizer.types.responses.BaseResponse;
 import com.afx.web.receiptorganizer.utilities.ImageThumbnailCreator;
@@ -37,6 +39,7 @@ import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.TextAnnotation;
 import com.google.protobuf.ByteString;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,52 +119,30 @@ public class ReceiptController {
      * Controller methods
      */
     @RequestMapping(value = "/", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
-    public ReceiptsResponse index(@ModelAttribute("user") User user, 
+    public ReceiptsPage index(@ModelAttribute("user") User user, 
             Locale locale,
             @RequestParam(required = false) String query,
             @RequestParam(required = false) List<String> activeLabelNames,
             @RequestParam(required = false) Integer pageNum) {
         logger.debug("Serving user: " + user.getUsername() + " request for receipts");
-        ReceiptsResponse response = new ReceiptsResponse();
         List<Receipt> receipts = null;
-        int totalNumReceipts;
 
         if (activeLabelNames == null) {
             activeLabelNames = new ArrayList<String>();
         }
-
-        //TODO: Combine these two. We should be searching with both at the same time
-        if (query != null) {
-            StringBuilder temp = new StringBuilder(query);
-            temp.insert(0, '%');
-            temp.append('%');
-            totalNumReceipts = this.receiptDao.getTotalNumUserReceiptsFromString(user.getUsername(), temp.toString());
-
-            if (pageNum == null || pageNum < 1 || pageNum > Math.ceil(totalNumReceipts / (float) user.getPaginationSize())) {
-                pageNum = 1;
-            }
-            if (totalNumReceipts != 0) {
-                receipts = this.receiptDao.findRangeUserReceiptsFromString(user.getUsername(), temp.toString(),
-                        user.getPaginationSize() * (pageNum - 1), user.getPaginationSize());
-            }
-        } else {
+        if (query == null) {
             query = "";
-            totalNumReceipts = this.receiptDao.getTotalNumUserReceiptsForLabels(user.getUsername(), activeLabelNames);
-
-            if (pageNum == null || pageNum < 1 || pageNum > Math.ceil(totalNumReceipts / (float) user.getPaginationSize())) {
-                pageNum = 1;
-            }
-            if (totalNumReceipts != 0) {
-                receipts = this.receiptDao.getRangeUserReceiptsForLabels(user.getUsername(), activeLabelNames,
-                        user.getPaginationSize() * (pageNum - 1), user.getPaginationSize());
-            }
         }
+        if (pageNum == null || pageNum < 1) {
+            pageNum = 0;
+        }
+
+        ReceiptsPage response = this.receiptDao.getRangeUserReceipts(user.getUsername(), query, activeLabelNames, user.getPaginationSize() * pageNum, user.getPaginationSize());
 
         response.setReceipts(receipts);
         response.setSuccess(true);
         response.setMessage(messageSource.getMessage("receipt.index.success", null, locale));
-        response.setNumPages((int) Math.ceil(totalNumReceipts / (float) user.getPaginationSize()));
-        response.setTotalNumReceipts(totalNumReceipts);
+        response.setNumPages((int) Math.ceil(response.getTotalNumReceipts() / (float) user.getPaginationSize()));
 
         return response;
     }
@@ -175,11 +156,69 @@ public class ReceiptController {
             response.setSuccess(false);
             response.setMessage(messageSource.getMessage("receipt.show.failure", null, locale));
         } else {
+            response.setReceipt(receipt);
             response.setSuccess(true);
             response.setMessage(messageSource.getMessage("receipt.show.success", null, locale));
         }
 
         return response;
+    }
+
+    @RequestMapping(value = "/{receiptId}/file/{fileName}", method = RequestMethod.GET)
+    public void file(HttpServletResponse response, @ModelAttribute("user") User user, Locale locale, @PathVariable(value = "receiptId") int id, @PathVariable(value = "fileName") String fileName) {
+        logger.debug("User: " + user.getUsername() + " requesting file for receipt with id: " + id);
+
+        try {
+            ReceiptFile receiptFile = new ReceiptFile();
+            InputStream in;
+            int length = 0;
+            receiptFile = this.receiptDao.getReceiptFile(user.getUsername(), id);
+    
+            //Validate request for fileName until (if) multiple files are implemented
+            if (!fileName.equals(receiptFile.getFileName())) {
+                throw new Exception();
+            }
+
+            if (receiptFile.getOriginalMIME() != null) {
+                in = new ByteArrayInputStream(receiptFile.getOriginalFile());
+                length = receiptFile.getOriginalFile().length;
+                response.setContentType(receiptFile.getOriginalMIME());
+            } else {
+                in = new ByteArrayInputStream(receiptFile.getFile());
+                length = receiptFile.getFile().length;
+                response.setContentType(receiptFile.getMIME());
+            }
+            response.setHeader("content-Disposition", "inline; filename=" + id + "image.jpeg");
+            response.setContentLength(length);
+            IOUtils.copy(in, response.getOutputStream());
+            response.flushBuffer();
+            in.close();
+        } catch (IOException e) {
+            logger.error("Unable to send file id: " + id + " to user: " + user.getUsername());
+        } catch (Exception e) {
+            logger.error("Client submitted request for invalid filename: " + fileName + " for id: " + id + "for user: " + user.getUsername());
+        }
+    }
+
+    @RequestMapping(value = "/{receiptId}/thumbnail", method = RequestMethod.GET)
+    public void thumbnail(HttpServletResponse response, @ModelAttribute("user") User user, Locale locale, @PathVariable(value = "receiptId") int id) {
+        logger.debug("User: " + user.getUsername() + " requesting thumbnail for receipt with id: " + id);
+
+        try {
+            ReceiptFile receiptFile = new ReceiptFile();
+            InputStream in;
+            receiptFile = this.receiptDao.getReceiptFile(user.getUsername(), id);
+    
+            in = new ByteArrayInputStream(receiptFile.getThumbnail());    
+            response.setContentType(receiptFile.getThumbnailMIME());    
+            response.setHeader("content-Disposition", "inline; filename=" + id + "image.jpeg");
+            response.setContentLength(receiptFile.getThumbnail().length);
+            IOUtils.copy(in, response.getOutputStream());
+            response.flushBuffer();
+            in.close();
+        } catch (IOException e) {
+            logger.error("Unable to send file id: " + id + " to user: " + user.getUsername());
+        }
     }
 
     @RequestMapping(value = "/{receiptId}/edit", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
@@ -240,9 +279,8 @@ public class ReceiptController {
                 message = messageSource.getMessage("receipt.create.pdf", null, locale);
                 // Setup receipt
                 data = new Receipt();
-                BufferedImage image;
                 InputStream imageAsStream = new ByteArrayInputStream(receipt.getFile());
-                image = PDFImageCreator.createImageOfPDFPage(imageAsStream, data.getFileName(), 0);
+                BufferedImage image = PDFImageCreator.createImageOfPDFPage(imageAsStream, data.getFileName(), 0);
 
                 // Convert pdf image back to bytes
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -252,19 +290,22 @@ public class ReceiptController {
                 outputStream.close();
 
                 data.setOriginalFile(receipt.getFile());
+                data.setOriginalMIME("application/pdf");
+                data.setMIME("image/jpeg");
                 data.setFile(pdfImageAsBytes);
 
                 // Create byte array for thumbnail
                 data.setThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
+                data.setThumbnailMIME("image/jpeg");
             } else {
                 // Skip ocr selected on nonpdf file
                 data = new Receipt();
-                BufferedImage image;
                 InputStream imageAsStream = new ByteArrayInputStream(receipt.getFile());
+                BufferedImage image = ImageIO.read(imageAsStream);
 
-                image = ImageIO.read(imageAsStream);
                 data.setFile(receipt.getFile());
                 data.setThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
+                data.setThumbnailMIME("image/jpeg");
             }
 
             data.setId(this.receiptDao.addReceipt(user.getUsername(), data));
@@ -329,5 +370,4 @@ public class ReceiptController {
 
         return retVal;
     }
-
 }

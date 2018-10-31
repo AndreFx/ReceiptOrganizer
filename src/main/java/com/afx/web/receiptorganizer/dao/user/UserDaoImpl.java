@@ -40,7 +40,7 @@ public class UserDaoImpl implements UserDao {
         try {
             SqlParameterSource parameters = new MapSqlParameterSource("username", username);
             String query = "SELECT * " +
-                    "FROM [ReceiptOrganizer].[dbo].[USER] " +
+                    "FROM USER " +
                     "WHERE Username = :username";
             user = this.jdbcTemplate.queryForObject(query, parameters, new UserRowMapper());
         } catch (DataAccessException e) {
@@ -59,8 +59,8 @@ public class UserDaoImpl implements UserDao {
             parameters.put("lName", user.getlName());
             parameters.put("paginationsize", user.getPaginationSize());
 
-            String sql = "INSERT INTO [ReceiptOrganizer].[dbo].[USER] " +
-                    "VALUES (:username, :fName, :lName, NULL, NULL, :paginationsize)";
+            String sql = "INSERT INTO USER " +
+                    "VALUES (:username, :fName, :lName, :paginationsize, NULL, NULL, NULL, NULL, NULL)";
             this.jdbcTemplate.update(sql, parameters);
 
             logger.info("New user: " + user.getUsername() + " added to database.");
@@ -75,14 +75,16 @@ public class UserDaoImpl implements UserDao {
             Map<String, Object> parameters = new HashMap<>();
             String sql;
 
-            if (user.getUserPhotoImage() != null) {
-                parameters.put("userimage", user.getUserPhotoImage());
+            if (user.getUserPhoto().length != 0) {
+                parameters.put("userimage", user.getUserPhoto());
+                parameters.put("userimagemime", user.getUserPhotoMIME());
                 parameters.put("userthumbnail", user.getUserPhotoThumbnail());
-                sql = "UPDATE [ReceiptOrganizer].[dbo].[USER] " +
-                        "SET UserPhoto = :userimage, PaginationSize = :paginationsize, fName = :fname, lName = :lname, UserPhotoThumbnail = :userthumbnail " +
+                parameters.put("userthumbnailmime", user.getUserPhotoThumbnailMIME());
+                sql = "UPDATE USER " +
+                        "SET UserPhoto = :userimage, PaginationSize = :paginationsize, fName = :fname, lName = :lname, UserPhotoThumbnail = :userthumbnail, UserPhotoMIME = :userimagemime, UserPhotoThumbnailMIME = :userthumbnailmime " +
                         "WHERE Username = :username";
             } else {
-                sql = "UPDATE [ReceiptOrganizer].[dbo].[USER] " +
+                sql = "UPDATE USER " +
                         "SET PaginationSize = :paginationsize, fName = :fname, lName = :lname " +
                         "WHERE Username = :username";
             }
@@ -93,9 +95,9 @@ public class UserDaoImpl implements UserDao {
 
             this.jdbcTemplate.update(sql, parameters);
 
-            logger.info("User: " + user.getUsername() + " changed their user photo");
+            logger.info("User: " + user.getUsername() + " changed their settings");
         } catch(DataAccessException e) {
-            logger.error("Unable to change user: " + user.getUsername() + " user photo");
+            logger.error("Unable to change user: " + user.getUsername() + " settings");
             throw e;
         }
     }

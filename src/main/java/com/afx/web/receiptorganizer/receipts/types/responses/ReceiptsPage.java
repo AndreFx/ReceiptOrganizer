@@ -5,7 +5,7 @@ import com.afx.web.receiptorganizer.types.responses.BaseResponse;
 
 import java.util.List;
 
-public class ReceiptsResponse extends BaseResponse {
+public class ReceiptsPage extends BaseResponse {
 
     /*
      * Private fields

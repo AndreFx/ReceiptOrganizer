@@ -6,36 +6,37 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.afx.web.receiptorganizer.dao.label.LabelDao;
 import com.afx.web.receiptorganizer.dao.user.UserDao;
-import com.afx.web.receiptorganizer.types.Label;
-import com.afx.web.receiptorganizer.types.Receipt;
 import com.afx.web.receiptorganizer.types.User;
+import com.afx.web.receiptorganizer.types.responses.BaseResponse;
 import com.afx.web.receiptorganizer.utilities.ImageThumbnailCreator;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@Controller
+@RestController
 @RequestMapping("users")
 @SessionAttributes("user")
 public class UserController {
@@ -58,10 +59,10 @@ public class UserController {
      */
 
     @Autowired
-    private LabelDao labelDao;
+    private UserDao userDao;
 
     @Autowired
-    private UserDao userDao;
+    private MessageSource messageSource;
 
     @Autowired
     private ServletContext context;
@@ -70,22 +71,23 @@ public class UserController {
      * Controller methods
      */
 
-    @RequestMapping(value = "/getUserPhoto", method = RequestMethod.GET)
-    public void getUserImage(@ModelAttribute("user") User user, @RequestParam("thumbnail") boolean scale,
-            HttpServletResponse response) {
+    @RequestMapping(value = "/image", method = RequestMethod.GET)
+    public void getUserImage(HttpServletResponse response, @ModelAttribute("user") User user, @RequestParam("thumbnail") boolean scale) {
 
         try {
             InputStream in;
 
             // Check if there is a user photo. If there is, there will also be a thumbnail.
-            if (user.getUserPhotoImage() != null) {
+            if (user.getUserPhoto() != null) {
                 if (scale) {
                     in = new ByteArrayInputStream(user.getUserPhotoThumbnail());
                     response.setContentLength(user.getUserPhotoThumbnail().length);
+                    response.setContentType(user.getUserPhotoThumbnailMIME());
                     logger.debug("Retrieved user thumbnail of: " + user.getUserPhotoThumbnail().length + " bytes");
                 } else {
-                    in = new ByteArrayInputStream(user.getUserPhotoImage());
-                    response.setContentLength(user.getUserPhotoImage().length);
+                    in = new ByteArrayInputStream(user.getUserPhoto());
+                    response.setContentLength(user.getUserPhoto().length);
+                    response.setContentType(user.getUserPhotoMIME());
                 }
             } else {
                 // No image scaling for this default photo, it is small enough to not matter.
@@ -97,9 +99,9 @@ public class UserController {
                 in = new ByteArrayInputStream(baos.toByteArray());
 
                 response.setContentLength(baos.toByteArray().length);
+                response.setContentType("image/png");
             }
 
-            response.setContentType("image/png");
             response.setHeader("content-Disposition", "inline; filename=" + user.getUsername() + "image.png");
             IOUtils.copy(in, response.getOutputStream());
             response.flushBuffer();
@@ -110,63 +112,59 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/settings/update", method = RequestMethod.POST)
-    public String changeUserSettings(@Valid @ModelAttribute("user") User user, BindingResult result,
-            RedirectAttributes ra) {
+    @RequestMapping(value = "/edit", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
+    public BaseResponse changeUserSettings(@Valid @RequestBody User user, Locale locale, BindingResult result) {
+        String message = "";
+        boolean success = false;
 
         if (!result.hasErrors()) {
             try {
                 // Create byte array for transfer to database.
-                if (user.getImage() != null && !user.getImage().isEmpty()) {
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    BufferedImage image = ImageIO.read(user.getImage().getInputStream());
-                    ImageIO.write(image, "png", outputStream);
-                    outputStream.flush();
-                    byte[] imageAsBytes = outputStream.toByteArray();
-                    outputStream.close();
-                    user.setUserPhotoImage(imageAsBytes);
+                if (user.getUserPhoto().length != 0) {
+                    InputStream imageAsStream = new ByteArrayInputStream(user.getUserPhoto());
+                    BufferedImage image = ImageIO.read(imageAsStream);
 
                     // Create byte array for thumbnail
                     long startTime = System.nanoTime();
-                    user.setUserPhotoThumbnail(
-                            ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_MAX_WIDTH));
+                    user.setUserPhotoThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_MAX_WIDTH));
+                    user.setUserPhotoThumbnailMIME("image/jpeg");
                     logger.debug("Set user thumbnail of: " + user.getUserPhotoThumbnail().length + " bytes");
                     long endTime = System.nanoTime();
                     long duration = (endTime - startTime) / 1000000;
-                    logger.debug("Time to scale user: " + user.getUsername() + " image of size: " + imageAsBytes.length
+                    logger.debug("Time to scale user: " + user.getUsername() + " image of size: " + user.getUserPhoto().length
                             + " into a thumbnail: " + duration + "ms");
                 }
 
                 this.userDao.changeUserSettings(user);
 
+                message = messageSource.getMessage("user.edit.success", null, locale);
+                success = true;
                 logger.debug("User: " + user.getUsername() + " successfully changed user settings");
             } catch (DataAccessException e) {
+                message = messageSource.getMessage("user.edit.failure.database", null, locale);
+                success = false;
                 logger.error("User: " + user.getUsername() + " failed to upload new user photo");
                 logger.error("Error description: " + e.getMessage());
                 throw e;
             } catch (IOException iox) {
+                message = messageSource.getMessage("user.edit.failure.invalidimage", null, locale);
+                success = false;
                 logger.error("Failed to convert user: " + user.getUsername() + " image for storage on database.");
                 throw new RuntimeException(iox.getMessage());
             }
         } else {
             // Shouldn't occur unless jquery validation is broken.
-            return "settings";
+            success = false;
+            message = messageSource.getMessage("user.edit.failure.invalid", null, locale);
         }
 
-        return "redirect:/receipts/";
+        return new BaseResponse(success, message);
     }
 
-    @RequestMapping(value = "/settings", method = RequestMethod.GET)
-    public String userSettings(@ModelAttribute("user") User user, ModelMap model) {
+    @RequestMapping(value = "/", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
+    public User userSettings(@SessionAttribute("user") User user, ModelMap model) {
         logger.debug("Serving user request for settings screen.");
 
-        // All user labels
-        List<Label> labels = this.labelDao.getAllUserLabels(user.getUsername());
-
-        model.addAttribute("userLabels", labels);
-        model.addAttribute("newReceipt", new Receipt());
-        model.addAttribute("newLabel", new Label());
-
-        return "settings";
+        return user;
     }
 }

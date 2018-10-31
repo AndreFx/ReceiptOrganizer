@@ -14,8 +14,11 @@ public class UserRowMapper implements RowMapper<User> {
         user.setfName(rs.getString("fName"));
         user.setlName(rs.getString("lName"));
         user.setPaginationSize(rs.getInt("PaginationSize"));
-        user.setUserPhotoImage(rs.getBytes("UserPhoto"));
+        user.setUserPhoto(rs.getBytes("UserPhoto"));
+        user.setUserPhotoFileName(rs.getString("UserPhotoFileName"));
+        user.setUserPhotoMIME(rs.getString("UserPhotoMIME"));
         user.setUserPhotoThumbnail(rs.getBytes("UserPhotoThumbnail"));
+        user.setUserPhotoThumbnailMIME(rs.getString("UserPhotoThumbnailMIME"));
         return user;
     }
 }

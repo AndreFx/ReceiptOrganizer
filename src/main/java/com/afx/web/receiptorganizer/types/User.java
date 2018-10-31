@@ -1,7 +1,5 @@
 package com.afx.web.receiptorganizer.types;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -25,9 +23,11 @@ public class User implements Serializable {
     @Max(value=25, message = "Page size must be between 5 and 25")
     private Integer paginationSize;
     private String username;
-    private MultipartFile image;
-    private byte[] userPhotoImage;
+    private byte[] userPhoto;
+    private String userPhotoFileName;
+    private String userPhotoMIME;
     private byte[] userPhotoThumbnail;
+    private String userPhotoThumbnailMIME;
 
     /*
     Getters and setters
@@ -73,20 +73,35 @@ public class User implements Serializable {
         this.paginationSize = paginationSize;
     }
 
-    public MultipartFile getImage() {
-        return image;
+    public String getUserPhotoMIME() {
+        return userPhotoMIME;
     }
 
-    public void setImage(MultipartFile image) {
-        this.image = image;
+    public void setUserPhotoMIME(String userPhotoMIME) {
+        this.userPhotoMIME = userPhotoMIME;
     }
 
-    public byte[] getUserPhotoImage() {
-        return userPhotoImage;
+    public byte[] getUserPhoto() {
+        return userPhoto;
     }
 
-    public void setUserPhotoImage(byte[] userPhotoImage) {
-        this.userPhotoImage = userPhotoImage;
+    public void setUserPhoto(byte[] userPhoto) {
+        this.userPhoto = userPhoto;
     }
 
+    public String getUserPhotoFileName() {
+        return userPhotoFileName;
+    }
+
+    public void setUserPhotoFileName(String userPhotoFileName) {
+        this.userPhotoFileName = userPhotoFileName;
+    }
+
+    public String getUserPhotoThumbnailMIME() {
+        return userPhotoThumbnailMIME;
+    }
+
+    public void setUserPhotoThumbnailMIME(String userPhotoThumbnailMIME) {
+        this.userPhotoThumbnailMIME = userPhotoThumbnailMIME;
+    }
 }

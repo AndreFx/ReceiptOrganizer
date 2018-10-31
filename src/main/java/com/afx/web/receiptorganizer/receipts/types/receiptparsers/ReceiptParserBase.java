@@ -60,6 +60,7 @@ public abstract class ReceiptParserBase implements ReceiptParser {
 
         image = ImageIO.read(imageAsStream);
         receipt.setThumbnail(ImageThumbnailCreator.createThumbnail(image, thumbnailHeight, thumbnailWidth));
+        receipt.setThumbnailMIME("image/jpeg");
 
         return receipt;
     }

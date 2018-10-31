@@ -15,11 +15,11 @@ public class ReceiptResponse extends BaseResponse {
      * Getters and setters
      */
 
-    public Receipt getReceipts() {
+    public Receipt getReceipt() {
         return receipt;
     }
 
-    public void setReceipts(Receipt receipt) {
+    public void setReceipt(Receipt receipt) {
         this.receipt = receipt;
     }
 }

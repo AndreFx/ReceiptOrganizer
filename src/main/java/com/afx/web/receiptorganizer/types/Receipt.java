@@ -7,13 +7,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Receipt {
+public class Receipt extends ReceiptFile {
 
     /*
     Private fields
      */
 
-    private Integer id;
     @Size(max = 50)
     private String title;
     private Date date;
@@ -23,15 +22,9 @@ public class Receipt {
     private String description;
     @Size(max = 50)
     private String vendor;
-    private String[] labels;
+    private List<Label> labels;
     @Valid
     private List<ReceiptItem> items = new ArrayList<>();
-    private byte[] file;
-    private byte[] originalFile;
-    private byte[] thumbnail;
-    private String MIME;
-    private String originalMIME;
-    private String fileName;
 
     /*
     Constructors
@@ -103,67 +96,11 @@ public class Receipt {
         this.vendor = vendor;
     }
 
-    public byte[] getFile() {
-        return file;
-    }
-
-    public void setFile(byte[] file) {
-        this.file = file;
-    }
-
-    public byte[] getOriginalFile() {
-        return originalFile;
-    }
-
-    public void setOriginalFile(byte[] originalFile) {
-        this.originalFile = originalFile;
-    }
-
-    public byte[] getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(byte[] thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    public String getMIME() {
-        return MIME;
-    }
-
-    public void setMIME(String MIME) {
-        this.MIME = MIME;
-    }
-
-    public String getOriginalMIME() {
-        return originalMIME;
-    }
-
-    public void setOriginalMIME(String originalMIME) {
-        this.originalMIME = originalMIME;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String[] getLabels() {
+    public List<Label> getLabels() {
         return labels;
     }
 
-    public void setLabels(String[] labels) {
+    public void setLabels(List<Label> labels) {
         this.labels = labels;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 }

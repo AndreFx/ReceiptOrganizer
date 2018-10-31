@@ -13,12 +13,11 @@ public class ReceiptRowMapper implements RowMapper<Receipt> {
         receipt.setId(rs.getInt("ReceiptId"));
         receipt.setTitle(rs.getString("Title"));
         receipt.setDescription(rs.getString("Description"));
+        receipt.setVendor(rs.getString("Vendor"));
         receipt.setDate(rs.getDate("Date"));
         receipt.setTax(rs.getBigDecimal("Tax"));
         receipt.setTotal(rs.getBigDecimal("Total"));
         receipt.setFileName(rs.getString("OriginalFileName"));
-        receipt.setFile(rs.getBytes("FullImage"));
-        receipt.setMIME(rs.getString("OriginalFileMIME"));
         return receipt;
     }
 }
