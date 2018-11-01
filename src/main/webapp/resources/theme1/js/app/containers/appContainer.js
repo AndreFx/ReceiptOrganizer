@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import OrganizerApp from '../components/organizerApp';
 import { processSnackbarQueue, finishCurrentSnackbar } from '../actions/ui/snackbar/snackbarActions';
 import { updateActiveLabels } from '../actions/receipts/receiptsActions';
+import { fetchUser } from '../actions/user/userActions';
 
 function mapStateToProps(state) {
     return {
@@ -16,7 +17,8 @@ function mapStateToProps(state) {
         query: state.ui.query,
         currentReceiptPage: state.ui.currentReceiptPage,
         csrfHeaderName: state.csrf.csrfheadername,
-        csrfToken: state.csrf.csrftoken
+        csrfToken: state.csrf.csrftoken,
+        user: state.user
     };
 }
 
@@ -30,6 +32,9 @@ function mapDispatchToProps(dispatch) {
         },
         updateActiveLabels: (action, label, newLabel, query, activeLabels, currentPage, csrfHeaderName, csrfToken) => {
             return dispatch(updateActiveLabels(action, label, newLabel, query, activeLabels, currentPage, csrfHeaderName, csrfToken));
+        },
+        fetchUser: () => {
+            return dispatch(fetchUser());
         }
     }
 }

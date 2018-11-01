@@ -6,14 +6,15 @@ import { openDialog, closeDialog } from '../actions/ui/dialog/dialogActions';
 import LabelList from '../components/labels/labelList';
 import { updateActiveLabels } from '../actions/receipts/receiptsActions';
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
     return {
         csrfHeaderName: state.csrf.csrfheadername,
         csrfToken: state.csrf.csrftoken,
         labels: state.labels.items,
         activeLabels: state.activeLabels.items,
         query: state.ui.query,
-        currentReceiptPage: state.ui.currentReceiptPage
+        currentReceiptPage: state.ui.currentReceiptPage,
+        drawerOpen: ownProps.drawerOpen
     };
 }
 

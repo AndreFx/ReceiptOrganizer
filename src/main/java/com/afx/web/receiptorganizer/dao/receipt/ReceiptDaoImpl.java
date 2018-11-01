@@ -322,8 +322,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
                 .addValue("searchQuery", searchQuery)
                 .addValue("startrow", start)
                 .addValue("numrows", numRows)
-                .addValue("labelNames", labelNames)
-                .addValue("labelNamesLength", labelNames.size());
+                .addValue("labelnames", labelNames)
+                .addValue("labelnameslength", labelNames.size());
 
             String sqlQuery = "SELECT TOP_RECEIPTS.ReceiptId, LabelName, Title, Vendor, Description, OriginalFileName, Date, Tax, Total, ItemNumber, Name, Quantity, UnitPrice, WarrantyLength, WarrantyLengthUnit, ReceiptCount " +
                     "FROM (SELECT DISTINCT RECEIPT.ReceiptId, LabelName, Title, Vendor, Description, OriginalFileName, Date, Tax, Total, ReceiptCount = COUNT(*) OVER() " +
@@ -334,8 +334,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
                     "                    ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
                     "                    LEFT OUTER JOIN RECEIPT_ITEM " +
                     "                    ON RECEIPT.ReceiptId = RECEIPT_ITEM.ReceiptId " +
-                    "                    WHERE Username = :username AND (COALESCE(RECEIPT.Title, '<NULL>') LIKE :searchQuery OR COALESCE(RECEIPT_ITEM.Name, '<NULL>') LIKE :query) AND RECEIPT.Title LIKE :searchQuery OR RECEIPT_ITEM.Name LIKE :query " +
-                    "                    GROUP BY RECEIPT.ReceiptId, Title, Vendor, Description, OriginalFileName, Date, Tax, Total " +
+                    "                    WHERE USER_RECEIPTS.Username = :username AND (COALESCE(RECEIPT.Title, '<NULL>') LIKE :searchQuery OR COALESCE(RECEIPT_ITEM.Name, '<NULL>') LIKE :searchQuery) AND RECEIPT.Title LIKE :searchQuery OR RECEIPT_ITEM.Name LIKE :searchQuery " +
+                    "                    GROUP BY RECEIPT.ReceiptId, Title, LabelName, Vendor, Description, OriginalFileName, Date, Tax, Total " +
                     "                    HAVING SUM(" +
                     "                    CASE " +
                     "                       WHEN LabelName IN (:labelnames) OR 'All Receipts' IN (:labelnames) THEN 1 " +
@@ -350,7 +350,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
 
             receiptsPage = this.jdbcTemplate.query(sqlQuery, parameters, new ReceiptsPageResultSetExtractor());
         } catch(DataAccessException e) {
-            logger.error("Unable to search database for searchString: " + e.getMessage());
+            logger.error("Unable to fetch user receipts from the database: " + e.getMessage());
             throw e;
         }
 

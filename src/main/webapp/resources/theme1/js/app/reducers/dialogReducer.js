@@ -9,7 +9,7 @@ export const DIALOG_INITIAL_STATE = {
     options: null
 };
 
-function dialogReducer(state = initialState, action) {
+function dialogReducer(state, action) {
     switch(action.type) {
         case CLOSE_DIALOG:
             return Object.assign({}, state, {

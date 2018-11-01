@@ -125,7 +125,6 @@ public class ReceiptController {
             @RequestParam(required = false) List<String> activeLabelNames,
             @RequestParam(required = false) Integer pageNum) {
         logger.debug("Serving user: " + user.getUsername() + " request for receipts");
-        List<Receipt> receipts = null;
 
         if (activeLabelNames == null) {
             activeLabelNames = new ArrayList<String>();
@@ -139,10 +138,10 @@ public class ReceiptController {
 
         ReceiptsPage response = this.receiptDao.getRangeUserReceipts(user.getUsername(), query, activeLabelNames, user.getPaginationSize() * pageNum, user.getPaginationSize());
 
-        response.setReceipts(receipts);
+        response.setReceipts(response.getReceipts());
         response.setSuccess(true);
         response.setMessage(messageSource.getMessage("receipt.index.success", null, locale));
-        response.setNumPages((int) Math.ceil(response.getTotalNumReceipts() / (float) user.getPaginationSize()));
+        response.setNumPages(response.getTotalNumReceipts() == null ? 0 : (int) Math.ceil(response.getTotalNumReceipts() / (float) user.getPaginationSize()));
 
         return response;
     }

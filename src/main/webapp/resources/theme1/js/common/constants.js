@@ -43,6 +43,11 @@ export const EDIT_ACTIVE_LABEL = 'EDIT';
 export const DIALOG_CANCEL = 'Exit';
 export const DIALOG_SUBMIT = 'Submit';
 
+//User defaults
+export const DEFAULT_USERNAME = 'Unknown Username';
+export const DEFAULT_FNAME = 'Missing';
+export const DEFAULT_LNAME = 'Name';
+
 //Snackbar Constants
 
 /* Default snackbar location */
@@ -68,8 +73,10 @@ export const CONTENT_TYPE_JSON = 'application/json';
 
 /* URLS */
 export const LOGOUT_URL = '/ReceiptOrganizer/logout';
-export const SEARCH_URL = '/ReceiptOrganizer/receipts';
-export const SETTINGS_URL = '/ReceiptOrganizer/users/settings';
+
+/* User */
+export const USER_THUMBNAIL_URL = '/ReceiptOrganizer/users/image?thumbnail=true';
+export const GET_USER_URL = '/ReceiptOrganizer/users/';
 
 /* Labels */
 export const GET_LABELS_URL = '/ReceiptOrganizer/labels/';

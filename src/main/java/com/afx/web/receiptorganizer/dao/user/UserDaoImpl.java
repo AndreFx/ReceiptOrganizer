@@ -40,7 +40,7 @@ public class UserDaoImpl implements UserDao {
         try {
             SqlParameterSource parameters = new MapSqlParameterSource("username", username);
             String query = "SELECT * " +
-                    "FROM USER " +
+                    "FROM [USER] " +
                     "WHERE Username = :username";
             user = this.jdbcTemplate.queryForObject(query, parameters, new UserRowMapper());
         } catch (DataAccessException e) {
@@ -59,7 +59,7 @@ public class UserDaoImpl implements UserDao {
             parameters.put("lName", user.getlName());
             parameters.put("paginationsize", user.getPaginationSize());
 
-            String sql = "INSERT INTO USER " +
+            String sql = "INSERT INTO [USER] " +
                     "VALUES (:username, :fName, :lName, :paginationsize, NULL, NULL, NULL, NULL, NULL)";
             this.jdbcTemplate.update(sql, parameters);
 
@@ -80,11 +80,11 @@ public class UserDaoImpl implements UserDao {
                 parameters.put("userimagemime", user.getUserPhotoMIME());
                 parameters.put("userthumbnail", user.getUserPhotoThumbnail());
                 parameters.put("userthumbnailmime", user.getUserPhotoThumbnailMIME());
-                sql = "UPDATE USER " +
+                sql = "UPDATE [USER] " +
                         "SET UserPhoto = :userimage, PaginationSize = :paginationsize, fName = :fname, lName = :lname, UserPhotoThumbnail = :userthumbnail, UserPhotoMIME = :userimagemime, UserPhotoThumbnailMIME = :userthumbnailmime " +
                         "WHERE Username = :username";
             } else {
-                sql = "UPDATE USER " +
+                sql = "UPDATE [USER] " +
                         "SET PaginationSize = :paginationsize, fName = :fname, lName = :lname " +
                         "WHERE Username = :username";
             }

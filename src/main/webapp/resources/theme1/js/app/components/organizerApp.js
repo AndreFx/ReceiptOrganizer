@@ -19,7 +19,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 //Custom imports
-import { DRAWER_WIDTH, SNACKBAR_VERTICAL, SNACKBAR_HORIZONTAL, SNACKBAR_AUTOHIDE_DURATION_DEFAULT } from '../../common/constants';
+import { DRAWER_WIDTH, SNACKBAR_VERTICAL, SNACKBAR_HORIZONTAL, SNACKBAR_AUTOHIDE_DURATION_DEFAULT, USER_THUMBNAIL_URL } from '../../common/constants';
 import LinearIndeterminate from './loading/linearIndeterminate';
 import NavContainer from '../containers/navContainer';
 import LabelListContainer from '../containers/labelListContainer';
@@ -27,6 +27,7 @@ import CreateLabelListContainer from '../containers/createLabelButtonWrapperCont
 import SnackbarContentWrapper from './snackbar/snackbarContentWrapper';
 import DialogWrapper from './dialog/dialogWrapper';
 import ReceiptViewOptionBar from './content/receiptViewOptionBar';
+import { Avatar } from '@material-ui/core';
 
 const styles = theme => ({
     root: {
@@ -85,15 +86,23 @@ const styles = theme => ({
     toolbar: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         padding: '0 8px',
         ...theme.mixins.toolbar,
+    },
+    toolbarUserInfo: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
     },
     extendedIcon: {
         marginRight: theme.spacing.unit,
     },
     loading: {
-        height: '98vh'
+        height: '98vh',
+    },
+    avatar: {
+        margin: 5,
     }
 });
 
@@ -137,6 +146,10 @@ class OrganizerApp extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.props.fetchUser();
+    }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.currentSnackbar && this.props.currentSnackbar !== this.state.lastSnackbar) {
             //Keep last snackbar so we don't lose it while closing a snackbar
@@ -149,6 +162,7 @@ class OrganizerApp extends React.Component {
             classes, 
             theme, 
             //isLoading, 
+            user,
             currentSnackbar, 
             snackbarOpen, 
             dialog, 
@@ -188,6 +202,12 @@ class OrganizerApp extends React.Component {
                         open={this.state.open}
                     >
                         <div className={classes.toolbar}>
+                            <div className={classes.toolbarUserInfo}>
+                                <Avatar alt="User Avatar" src={USER_THUMBNAIL_URL} className={classes.avatar} />
+                                <Typography variant="subtitle1" >
+                                    {user && user.username}
+                                </Typography>
+                            </div>
                             <IconButton onClick={this.handleDrawerClose}>
                                 {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                             </IconButton>
@@ -202,7 +222,7 @@ class OrganizerApp extends React.Component {
                             </ListItem>
                         </List>
                         <Divider />
-                        <LabelListContainer />
+                        <LabelListContainer drawerOpen={this.state.open} />
                         <Divider />
                         <CreateLabelListContainer />
                     </Drawer>
@@ -264,7 +284,8 @@ OrganizerApp.propTypes = {
     processSnackbarQueue: PropTypes.func.isRequired,
     finishCurrentSnackbar: PropTypes.func.isRequired,
     dialog: PropTypes.object.isRequired,
-    updateActiveLabels: PropTypes.func.isRequired
+    updateActiveLabels: PropTypes.func.isRequired,
+    fetchUser: PropTypes.func.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(OrganizerApp);

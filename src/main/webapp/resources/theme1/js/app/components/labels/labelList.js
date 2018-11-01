@@ -16,7 +16,7 @@ class LabelList extends React.Component {
     }
 
     render () {
-        const { labels, deleteLabel, editLabel, csrfToken, csrfHeaderName, openDialog, closeDialog, updateActiveLabels, activeLabels, query, currentReceiptPage } = this.props;
+        const { labels, deleteLabel, editLabel, csrfToken, csrfHeaderName, openDialog, closeDialog, updateActiveLabels, activeLabels, query, currentReceiptPage, drawerOpen } = this.props;
 
         return (
             <List>
@@ -25,7 +25,6 @@ class LabelList extends React.Component {
                         <Label 
                             key={l.name} 
                             label={l} 
-                            num={ind} 
                             csrfHeaderName={csrfHeaderName}
                             csrfToken={csrfToken}
                             deleteLabel={deleteLabel}
@@ -36,6 +35,7 @@ class LabelList extends React.Component {
                             activeLabels={activeLabels}
                             query={query}
                             currentReceiptPage={currentReceiptPage}
+                            drawerOpen={drawerOpen}
                         />
                     )
                 }
@@ -55,7 +55,8 @@ LabelList.propTypes = {
     fetchLabels: PropTypes.func.isRequired,
     deleteLabel: PropTypes.func.isRequired,
     editLabel: PropTypes.func.isRequired,
-    updateActiveLabels: PropTypes.func.isRequired
+    updateActiveLabels: PropTypes.func.isRequired,
+    drawerOpen: PropTypes.bool.isRequired
 };
 
 export default LabelList;

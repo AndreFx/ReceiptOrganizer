@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import com.afx.web.receiptorganizer.dao.user.UserDao;
 import com.afx.web.receiptorganizer.types.User;
 import com.afx.web.receiptorganizer.types.responses.BaseResponse;
+import com.afx.web.receiptorganizer.users.types.responses.UserResponse;
 import com.afx.web.receiptorganizer.utilities.ImageThumbnailCreator;
 
 import org.apache.commons.io.IOUtils;
@@ -25,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.MediaType;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -162,9 +162,14 @@ public class UserController {
     }
 
     @RequestMapping(value = "/", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
-    public User userSettings(@SessionAttribute("user") User user, ModelMap model) {
-        logger.debug("Serving user request for settings screen.");
+    public UserResponse show(@SessionAttribute("user") User user, Locale locale) {
+        logger.debug("Serving request for user data");
 
-        return user;
+        UserResponse response = new UserResponse();
+        response.setUser(user);
+        response.setSuccess(true);
+        response.setMessage(messageSource.getMessage("user.show.success", null, locale));
+
+        return response;
     }
 }
