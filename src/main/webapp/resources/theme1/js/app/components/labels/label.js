@@ -4,6 +4,7 @@ import _ from 'lodash';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ReceiptIcon from '@material-ui/icons/Receipt';
@@ -31,7 +32,6 @@ import {
     REMOVE_ACTIVE_LABEL,
     EDIT_ACTIVE_LABEL
 } from '../../../common/constants';
-import { ListItemSecondaryAction } from '@material-ui/core';
 
 class Label extends React.Component {
     constructor(props) {
@@ -184,7 +184,7 @@ class Label extends React.Component {
     }
 
     render() {
-        const { label, drawerOpen } = this.props;
+        const { label, drawerOpen, listItemClassName } = this.props;
         const { anchorEl } = this.state;
         const open = Boolean(anchorEl);
 
@@ -192,6 +192,7 @@ class Label extends React.Component {
             <ListItem 
                 button
                 onClick={this.handleItemClick}
+                className={listItemClassName}
             >
                 <ListItemIcon>
                     <ReceiptIcon />

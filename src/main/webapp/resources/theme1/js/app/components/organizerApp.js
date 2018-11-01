@@ -4,30 +4,18 @@ import classNames from 'classnames';
 import _ from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
-import Divider from '@material-ui/core/Divider';
 import Snackbar from '@material-ui/core/Snackbar';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import EditIcon from '@material-ui/icons/Edit';
-import CategoryIcon from '@material-ui/icons/Category'
-import IconButton from '@material-ui/core/IconButton';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 //Custom imports
-import { DRAWER_WIDTH, SNACKBAR_VERTICAL, SNACKBAR_HORIZONTAL, SNACKBAR_AUTOHIDE_DURATION_DEFAULT, USER_THUMBNAIL_URL } from '../../common/constants';
+import { DRAWER_WIDTH, SNACKBAR_VERTICAL, SNACKBAR_HORIZONTAL, SNACKBAR_AUTOHIDE_DURATION_DEFAULT } from '../../common/constants';
 import LinearIndeterminate from './loading/linearIndeterminate';
-import NavContainer from '../containers/navContainer';
-import LabelListContainer from '../containers/labelListContainer';
-import CreateLabelListContainer from '../containers/createLabelButtonWrapperContainer';
-import SnackbarContentWrapper from './snackbar/snackbarContentWrapper';
-import DialogWrapper from './dialog/dialogWrapper';
-import ReceiptViewOptionBar from './content/receiptViewOptionBar';
-import { Avatar } from '@material-ui/core';
+import NavContainer from '../containers/navigation/NavContainer';
+import SnackbarContentWrapper from './snackbar/SnackbarContentWrapper';
+import ContentWrapperContainer from '../containers/content/ContentWrapperContainer';
+import DrawerContentWrapperContainer from '../containers/drawer/DrawerContentWrapperContainer';
+import DialogWrapperContainer from '../containers/dialog/DialogWrapperContainer';
 
 const styles = theme => ({
     root: {
@@ -83,29 +71,15 @@ const styles = theme => ({
             width: theme.spacing.unit * 9,
         },
     },
-    toolbar: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 8px',
-        ...theme.mixins.toolbar,
-    },
-    toolbarUserInfo: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
     extendedIcon: {
         marginRight: theme.spacing.unit,
     },
     loading: {
         height: '98vh',
-    },
-    avatar: {
-        margin: 5,
     }
 });
 
+//Handles the composition of the application as well as drawer state changes and the snackbar
 class OrganizerApp extends React.Component {
 
     constructor(props) {
@@ -119,8 +93,6 @@ class OrganizerApp extends React.Component {
         this.handleDrawerClose = this.handleDrawerClose.bind(this);
         this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
         this.handleSnackbarExited = this.handleSnackbarExited.bind(this);
-
-        this.lastSnackbar = {};
     }
 
     handleDrawerOpen() {
@@ -146,44 +118,15 @@ class OrganizerApp extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this.props.fetchUser();
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.currentSnackbar && this.props.currentSnackbar !== this.state.lastSnackbar) {
-            //Keep last snackbar so we don't lose it while closing a snackbar
-            
-        }
-    }
-
     render() {
-        const { 
-            classes, 
-            theme, 
-            //isLoading, 
-            user,
-            currentSnackbar, 
-            snackbarOpen, 
-            dialog, 
-            updateActiveLabels,
-            currentReceiptPage, 
-            activeLabels, 
-            query,
-            csrfHeaderName, 
-            csrfToken
+        const {
+            classes,
+            currentSnackbar,
+            snackbarOpen,
         } = this.props;
         let autohideDuration = SNACKBAR_AUTOHIDE_DURATION_DEFAULT;
-        let adjustedSnackbar = {};
-        let isLoading = false; //TODO: Reimplement the loading bar to be less annoying
-
-        //lastSnackbar gets set on close, so when lastSnackbar and currentSnackbar aren't equal,
-        //we need to hold onto the lastSnackbar while closing
-        if (!open && !_.isEqual(this.lastSnackbar, currentSnackbar)) {
-            adjustedSnackbar = this.lastSnackbar;
-        } else {
-            adjustedSnackbar = currentSnackbar;
-        }
+        let isLoading = false; 
+        //TODO: Reimplement the loading system to be less annoying and messy
 
         if (currentSnackbar) {
             autohideDuration = currentSnackbar.autohideDuration;
@@ -201,42 +144,9 @@ class OrganizerApp extends React.Component {
                         }}
                         open={this.state.open}
                     >
-                        <div className={classes.toolbar}>
-                            <div className={classes.toolbarUserInfo}>
-                                <Avatar alt="User Avatar" src={USER_THUMBNAIL_URL} className={classes.avatar} />
-                                <Typography variant="subtitle1" >
-                                    {user && user.username}
-                                </Typography>
-                            </div>
-                            <IconButton onClick={this.handleDrawerClose}>
-                                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                            </IconButton>
-                        </div>
-                        <Divider />
-                        <List>
-                            <ListItem>
-                                <ListItemIcon>
-                                    <CategoryIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Categories" />
-                            </ListItem>
-                        </List>
-                        <Divider />
-                        <LabelListContainer drawerOpen={this.state.open} />
-                        <Divider />
-                        <CreateLabelListContainer />
+                        <DrawerContentWrapperContainer handleDrawerClose={this.handleDrawerClose} drawerOpen={this.state.open} />
                     </Drawer>
-                    <main className={classes.content}>
-                        <div className={classes.toolbar} />
-                        <ReceiptViewOptionBar
-                            activeLabels={activeLabels}
-                            csrfHeaderName={csrfHeaderName}
-                            csrfToken={csrfToken}
-                            updateActiveLabels={updateActiveLabels}
-                            query={query}
-                            currentReceiptPage={currentReceiptPage}
-                        />
-                    </main>
+                    <ContentWrapperContainer />
                     <Button variant="extendedFab" aria-label="Add" className={classes.fab} color="primary">
                         <EditIcon className={classes.extendedIcon} />
                         Add Receipt
@@ -247,30 +157,23 @@ class OrganizerApp extends React.Component {
                             horizontal: SNACKBAR_HORIZONTAL
                         }}
                         open={snackbarOpen}
-                        autoHideDuration={adjustedSnackbar ? autohideDuration : null}
+                        autoHideDuration={currentSnackbar ? autohideDuration : null}
                         onClose={this.handleSnackbarClose}
                         onExited={this.handleSnackbarExited}
                     >
                         {
-                            adjustedSnackbar &&
+                            currentSnackbar &&
                             <SnackbarContentWrapper
                                 onClose={this.handleSnackbarClose}
-                                variant={adjustedSnackbar.variant}
-                                message={adjustedSnackbar.msg}
-                                actions={adjustedSnackbar.actions}
-                                handlers={adjustedSnackbar.handlers}
-                                handlerParams={adjustedSnackbar.handlerParams}
+                                variant={currentSnackbar.variant}
+                                message={currentSnackbar.msg}
+                                actions={currentSnackbar.actions}
+                                handlers={currentSnackbar.handlers}
+                                handlerParams={currentSnackbar.handlerParams}
                             />
                         }
                     </Snackbar >
-                    <DialogWrapper 
-                        isLoading={isLoading}
-                        open={dialog.open}  
-                        title={dialog.title}
-                        close={dialog.close}
-                        submit={dialog.submit}
-                        options={dialog.options}
-                    />
+                    <DialogWrapperContainer />
                 </div>
             </div>
         );
@@ -281,11 +184,9 @@ OrganizerApp.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
     isLoading: PropTypes.bool.isRequired,
+    currentSnackbar: PropTypes.object,
     processSnackbarQueue: PropTypes.func.isRequired,
     finishCurrentSnackbar: PropTypes.func.isRequired,
-    dialog: PropTypes.object.isRequired,
-    updateActiveLabels: PropTypes.func.isRequired,
-    fetchUser: PropTypes.func.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(OrganizerApp);

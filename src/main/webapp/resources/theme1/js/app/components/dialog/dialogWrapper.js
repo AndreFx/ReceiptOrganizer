@@ -31,7 +31,7 @@ class DialogWrapper extends React.Component {
             inputVals: {}
         });
         this.textFieldRefs = [];
-        this.props.close();
+        this.props.dialog.close();
     };
 
     handleUserInput() {
@@ -78,24 +78,24 @@ class DialogWrapper extends React.Component {
                 finalVals[el.props.id] = el.props.defaultValue;
             }
         });
-        this.props.submit(finalVals);
+        this.props.dialog.submit(finalVals);
         this.handleClose();
     }
 
     render() {
-        const { isLoading, open, title, options } = this.props;
+        const { isLoading, dialog } = this.props;
         let self = this;
-        let mOptions = options ? options : {};
+        let mOptions = dialog.options ? dialog.options : {};
 
         return (
             <Dialog
-                open={open}
+                open={dialog.open}
                 onClose={this.handleClose}
                 disableBackdropClick={isLoading}
                 disableEscapeKeyDown={isLoading}
                 aria-labelledby="form-dialog-title"
             >
-                <DialogTitle id="form-dialog-title">{title}</DialogTitle>
+                <DialogTitle id="form-dialog-title">{dialog.title}</DialogTitle>
                     <DialogContent>
                         {mOptions.dialogText && <DialogContentText>{mOptions.dialogText}</DialogContentText>}
                         {
@@ -106,7 +106,7 @@ class DialogWrapper extends React.Component {
                                         <TextField
                                             autoFocus
                                             margin="dense"
-                                            key={el.label.name}
+                                            key={el.label + ind}
                                             id={el.label.replace(/\s/g,'')}
                                             label={el.label}
                                             type="text"
@@ -123,7 +123,7 @@ class DialogWrapper extends React.Component {
                                         <TextField
                                             autoFocus
                                             margin="dense"
-                                            key={el.label.name}
+                                            key={el.label + ind}
                                             id={"dialogTextField" + ind}
                                             label={el.label}
                                             type="text"
@@ -153,7 +153,7 @@ class DialogWrapper extends React.Component {
 
 DialogWrapper.propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    open: PropTypes.bool.isRequired
+    dialog: PropTypes.object.isRequired
 };
 
 export default DialogWrapper;

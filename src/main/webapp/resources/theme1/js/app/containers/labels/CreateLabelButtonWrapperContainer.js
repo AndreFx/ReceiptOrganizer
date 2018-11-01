@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 
 //Custom imports
-import { addLabel } from '../actions/labels/labelListActions';
-import { openDialog, closeDialog } from '../actions/ui/dialog/dialogActions';
-import createLabelButtonWrapper from '../components/labels/createLabelButtonWrapper';
+import { addLabel } from '../../actions/labels/labelListActions';
+import { openDialog, closeDialog } from '../../actions/ui/dialog/dialogActions';
+import CreateLabelButtonWrapper from '../../components/labels/CreateLabelButtonWrapper';
 
 function mapStateToProps(state) {
     return {
@@ -27,4 +27,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps) (createLabelButtonWrapper);
+export default connect(mapStateToProps, mapDispatchToProps) (CreateLabelButtonWrapper);

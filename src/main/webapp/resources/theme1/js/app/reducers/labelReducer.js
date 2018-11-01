@@ -26,10 +26,16 @@ function labels(state = {
 ) {
     switch (action.type) {
         case RECEIVE_LABELS:
-            return Object.assign({}, state, {
-                isLoading: false,
-                items: action.labels
-            });
+            if (action.success) {
+                return Object.assign({}, state, {
+                    isLoading: false,
+                    items: action.labels
+                });
+            } else {
+                return Object.assign({}, state, {
+                    isLoading: false
+                });
+            }
         case RECEIVE_ADD_LABEL:
             if (action.success) {
                 return Object.assign({}, state, {

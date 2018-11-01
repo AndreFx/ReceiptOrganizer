@@ -1,10 +1,8 @@
 import { connect } from 'react-redux';
 
 //Custom imports
-import OrganizerApp from '../components/organizerApp';
+import OrganizerApp from '../components/OrganizerApp';
 import { processSnackbarQueue, finishCurrentSnackbar } from '../actions/ui/snackbar/snackbarActions';
-import { updateActiveLabels } from '../actions/receipts/receiptsActions';
-import { fetchUser } from '../actions/user/userActions';
 
 function mapStateToProps(state) {
     return {
@@ -12,13 +10,6 @@ function mapStateToProps(state) {
         currentSnackbar: state.ui.snackbar.currentSnackbar,
         snackbarOpen: state.ui.snackbar.snackbarOpen,
         snackbarQueueLength: state.ui.snackbar.snackbarQueue.length,
-        dialog: state.ui.dialog,
-        activeLabels: state.activeLabels.items,
-        query: state.ui.query,
-        currentReceiptPage: state.ui.currentReceiptPage,
-        csrfHeaderName: state.csrf.csrfheadername,
-        csrfToken: state.csrf.csrftoken,
-        user: state.user
     };
 }
 
@@ -29,12 +20,6 @@ function mapDispatchToProps(dispatch) {
         },
         finishCurrentSnackbar: () => {
             dispatch(finishCurrentSnackbar());
-        },
-        updateActiveLabels: (action, label, newLabel, query, activeLabels, currentPage, csrfHeaderName, csrfToken) => {
-            return dispatch(updateActiveLabels(action, label, newLabel, query, activeLabels, currentPage, csrfHeaderName, csrfToken));
-        },
-        fetchUser: () => {
-            return dispatch(fetchUser());
         }
     }
 }

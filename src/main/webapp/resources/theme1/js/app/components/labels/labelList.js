@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import List from '@material-ui/core/List';
 
 //Custom Imports
-import Label from './label';
+import Label from './Label';
 
 class LabelList extends React.Component {
 
@@ -16,7 +16,21 @@ class LabelList extends React.Component {
     }
 
     render () {
-        const { labels, deleteLabel, editLabel, csrfToken, csrfHeaderName, openDialog, closeDialog, updateActiveLabels, activeLabels, query, currentReceiptPage, drawerOpen } = this.props;
+        const { 
+            labels, 
+            deleteLabel, 
+            editLabel, 
+            csrfToken, 
+            csrfHeaderName, 
+            openDialog, 
+            closeDialog, 
+            updateActiveLabels, 
+            activeLabels, 
+            query, 
+            currentReceiptPage, 
+            drawerOpen,
+            listItemClassName
+        } = this.props;
 
         return (
             <List>
@@ -36,6 +50,7 @@ class LabelList extends React.Component {
                             query={query}
                             currentReceiptPage={currentReceiptPage}
                             drawerOpen={drawerOpen}
+                            listItemClassName={listItemClassName}
                         />
                     )
                 }

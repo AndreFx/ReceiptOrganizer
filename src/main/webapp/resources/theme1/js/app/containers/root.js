@@ -8,7 +8,7 @@ import red from '@material-ui/core/colors/red';
 
 //Custom imports
 import rootReducer from '../reducers/indexReducer';
-import AppContainer from '../containers/appContainer';
+import AppContainer from './AppContainer';
 
 const loggerMiddleware = createLogger();
 //TODO: Don't love this being here

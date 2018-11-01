@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
 
 //Custom imports
-import { fetchLabels, deleteLabel, editLabel } from '../actions/labels/labelListActions';
-import { openDialog, closeDialog } from '../actions/ui/dialog/dialogActions';
-import LabelList from '../components/labels/labelList';
-import { updateActiveLabels } from '../actions/receipts/receiptsActions';
+import { fetchLabels, deleteLabel, editLabel } from '../../actions/labels/labelListActions';
+import { openDialog, closeDialog } from '../../actions/ui/dialog/dialogActions';
+import LabelList from '../../components/labels/LabelList';
+import { updateActiveLabels } from '../../actions/receipts/receiptsActions';
 
 function mapStateToProps(state, ownProps) {
     return {
@@ -14,7 +14,8 @@ function mapStateToProps(state, ownProps) {
         activeLabels: state.activeLabels.items,
         query: state.ui.query,
         currentReceiptPage: state.ui.currentReceiptPage,
-        drawerOpen: ownProps.drawerOpen
+        drawerOpen: ownProps.drawerOpen,
+        listItemClassName: ownProps.listItemClassName
     };
 }
 

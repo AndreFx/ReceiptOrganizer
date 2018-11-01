@@ -8,7 +8,8 @@ import {
     SERVER_ERROR,
     ERROR_SNACKBAR,
     EDIT_ACTIVE_LABEL,
-    CONTENT_TYPE_JSON
+    CONTENT_TYPE_JSON,
+    SNACKBAR_AUTOHIDE_DURATION_DEFAULT
 } from '../../../common/constants';
 import {
     requestAddActiveLabel,
@@ -19,7 +20,7 @@ import {
     receiveEditActiveLabel
 } from './activeLabelsActions';
 import { addSnackbar } from '../ui/snackbar/snackbarActions';
-import { checkResponseStatus, serialize } from '../../utils/fetchUtils';
+import { checkResponseStatus } from '../../utils/fetchUtils';
 
 export function updateActiveLabels(action, label, newLabel, query, activeLabels, currentPage, csrfHeaderName, csrfToken) {
     return function (dispatch) {
@@ -96,7 +97,8 @@ export function updateActiveLabels(action, label, newLabel, query, activeLabels,
                 variant: ERROR_SNACKBAR,
                 actions: [],
                 handlers: [],
-                handlerParams: []
+                handlerParams: [],
+                autohideDuration: SNACKBAR_AUTOHIDE_DURATION_DEFAULT
             };
 
             if (action !== EDIT_ACTIVE_LABEL) {
