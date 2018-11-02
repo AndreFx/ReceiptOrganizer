@@ -7,8 +7,10 @@ import { fetchUser } from '../../actions/user/userActions';
 function mapStateToProps(state, ownProps) {
     return {
         username: state.user.username,
+        isLabelsInitializing: state.labels.isInitializing,
+        isUserInitializing: state.user.isInitializing,
         handleDrawerClose: ownProps.handleDrawerClose,
-        drawerOpen: ownProps.drawerOpen
+        drawerOpen: ownProps.drawerOpen,
     };
 }
 

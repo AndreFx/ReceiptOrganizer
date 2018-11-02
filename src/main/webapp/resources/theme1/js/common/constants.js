@@ -2,7 +2,23 @@
 
 /* UI Sizes */
 export const DRAWER_WIDTH = 360;
+export const APP_BAR_HEIGHT = 64;
 export const ITEM_HEIGHT = 48;
+
+/* Label Loader UI */
+export const LABEL_LOADER_SPEED = 2;
+
+/* User Loader UI */
+export const USER_LOADER_HEIGHT = 64;
+export const USER_LOADER_SPEED = 2;
+
+/* Receipt Loader UI */
+export const RECEIPT_LOADER_SPEED = 2;
+export const RECEIPT_RECT_HEIGHT = 200;
+
+/* Loader Rectangle attributes */
+export const LOADER_RECT_RX = 4;
+export const LOADER_RECT_RY = 4;
 
 /* Label Menu Items */
 export const LABEL_MENU_EDIT = 'Edit';

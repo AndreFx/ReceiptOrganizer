@@ -19,6 +19,7 @@ function compare(a, b) {
 }
 
 function labels(state = {
+        isInitializing: false,
         isLoading: false,
         items: []
     }, 
@@ -28,12 +29,12 @@ function labels(state = {
         case RECEIVE_LABELS:
             if (action.success) {
                 return Object.assign({}, state, {
-                    isLoading: false,
+                    isInitializing: false,
                     items: action.labels
                 });
             } else {
                 return Object.assign({}, state, {
-                    isLoading: false
+                    isInitializing: false
                 });
             }
         case RECEIVE_ADD_LABEL:
@@ -81,6 +82,9 @@ function labels(state = {
                 });
             }
         case REQUEST_LABELS:
+            return Object.assign({}, state, {
+                isInitializing: true
+            });
         case REQUEST_ADD_LABEL:
         case REQUEST_DELETE_LABEL:
         case REQUEST_EDIT_LABEL:

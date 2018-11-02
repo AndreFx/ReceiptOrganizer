@@ -18,7 +18,8 @@ import Collapse from '@material-ui/core/Collapse';
 
 import LabelListContainer from '../../containers/labels/LabelListContainer';
 import CreateLabelButtonWrapperContainer from '../../containers/labels/CreateLabelButtonWrapperContainer';
-import { USER_THUMBNAIL_URL } from '../../../common/constants';
+import { USER_THUMBNAIL_URL, DRAWER_WIDTH, LABEL_LOADER_SPEED, USER_LOADER_HEIGHT, USER_LOADER_SPEED, LOADER_RECT_RX, LOADER_RECT_RY, APP_BAR_HEIGHT } from '../../../common/constants';
+import ContentLoaderWrapper from '../loading/ContentLoaderWrapper';
 
 const styles = theme => ({
     toolbar: {
@@ -27,6 +28,10 @@ const styles = theme => ({
         justifyContent: 'space-between',
         padding: '0 8px',
         ...theme.mixins.toolbar,
+    },
+    loadingToolbar: {
+        display: 'block',
+        ...theme.mixins.toolbar
     },
     toolbarUserInfo: {
         display: 'flex',
@@ -39,17 +44,39 @@ const styles = theme => ({
     nested: {
         paddingLeft: theme.spacing.unit * 4,
     },
+    hidden: {
+        display: 'none'
+    },
 });
+
+/* Label loading consts */
+const CIRCLE_START_X = 35;
+const CIRCLE_START_Y = 35;
+const CIRCLE_R = 30;
+const RECT_X = 75;
+const LONG_RECT_START_Y = 16.67;
+const LONG_RECT_WIDTH = 270;
+const LONG_RECT_HEIGHT = 15;
+const SHORT_RECT_START_Y = 44;
+const SHORT_RECT_WIDTH = 135;
+const SHORT_RECT_HEIGHT = 8;
+const SPACE_USED = 65;
+
+/* User loading consts */
+const USER_CIRCLE_R = 28;
 
 class DrawerContentWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            categoriesOpen: true
+            categoriesOpen: true,
+            width: 0,
+            height: 0
         };
 
         //Bind functions in constructor so a new function isn't made in every render
         this.handleCategoriesClick = this.handleCategoriesClick.bind(this);
+        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
 
     handleCategoriesClick() {
@@ -58,41 +85,107 @@ class DrawerContentWrapper extends React.Component {
         });
     }
 
+    updateWindowDimensions() {
+        this.setState({
+            width: window.innerWidth,
+            height: window.innerHeight
+        });
+    }
+
     componentDidMount() {
+        this.updateWindowDimensions();
+        window.addEventListener('resize', this.updateWindowDimensions);
         this.props.fetchUser();
     }
 
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateWindowDimensions);
+    }
+
     render() {
-        const { classes, theme, username, handleDrawerClose, drawerOpen } = this.props;
+        const { 
+            classes,
+            theme, 
+            username, 
+            handleDrawerClose, 
+            drawerOpen, 
+            isLabelsInitializing,
+            isUserInitializing
+        } = this.props;
+
+        let labelLoadingHeight = this.state.height - APP_BAR_HEIGHT < 0 ? 0 : this.state.height - APP_BAR_HEIGHT;
+        //Calculate number of loading rects
+        let possibleLength = Math.floor(labelLoadingHeight / (SPACE_USED));
+        let loadingArrLength = possibleLength < 0 ? 0 : possibleLength;
 
         return (
             <div>
-                <div className={classes.toolbar}>
-                    <div className={classes.toolbarUserInfo}>
-                        <Avatar alt="User Avatar" src={USER_THUMBNAIL_URL} className={classes.avatar} />
-                        <Typography variant="subtitle1" >
-                            {username}
-                        </Typography>
+                {
+                    isUserInitializing ? 
+                    <div className={classes.loadingToolbar}>
+                        <ContentLoaderWrapper 
+                            visible={isUserInitializing && drawerOpen} 
+                            height={USER_LOADER_HEIGHT}
+                            width={DRAWER_WIDTH}
+                            speed={USER_LOADER_SPEED}
+                            svgElements={[
+                                <circle key={"circle1"} cx={CIRCLE_START_X} cy={CIRCLE_START_Y} r={USER_CIRCLE_R} />,
+                                <rect key={"longRect1"} x={RECT_X} y={LONG_RECT_START_Y} rx={LOADER_RECT_RX} ry={LOADER_RECT_RY} width={LONG_RECT_WIDTH} height={LONG_RECT_HEIGHT} />,
+                                <rect key={"shortRect1"} x={RECT_X} y={SHORT_RECT_START_Y} rx={LOADER_RECT_RX} ry={LOADER_RECT_RY} width={SHORT_RECT_WIDTH} height={SHORT_RECT_HEIGHT} />
+                            ]}
+                        />
                     </div>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                    </IconButton>
+                    :
+                    <div className={classes.toolbar}>
+                        <div className={classes.toolbarUserInfo}>
+                            <Avatar alt="User Avatar" src={USER_THUMBNAIL_URL} className={classes.avatar} />
+                            <Typography variant="subtitle1" >
+                                {username}
+                            </Typography>
+                        </div>
+                        <IconButton onClick={handleDrawerClose}>
+                            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                        </IconButton>
+                    </div>
+                }
+                <Divider />
+                <div>
+                    <List>
+                        <ListItem button onClick={this.handleCategoriesClick} className={isLabelsInitializing ? classes.hidden : null}>
+                            <ListItemIcon>
+                                <CategoryIcon />
+                            </ListItemIcon>
+                            <ListItemText inset primary="Categories" />
+                            {this.state.categoriesOpen ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse in={this.state.categoriesOpen} timeout="auto" >
+                            <ContentLoaderWrapper 
+                                visible={isLabelsInitializing && drawerOpen} 
+                                height={labelLoadingHeight}
+                                width={DRAWER_WIDTH}
+                                speed={LABEL_LOADER_SPEED}
+                                svgElements={
+                                    Array(loadingArrLength).fill().map(function(el, i) {
+                                        let adjustedSpace = SPACE_USED * i;
+                                        return [
+                                                <circle key={"circle" + i} cx={CIRCLE_START_X} cy={CIRCLE_START_Y + adjustedSpace} r={CIRCLE_R} />,
+                                                <rect key={"longRect" + i} x={RECT_X} y={LONG_RECT_START_Y + adjustedSpace} rx={LOADER_RECT_RX} ry={LOADER_RECT_RY} width={LONG_RECT_WIDTH} height={LONG_RECT_HEIGHT} />,
+                                                <rect key={"shortRect" + i} x={RECT_X} y={SHORT_RECT_START_Y + adjustedSpace} rx={LOADER_RECT_RX} ry={LOADER_RECT_RY} width={SHORT_RECT_WIDTH} height={SHORT_RECT_HEIGHT} />
+                                        ];
+                                    }).flat()
+                                }
+                            />
+                            <LabelListContainer drawerOpen={drawerOpen} listItemClassName={drawerOpen ? classes.nested : null} />
+                        </Collapse>
+                    </List>
+                    {
+                        !isLabelsInitializing &&
+                        <div>
+                            <Divider />
+                            <CreateLabelButtonWrapperContainer />
+                        </div>
+                    }
                 </div>
-                <Divider />
-                <List>
-                    <ListItem button onClick={this.handleCategoriesClick}>
-                        <ListItemIcon>
-                            <CategoryIcon />
-                        </ListItemIcon>
-                        <ListItemText inset primary="Categories" />
-                        {this.state.categoriesOpen ? <ExpandLess /> : <ExpandMore />}
-                    </ListItem>
-                    <Collapse in={this.state.categoriesOpen} timeout="auto" >
-                        <LabelListContainer drawerOpen={drawerOpen} listItemClassName={drawerOpen ? classes.nested : null} />
-                    </Collapse>
-                </List>
-                <Divider />
-                <CreateLabelButtonWrapperContainer />
             </div>
         );
     }
@@ -102,6 +195,8 @@ DrawerContentWrapper.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
     drawerOpen: PropTypes.bool.isRequired,
+    isLabelsInitializing: PropTypes.bool.isRequired,
+    isUserInitializing: PropTypes.bool.isRequired,
     handleDrawerClose: PropTypes.func.isRequired
 };
 

@@ -4,11 +4,13 @@ import { connect } from 'react-redux';
 import ContentWrapper from '../../components/content/ContentWrapper';
 import { updateActiveLabels } from '../../actions/receipts/receiptsActions';
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
     return {
         csrfHeaderName: state.csrf.csrfheadername,
         csrfToken: state.csrf.csrftoken,
         activeLabels: state.activeLabels.items,
+        isLoading: state.receipts.isLoading,
+        drawerOpen: ownProps.drawerOpen
     };
 }
 
