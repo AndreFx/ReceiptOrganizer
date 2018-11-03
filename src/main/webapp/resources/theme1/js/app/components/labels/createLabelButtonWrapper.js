@@ -6,7 +6,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/Add';
 
-import { 
+import {
     CREATE_LABEL_UI_TITLE,
     SNACKBAR_ACTION_RETRY,
     SNACKBAR_AUTOHIDE_DISABLED,
@@ -28,12 +28,10 @@ class CreateLabelButtonWrapper extends React.Component {
     handleClickOpen(event, value) {
         let options = {
             dialogText: CREATE_LABEL_DIALOG_HELP,
-            textFields: [
-                {
-                    label: CREATE_LABEL_DIALOG_INPUT_PLACEHOLDER,
-                    defaultValue: value ? value : ""
-                }
-            ],
+            textFields: [{
+                label: CREATE_LABEL_DIALOG_INPUT_PLACEHOLDER,
+                defaultValue: value ? value : ""
+            }],
             cancelText: CREATE_LABEL_CANCEL,
             submitText: CREATE_LABEL_SUBMIT
         };
@@ -41,7 +39,9 @@ class CreateLabelButtonWrapper extends React.Component {
         this.props.openDialog(CREATE_LABEL_UI_TITLE, this.handleSubmit, this.props.closeDialog, options);
     }
 
-    handleSubmit({ CategoryName }) {
+    handleSubmit({
+        CategoryName
+    }) {
         let label = {
             name: CategoryName
         };
@@ -55,16 +55,16 @@ class CreateLabelButtonWrapper extends React.Component {
                 this.handleClickOpen
             ],
             SNACKBAR_AUTOHIDE_DISABLED,
-            this.props.csrfHeaderName, 
+            this.props.csrfHeaderName,
             this.props.csrfToken
         );
     }
 
     render() {
         return (
-            <List>
-                <ListItem button key={CREATE_LABEL_UI_TITLE} onClick={this.handleClickOpen}>
-                    <ListItemIcon>
+            <List >
+                <ListItem button key={CREATE_LABEL_UI_TITLE} onClick={this.handleClickOpen} >
+                    <ListItemIcon >
                         <AddIcon />
                     </ListItemIcon>
                     <ListItemText primary={CREATE_LABEL_UI_TITLE} />

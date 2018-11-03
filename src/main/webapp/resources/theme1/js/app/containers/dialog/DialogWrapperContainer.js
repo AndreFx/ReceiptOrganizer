@@ -1,4 +1,6 @@
-import { connect } from 'react-redux';
+import {
+    connect
+} from 'react-redux';
 
 //Custom imports
 import DialogWrapper from '../../components/dialog/DialogWrapper';
@@ -10,4 +12,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps) (DialogWrapper);
+export default connect(mapStateToProps)(DialogWrapper);

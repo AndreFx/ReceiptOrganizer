@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import {
+    withStyles
+} from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 const styles = {
@@ -18,10 +20,13 @@ const styles = {
 };
 
 function LinearIndeterminate(props) {
-    const { classes } = props;
+    const {
+        classes
+    } = props;
+    
     return (
-        <div className={classes.root}>
-            <LinearProgress classes={classes.height} color="secondary"/>
+        <div className={classes.root} >
+            <LinearProgress classes={classes.height} color="secondary" />
         </div>
     );
 }

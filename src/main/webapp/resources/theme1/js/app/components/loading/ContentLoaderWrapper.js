@@ -8,10 +8,16 @@ class ContentLoaderWrapper extends React.Component {
     }
 
     render() {
-        const { height, width, speed, visible, svgElements } = this.props;
+        const {
+            height,
+            width,
+            speed,
+            visible,
+            svgElements
+        } = this.props;
 
         return (
-            <div>
+            <div >
                 {
                     visible &&
                     <ContentLoader
@@ -37,6 +43,6 @@ ContentLoaderWrapper.propTypes = {
     speed: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
     svgElements: PropTypes.array.isRequired
-}
+};
 
 export default ContentLoaderWrapper;

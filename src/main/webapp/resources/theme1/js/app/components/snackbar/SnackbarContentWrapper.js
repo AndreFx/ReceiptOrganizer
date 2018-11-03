@@ -11,10 +11,18 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import WarningIcon from '@material-ui/icons/Warning';
-import { withStyles } from '@material-ui/core/styles';
+import {
+    withStyles
+} from '@material-ui/core/styles';
 
 //Custom imports
-import { SUCCESS_SNACKBAR, WARNING_SNACKBAR, ERROR_SNACKBAR, INFO_SNACKBAR, SNACKBAR_ACTION_RETRY } from '../../../common/constants';
+import {
+    SUCCESS_SNACKBAR,
+    WARNING_SNACKBAR,
+    ERROR_SNACKBAR,
+    INFO_SNACKBAR,
+    SNACKBAR_ACTION_RETRY
+} from '../../../common/constants';
 
 const variantIcon = {
     success: CheckCircleIcon,
@@ -50,35 +58,46 @@ const styles = theme => ({
 });
 
 function SnackbarContentWrapper(props) {
-    const { classes, className, message, onClose, variant, actions, handlers, handlerParams } = props;
+    const {
+        classes,
+        className,
+        message,
+        onClose,
+        variant,
+        actions,
+        handlers,
+        handlerParams
+    } = props;
     const Icon = variantIcon[variant];
     let snackbarActions = [];
 
-    actions.forEach(function(element, index) {
+    actions.forEach(function (element, index) {
         if (element === SNACKBAR_ACTION_RETRY) {
             snackbarActions.push(
-                <Button 
+                <Button
                     key={SNACKBAR_ACTION_RETRY}
                     aria-label={SNACKBAR_ACTION_RETRY}
-                    color="inherit" 
+                    color="inherit"
                     size="small"
                     onClick={(e) => { onClose(e); handlers[index](e, ...handlerParams[index]); }}
                 >
-                    {SNACKBAR_ACTION_RETRY}
+                    {
+                        SNACKBAR_ACTION_RETRY
+                    }
                 </Button>
             );
         }
     });
 
     snackbarActions.push(
-        <IconButton
-            key="close"
+        <IconButton key="close"
             aria-label="Close"
             color="inherit"
             className={classes.close}
             onClick={onClose}
         >
-            <CloseIcon className={classes.icon} />
+            <CloseIcon className={classes.icon}
+            />
         </IconButton>
     );
 
@@ -88,9 +107,11 @@ function SnackbarContentWrapper(props) {
             className={classNames(classes[variant], className)}
             aria-describedby="client-snackbar"
             message={
-                <span id="client-snackbar" className={classes.message}>
+                <span id="client-snackbar" className={classes.message} >
                     <Icon className={classNames(classes.icon, classes.iconVariant)} />
-                    {message}
+                    {
+                        message
+                    }
                 </span>
             }
             action={snackbarActions}

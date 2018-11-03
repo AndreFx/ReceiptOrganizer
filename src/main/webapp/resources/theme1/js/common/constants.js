@@ -4,6 +4,8 @@
 export const DRAWER_WIDTH = 360;
 export const APP_BAR_HEIGHT = 64;
 export const ITEM_HEIGHT = 48;
+export const AUTO_CLOSE_DRAWER_WINDOW_WIDTH = 800;
+export const SNACKBAR_EXPAND_QUERY_WIDTH = 960;
 
 /* Label Loader UI */
 export const LABEL_LOADER_SPEED = 2;
@@ -88,20 +90,20 @@ export const SNACKBAR_ACTION_RETRY = 'Retry';
 export const CONTENT_TYPE_JSON = 'application/json';
 
 /* URLS */
-export const LOGOUT_URL = '/ReceiptOrganizer/logout';
+export const LOGOUT_PATH = '/ReceiptOrganizer/logout';
 
 /* User */
-export const USER_THUMBNAIL_URL = '/ReceiptOrganizer/users/image?thumbnail=true';
-export const GET_USER_URL = '/ReceiptOrganizer/users/';
+export const USER_THUMBNAIL_PATH = '/ReceiptOrganizer/users/image?thumbnail=true';
+export const GET_USER_PATH = '/ReceiptOrganizer/users/';
 
 /* Labels */
-export const GET_LABELS_URL = '/ReceiptOrganizer/labels/';
-export const ADD_LABEL_URL = '/ReceiptOrganizer/labels/create';
-export const DELETE_LABEL_URL = '/ReceiptOrganizer/labels/delete';
-export const EDIT_LABEL_URL = '/ReceiptOrganizer/labels/update';
+export const GET_LABELS_PATH = '/ReceiptOrganizer/labels/';
+export const ADD_LABEL_PATH = '/ReceiptOrganizer/labels/create';
+export const DELETE_LABEL_PATH = '/ReceiptOrganizer/labels/delete';
+export const EDIT_LABEL_PATH = '/ReceiptOrganizer/labels/update';
 
 /* Receipts */
-export const GET_RECEIPTS_URL = '/ReceiptOrganizer/receipts/';
+export const GET_RECEIPTS_PATH = '/ReceiptOrganizer/receipts/';
 
 //Service Errors
 export const SERVER_ERROR = 'Unable to reach server';

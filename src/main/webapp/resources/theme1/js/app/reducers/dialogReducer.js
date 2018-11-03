@@ -1,5 +1,8 @@
 //Custom imports
-import { CLOSE_DIALOG, OPEN_DIALOG } from "../actions/ui/dialog/dialogActions";
+import {
+    CLOSE_DIALOG,
+    OPEN_DIALOG
+} from "../actions/ui/dialog/dialogActions";
 
 export const DIALOG_INITIAL_STATE = {
     open: false,
@@ -10,7 +13,7 @@ export const DIALOG_INITIAL_STATE = {
 };
 
 function dialogReducer(state, action) {
-    switch(action.type) {
+    switch (action.type) {
         case CLOSE_DIALOG:
             return Object.assign({}, state, {
                 open: false

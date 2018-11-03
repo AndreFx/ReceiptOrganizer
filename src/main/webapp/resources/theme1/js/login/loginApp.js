@@ -15,9 +15,15 @@ class LoginApp extends React.Component {
 
         return (
             <div className="text-center login" style={containerStyle}>
-			    <div className="logo">login</div>
-                <LoginForm error={this.props.error} logout={this.props.logout} loginUrl={this.props.loginurl} csrfToken={this.props.csrftoken} csrfParameterName={this.props.csrfparametername} />
-	        </div>
+                <div className="logo" > login </div>
+                <LoginForm
+                    error={this.props.error}
+                    logout={this.props.logout}
+                    loginUrl={this.props.loginurl}
+                    csrfToken={this.props.csrftoken}
+                    csrfParameterName={this.props.csrfparametername}
+                />
+            </div>
         );
     }
 }
@@ -25,6 +31,6 @@ class LoginApp extends React.Component {
 //Render login application
 var root = document.getElementById('react');
 ReactDOM.render(
-    <LoginApp {...(root.dataset)}/>, 
+    <LoginApp {...(root.dataset)} />,
     root
 );

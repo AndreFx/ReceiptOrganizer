@@ -1,5 +1,9 @@
 //Custom imports
-import { PROCESS_SNACKBAR_QUEUE, FINISH_CURRENT_SNACKBAR, ADD_SNACKBAR } from "../actions/ui/snackbar/snackbarActions";
+import {
+    PROCESS_SNACKBAR_QUEUE,
+    FINISH_CURRENT_SNACKBAR,
+    ADD_SNACKBAR
+} from "../actions/ui/snackbar/snackbarActions";
 
 export const SNACKBAR_INITIAL_STATE = {
     currentSnackbar: null,
@@ -7,8 +11,8 @@ export const SNACKBAR_INITIAL_STATE = {
     snackbarQueue: []
 };
 
-function snackbarReducer(state = initialState, action) {
-    switch(action.type) {
+function snackbarReducer(state, action) {
+    switch (action.type) {
         case PROCESS_SNACKBAR_QUEUE:
             if (state.snackbarQueue.length > 1) {
                 return Object.assign({}, state, {

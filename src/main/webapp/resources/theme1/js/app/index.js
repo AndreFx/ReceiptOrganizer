@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import Root from './containers/root';
 
 const root = document.getElementById('react');
-ReactDOM.render(
-    <Root />,
+ReactDOM.render( 
+    <Root /> ,
     root
 );

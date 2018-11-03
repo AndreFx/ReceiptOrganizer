@@ -263,6 +263,9 @@
 						<goals>
 							<goal>webpack</goal>
 						</goals>
+						<configuration>
+							<arguments>--config webpack.dev.js</arguments>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

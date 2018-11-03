@@ -1,4 +1,6 @@
-import { combineReducers } from 'redux';
+import {
+    combineReducers
+} from 'redux';
 
 //Custom imports
 import labels from './labelReducer';
@@ -16,4 +18,3 @@ export default combineReducers({
     user,
     receipts
 });
-

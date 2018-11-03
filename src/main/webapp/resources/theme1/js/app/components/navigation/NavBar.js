@@ -7,15 +7,21 @@ import IconButton from '@material-ui/core/IconButton';
 import Input from '@material-ui/core/Input';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { fade } from '@material-ui/core/styles/colorManipulator';
-import { withStyles } from '@material-ui/core/styles';
+import {
+    fade
+} from '@material-ui/core/styles/colorManipulator';
+import {
+    withStyles
+} from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 
 //Custom imports
-import { DRAWER_WIDTH } from '../../../common/constants';
+import {
+    DRAWER_WIDTH
+} from '../../../common/constants';
 
 const styles = theme => ({
     grow: {
@@ -124,24 +130,35 @@ class NavBar extends React.Component {
     }
 
     handleProfileMenuOpen(event) {
-        this.setState({ anchorEl: event.currentTarget });
+        this.setState({
+            anchorEl: event.currentTarget
+        });
     };
 
     handleMenuClose() {
-        this.setState({ anchorEl: null });
+        this.setState({
+            anchorEl: null
+        });
         this.handleMobileMenuClose();
     };
 
     handleMobileMenuOpen(event) {
-        this.setState({ mobileMoreAnchorEl: event.currentTarget });
+        this.setState({
+            mobileMoreAnchorEl: event.currentTarget
+        });
     };
 
     handleMobileMenuClose() {
-        this.setState({ mobileMoreAnchorEl: null });
+        this.setState({
+            mobileMoreAnchorEl: null
+        });
     };
 
     render() {
-        const { anchorEl, mobileMoreAnchorEl } = this.state;
+        const {
+            anchorEl,
+            mobileMoreAnchorEl
+        } = this.state;
         const classes = this.props.classes;
         const isMenuOpen = Boolean(anchorEl);
         const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -149,8 +166,14 @@ class NavBar extends React.Component {
         const renderMenu = (
             <Menu
                 anchorEl={anchorEl}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right'
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right'
+                }}
                 open={isMenuOpen}
                 onClose={this.handleMenuClose}
             >
@@ -162,13 +185,19 @@ class NavBar extends React.Component {
         const renderMobileMenu = (
             <Menu
                 anchorEl={mobileMoreAnchorEl}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right'
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right'
+                }}
                 open={isMobileMenuOpen}
                 onClose={this.handleMobileMenuClose}
             >
-                <MenuItem onClick={this.handleProfileMenuOpen}>
-                    <IconButton color="inherit">
+                <MenuItem onClick={this.handleProfileMenuOpen} >
+                    <IconButton color="inherit" >
                         <AccountCircle />
                     </IconButton>
                     <p>Profile</p>
@@ -178,21 +207,16 @@ class NavBar extends React.Component {
 
         return (
             <div>
-                <AppBar
-                    position="absolute"
-                    className={classNames(classes.appBar, this.props.open && classes.appBarShift)}
-                >
-                    <Toolbar>
-                        <IconButton 
-                            className={classNames(classes.menuButton, this.props.open && classes.hide)}
-                            color="inherit" 
-                            aria-label="Open drawer" 
-                            onClick={this.handleDrawerOpen} 
-                        >
+                <AppBar position="absolute" className={classNames(classes.appBar, this.props.open && classes.appBarShift)} >
+                    <Toolbar >
+                        <IconButton className={classNames(classes.menuButton, this.props.open && classes.hide)}
+                            color="inherit"
+                            aria-label="Open drawer"
+                            onClick={this.handleDrawerOpen} >
                             <MenuIcon />
                         </IconButton>
-                        <div className={classes.search}>
-                            <div className={classes.searchIcon}>
+                        <div className={classes.search} >
+                            <div className={classes.searchIcon} >
                                 <SearchIcon />
                             </div>
                             <Input
@@ -205,7 +229,7 @@ class NavBar extends React.Component {
                             />
                         </div>
                         <div className={classes.grow} />
-                        <div className={classes.sectionDesktop}>
+                        <div className={classes.sectionDesktop} >
                             <IconButton
                                 aria-owns={isMenuOpen ? 'material-appbar' : null}
                                 aria-haspopup="true"
@@ -215,15 +239,22 @@ class NavBar extends React.Component {
                                 <AccountCircle />
                             </IconButton>
                         </div>
-                        <div className={classes.sectionMobile}>
-                            <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
+                        <div className={classes.sectionMobile} >
+                            <IconButton
+                                aria-haspopup="true"
+                                onClick={this.handleMobileMenuOpen}
+                                color="inherit" >
                                 <MoreIcon />
                             </IconButton>
                         </div>
                     </Toolbar>
                 </AppBar>
-                {renderMenu}
-                {renderMobileMenu}
+                {
+                    renderMenu
+                }
+                {
+                    renderMobileMenu
+                }
             </div>
         );
     }

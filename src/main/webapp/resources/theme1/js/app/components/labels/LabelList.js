@@ -7,7 +7,7 @@ import Label from './Label';
 
 class LabelList extends React.Component {
 
-    constructor (props) {
+    constructor(props) {
         super(props);
     }
 
@@ -15,45 +15,44 @@ class LabelList extends React.Component {
         this.props.fetchLabels();
     }
 
-    render () {
-        const { 
-            labels, 
-            deleteLabel, 
-            editLabel, 
-            csrfToken, 
-            csrfHeaderName, 
-            openDialog, 
-            closeDialog, 
-            updateActiveLabels, 
-            activeLabels, 
-            query, 
-            currentReceiptPage, 
+    render() {
+        const {
+            labels,
+            deleteLabel,
+            editLabel,
+            csrfToken,
+            csrfHeaderName,
+            openDialog,
+            closeDialog,
+            updateActiveLabels,
+            activeLabels,
+            query,
+            currentReceiptPage,
             drawerOpen,
             listItemClassName
         } = this.props;
 
         return (
-            <List>
-                {
-                    labels.map((l, ind) => 
-                        <Label 
-                            key={l.name} 
-                            label={l} 
-                            csrfHeaderName={csrfHeaderName}
-                            csrfToken={csrfToken}
-                            deleteLabel={deleteLabel}
-                            editLabel={editLabel}
-                            openDialog={openDialog}
-                            closeDialog={closeDialog}
-                            updateActiveLabels={updateActiveLabels}
-                            activeLabels={activeLabels}
-                            query={query}
-                            currentReceiptPage={currentReceiptPage}
-                            drawerOpen={drawerOpen}
-                            listItemClassName={listItemClassName}
-                        />
-                    )
-                }
+            <List > {
+                labels.map((l, ind) =>
+                    <Label
+                        key={l.name}
+                        label={l}
+                        csrfHeaderName={csrfHeaderName}
+                        csrfToken={csrfToken}
+                        deleteLabel={deleteLabel}
+                        editLabel={editLabel}
+                        openDialog={openDialog}
+                        closeDialog={closeDialog}
+                        updateActiveLabels={updateActiveLabels}
+                        activeLabels={activeLabels}
+                        query={query}
+                        currentReceiptPage={currentReceiptPage}
+                        drawerOpen={drawerOpen}
+                        listItemClassName={listItemClassName}
+                    />
+                )
+            }
             </List>
         );
     }

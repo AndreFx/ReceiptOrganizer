@@ -1,6 +1,6 @@
 //Custom imports
-import { 
-    RECEIVE_ADD_ACTIVE_LABEL, 
+import {
+    RECEIVE_ADD_ACTIVE_LABEL,
     RECEIVE_REMOVE_ACTIVE_LABEL,
     RECEIVE_EDIT_ACTIVE_LABEL
 } from '../actions/receipts/activeLabelsActions';

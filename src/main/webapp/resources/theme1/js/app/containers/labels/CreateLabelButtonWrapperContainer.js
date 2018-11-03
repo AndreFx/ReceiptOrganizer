@@ -1,8 +1,15 @@
-import { connect } from 'react-redux';
+import {
+    connect
+} from 'react-redux';
 
 //Custom imports
-import { addLabel } from '../../actions/labels/labelListActions';
-import { openDialog, closeDialog } from '../../actions/ui/dialog/dialogActions';
+import {
+    addLabel
+} from '../../actions/labels/labelListActions';
+import {
+    openDialog,
+    closeDialog
+} from '../../actions/ui/dialog/dialogActions';
 import CreateLabelButtonWrapper from '../../components/labels/CreateLabelButtonWrapper';
 
 function mapStateToProps(state) {
@@ -24,7 +31,7 @@ function mapDispatchToProps(dispatch) {
         openDialog: (title, submit, close, options) => {
             return dispatch(openDialog(title, submit, close, options));
         }
-    }
+    };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps) (CreateLabelButtonWrapper);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateLabelButtonWrapper);

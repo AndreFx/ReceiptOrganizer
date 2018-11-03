@@ -9,7 +9,7 @@ export const RECEIVE_EDIT_ACTIVE_LABEL = 'RECEIVE_EDIT_ACTIVE_LABEL';
 export function requestAddActiveLabel() {
     return {
         type: REQUEST_ADD_ACTIVE_LABEL
-    }
+    };
 }
 
 export function receiveAddActiveLabel(label, success, msg) {
@@ -18,13 +18,13 @@ export function receiveAddActiveLabel(label, success, msg) {
         label: label,
         success: success,
         msg: msg
-    }
+    };
 }
 
 export function requestRemoveActiveLabel() {
     return {
         type: REQUEST_REMOVE_ACTIVE_LABEL
-    }
+    };
 }
 
 export function receiveRemoveActiveLabel(label, success, msg) {
@@ -33,13 +33,13 @@ export function receiveRemoveActiveLabel(label, success, msg) {
         label: label,
         success: success,
         msg: msg
-    }
+    };
 }
 
 export function requestEditActiveLabel() {
     return {
         type: REQUEST_EDIT_ACTIVE_LABEL
-    }
+    };
 }
 
 export function receiveEditActiveLabel(newLabel, oldLabel, success, msg) {
@@ -49,5 +49,5 @@ export function receiveEditActiveLabel(newLabel, oldLabel, success, msg) {
         oldLabel: oldLabel,
         success: success,
         msg: msg
-    }
+    };
 }

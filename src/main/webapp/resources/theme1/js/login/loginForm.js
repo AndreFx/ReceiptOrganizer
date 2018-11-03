@@ -1,6 +1,9 @@
 import React from 'react';
 import LoginMessage from './loginMessage';
-import { INVALID_PASSWORD_MESSAGE, INVALID_USERNAME_MESSAGE } from '../common/constants'
+import {
+    INVALID_PASSWORD_MESSAGE,
+    INVALID_USERNAME_MESSAGE
+} from '../common/constants';
 
 class LoginForm extends React.Component {
 
@@ -9,28 +12,39 @@ class LoginForm extends React.Component {
         this.state = {
             username: '',
             password: '',
-            formErrors: {username: '', password: ''},
+            formErrors: {
+                username: '',
+                password: ''
+            },
             usernameValid: false,
             passwordValid: false,
             formValid: false
-        }
+        };
+
+        this.handleUserInput = this.handleUserInput.bind(this);
+        this.validateField = this.validateField.bind(this);
+        this.validateForm = this.validateForm.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.onEnterPressed = this.onEnterPressed.bind(this);
     };
 
-    handleUserInput = event => {
+    handleUserInput(event) {
         const name = event.target.name;
         const value = event.target.value;
         this.setState({
             [name]: value,
             successfulSubmit: undefined
-        }, () => { this.validateField(name, value) });
+        }, () => {
+            this.validateField(name, value);
+        });
     };
 
-    validateField = (fieldName, value) => {
+    validateField(fieldName, value) {
         let fieldValidationErrors = this.state.formErrors;
         let usernameValid = this.state.usernameValid;
         let passwordValid = this.state.passwordValid;
 
-        switch(fieldName) {
+        switch (fieldName) {
             case 'username':
                 usernameValid = value.length !== 0;
                 fieldValidationErrors.username = usernameValid ? '' : INVALID_USERNAME_MESSAGE;
@@ -50,15 +64,17 @@ class LoginForm extends React.Component {
         }, this.validateForm);
     };
 
-    validateForm = () => {
-        this.setState({formValid: this.state.usernameValid && this.state.passwordValid});
+    validateForm() {
+        this.setState({
+            formValid: this.state.usernameValid && this.state.passwordValid
+        });
     };
 
-    handleSubmit = event => {
+    handleSubmit(event) {
         const validForm = this.state.formValid;
         if (validForm) {
             console.log('Valid login form submitted, sending to server');
-            this.setState({ 
+            this.setState({
                 successfulSubmit: true
             });
         } else {
@@ -84,7 +100,7 @@ class LoginForm extends React.Component {
         }
     };
 
-    onEnterPressed = event => {
+    onEnterPressed(event) {
         if (event.keyCode == 13 && event.shiftKey == false) {
             event.preventDefault();
             this.loginButton.click();
@@ -96,36 +112,75 @@ class LoginForm extends React.Component {
         let button;
 
         if (submitStatus) {
-            button = <button ref={el => this.loginButton = el} type="submit" className="success clicked login-button">
-                        <i className="fa fa-check"></i>
-                    </button>;
+            button =
+                <button ref={el => this.loginButton = el}
+                    type="submit"
+                    className="success clicked login-button" >
+                    <i className="fa fa-check" > </i>
+                </button>;
         } else if (submitStatus === undefined) {
-            button = <button ref={el => this.loginButton = el} type="submit" className="login-button">
-                        <i className="fa fa-chevron-right"></i>
-                    </button>;
+            button = <button ref={
+                el => this.loginButton = el
+            }
+                type="submit"
+                className="login-button" >
+                <i className="fa fa-chevron-right" > </i> </button>;
         } else {
-            button = <button ref={el => this.loginButton = el} type="submit" className="error clicked login-button">
-                        <i className="fa fa-times"></i>
-                    </button>;
+            button = <button ref={
+                el => this.loginButton = el
+            }
+                type="submit"
+                className="error clicked login-button" >
+                <i className="fa fa-times" > </i> </button>;
         }
 
         return (
-            <div className="login-form">
-                <form ref={el => this.loginFormEl = el} method="post" action={this.props.loginUrl} id="loginForm" className="text-left" autoComplete="off" onSubmit={(event) => this.handleSubmit(event)}>
-                    <LoginMessage error={this.props.error} logout={this.props.logout} validateErrors={this.state.formErrors}/>
-                    <div className="main-login-form">
-                        <div className="login-group">
-                            <div className="form-group">
-                                <label htmlFor="lg_username" className="sr-only">Username</label>
-                                <input name="username" type="text" className="form-control" id="lg_username" placeholder="username" value={this.state.username} onChange={(event) => this.handleUserInput(event)} />
+            <div className="login-form" >
+                <form
+                    ref={el => this.loginFormEl = el}
+                    method="post"
+                    action={this.props.loginUrl}
+                    id="loginForm"
+                    className="text-left"
+                    autoComplete="off"
+                    onSubmit={(event) => this.handleSubmit(event)}
+                >
+                    <LoginMessage
+                        error={this.props.error}
+                        logout={this.props.logout}
+                        validateErrors={this.state.formErrors}
+                    />
+                    <div className="main-login-form" >
+                        <div className="login-group" >
+                            <div className="form-group" >
+                                <label htmlFor="lg_username" className="sr-only" > Username </label>
+                                <input
+                                    name="username"
+                                    type="text"
+                                    className="form-control"
+                                    id="lg_username"
+                                    placeholder="username"
+                                    value={this.state.username}
+                                    onChange={(event) => this.handleUserInput(event)}
+                                />
                             </div>
-                            <div className="form-group">
-                                <label htmlFor="lg_password" className="sr-only">Password</label>
-                                <input name="password" type="password" className="form-control" id="lg_password" placeholder="password" value={this.state.password} onChange={(event) => this.handleUserInput(event)} onKeyDown={(event) => this.onEnterPressed(event)} />
-                                <input type="hidden"  name={this.props.csrfParameterName} value={this.props.csrfToken}/>
+                            <div className="form-group" >
+                                <label htmlFor="lg_password" className="sr-only" > Password </label>
+                                <input name="password"
+                                    type="password"
+                                    className="form-control"
+                                    id="lg_password"
+                                    placeholder="password"
+                                    value={this.state.password}
+                                    onChange={(event) => this.handleUserInput(event)}
+                                    onKeyDown={(event) => this.onEnterPressed(event)}
+                                />
+                                <input type="hidden" name={this.props.csrfParameterName} value={this.props.csrfToken} />
                             </div>
                         </div>
-                        {button}
+                        {
+                            button
+                        }
                     </div>
                 </form>
             </div>

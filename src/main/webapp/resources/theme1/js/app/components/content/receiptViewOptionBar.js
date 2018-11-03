@@ -2,8 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import Chip from '@material-ui/core/Chip';
-import { withStyles } from '@material-ui/core';
-import { REMOVE_ACTIVE_LABEL } from '../../../common/constants';
+import {
+    withStyles
+} from '@material-ui/core';
+import {
+    REMOVE_ACTIVE_LABEL
+} from '../../../common/constants';
 
 //Custom Imports
 
@@ -40,10 +44,15 @@ class ReceiptViewOptionBar extends React.Component {
     }
 
     render() {
-        const { activeLabels, query, currentReceiptPage, classes } = this.props;
+        const {
+            activeLabels,
+            query,
+            currentReceiptPage,
+            classes
+        } = this.props;
 
         return (
-            <div className={classes.root}>
+            <div className={classes.root} >
                 {
                     activeLabels.map((l, ind) =>
                         <Chip

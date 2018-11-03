@@ -1,9 +1,19 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import {
+    Provider
+} from 'react-redux';
+import {
+    createStore,
+    applyMiddleware
+} from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import { createLogger } from 'redux-logger';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+import {
+    createLogger
+} from 'redux-logger';
+import {
+    createMuiTheme,
+    MuiThemeProvider
+} from '@material-ui/core';
 import red from '@material-ui/core/colors/red';
 
 //Custom imports
@@ -11,7 +21,6 @@ import rootReducer from '../reducers/indexReducer';
 import AppContainer from './AppContainer';
 
 const loggerMiddleware = createLogger();
-//TODO: Don't love this being here
 const root = document.getElementById('react');
 const initialState = {
     csrf: {
@@ -40,8 +49,8 @@ const theme = createMuiTheme({
 class Root extends React.Component {
     render() {
         return (
-            <Provider store={store}>
-                <MuiThemeProvider theme={theme}>
+            <Provider store={store} >
+                <MuiThemeProvider theme={theme} >
                     <AppContainer />
                 </MuiThemeProvider>
             </Provider>

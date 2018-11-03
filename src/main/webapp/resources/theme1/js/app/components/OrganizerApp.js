@@ -2,14 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import _ from 'lodash';
-import { withStyles } from '@material-ui/core/styles';
+import {
+    withStyles
+} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
 import Snackbar from '@material-ui/core/Snackbar';
 import EditIcon from '@material-ui/icons/Edit';
 
 //Custom imports
-import { DRAWER_WIDTH, SNACKBAR_VERTICAL, SNACKBAR_HORIZONTAL, SNACKBAR_AUTOHIDE_DURATION_DEFAULT } from '../../common/constants';
+import {
+    DRAWER_WIDTH,
+    SNACKBAR_VERTICAL,
+    SNACKBAR_HORIZONTAL,
+    SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
+    SNACKBAR_EXPAND_QUERY_WIDTH
+} from '../../common/constants';
 import LinearIndeterminate from './loading/linearIndeterminate';
 import NavContainer from '../containers/navigation/NavContainer';
 import SnackbarContentWrapper from './snackbar/SnackbarContentWrapper';
@@ -43,6 +51,20 @@ const styles = theme => ({
         position: 'absolute',
         bottom: theme.spacing.unit * 2,
         right: theme.spacing.unit * 2,
+    },
+    fabMoveUp: {
+        transform: 'translate3d(0, -46px, 0)',
+        transition: theme.transitions.create('transform', {
+            duration: theme.transitions.duration.enteringScreen,
+            easing: theme.transitions.easing.easeOut,
+        }),
+    },
+    fabMoveDown: {
+        transform: 'translate3d(0, 0, 0)',
+        transition: theme.transitions.create('transform', {
+            duration: theme.transitions.duration.leavingScreen,
+            easing: theme.transitions.easing.sharp,
+        }),
     },
     button: {
         margin: theme.spacing.unit,
@@ -90,14 +112,19 @@ class OrganizerApp extends React.Component {
         this.handleDrawerClose = this.handleDrawerClose.bind(this);
         this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
         this.handleSnackbarExited = this.handleSnackbarExited.bind(this);
+        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
 
     handleDrawerOpen() {
-        this.setState({ open: true });
+        this.setState({
+            open: true
+        });
     };
 
     handleDrawerClose() {
-        this.setState({ open: false });
+        this.setState({
+            open: false
+        });
     };
 
     handleSnackbarClose(event, reason) {
@@ -115,44 +142,66 @@ class OrganizerApp extends React.Component {
         }
     }
 
+    updateWindowDimensions() {
+        //Dispatch update of window size to redux
+        this.props.updateWindowDimensions(window.innerWidth, window.innerHeight);
+    }
+
+    componentDidMount() {
+        this.updateWindowDimensions();
+        window.addEventListener('resize', this.updateWindowDimensions);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateWindowDimensions);
+    }
+
     render() {
         const {
             classes,
             currentSnackbar,
             snackbarOpen,
-            isLoading
+            isLoading,
+            windowWidth
         } = this.props;
+        const fabClasses = classNames(
+            classes.fab,
+            snackbarOpen && windowWidth <= SNACKBAR_EXPAND_QUERY_WIDTH ? classes.fabMoveUp : classes.fabMoveDown
+        );
         let autohideDuration = SNACKBAR_AUTOHIDE_DURATION_DEFAULT;
 
         if (currentSnackbar) {
             autohideDuration = currentSnackbar.autohideDuration;
         }
 
-        //TODO: Make snackbar push up FAB on smaller screens
         return (
-            <div>
-                {isLoading && (<LinearIndeterminate />)}
-                <div className={classes.root}>
+            <div >
+                {
+                    isLoading && (< LinearIndeterminate />)
+                }
+                <div className={classes.root} >
                     <NavContainer open={this.state.open} onDrawerBtnClick={this.handleDrawerOpen} />
                     <Drawer
                         variant="permanent"
-                        classes={{
-                            paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
-                        }}
+                        classes={{ paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose) }}
                         open={this.state.open}
                     >
-                        <DrawerContentWrapperContainer handleDrawerClose={this.handleDrawerClose} drawerOpen={this.state.open} />
+                        <DrawerContentWrapperContainer
+                            handleDrawerClose={this.handleDrawerClose}
+                            drawerOpen={this.state.open}
+                        />
                     </Drawer>
                     <ContentWrapperContainer drawerOpen={this.state.open} />
-                    <Button variant="extendedFab" aria-label="Add" className={classes.fab} color="primary">
+                    <Button variant="extendedFab"
+                        aria-label="Add"
+                        className={fabClasses}
+                        color="primary"
+                    >
                         <EditIcon className={classes.extendedIcon} />
                         Add Receipt
                     </Button>
                     <Snackbar
-                        anchorOrigin={{ 
-                            vertical: SNACKBAR_VERTICAL,
-                            horizontal: SNACKBAR_HORIZONTAL
-                        }}
+                        anchorOrigin={{ vertical: SNACKBAR_VERTICAL, horizontal: SNACKBAR_HORIZONTAL }}
                         open={snackbarOpen}
                         autoHideDuration={currentSnackbar ? autohideDuration : null}
                         onClose={this.handleSnackbarClose}
@@ -182,8 +231,12 @@ OrganizerApp.propTypes = {
     theme: PropTypes.object.isRequired,
     isLoading: PropTypes.bool.isRequired,
     currentSnackbar: PropTypes.object,
+    windowWidth: PropTypes.number.isRequired,
     processSnackbarQueue: PropTypes.func.isRequired,
     finishCurrentSnackbar: PropTypes.func.isRequired,
+    updateWindowDimensions: PropTypes.func.isRequired
 };
 
-export default withStyles(styles, { withTheme: true })(OrganizerApp);
+export default withStyles(styles, {
+    withTheme: true
+})(OrganizerApp);

@@ -1,10 +1,21 @@
-import { connect } from 'react-redux';
+import {
+    connect
+} from 'react-redux';
 
 //Custom imports
-import { fetchLabels, deleteLabel, editLabel } from '../../actions/labels/labelListActions';
-import { openDialog, closeDialog } from '../../actions/ui/dialog/dialogActions';
+import {
+    fetchLabels,
+    deleteLabel,
+    editLabel
+} from '../../actions/labels/labelListActions';
+import {
+    openDialog,
+    closeDialog
+} from '../../actions/ui/dialog/dialogActions';
 import LabelList from '../../components/labels/LabelList';
-import { updateActiveLabels } from '../../actions/receipts/receiptsActions';
+import {
+    updateActiveLabels
+} from '../../actions/receipts/receiptsActions';
 
 function mapStateToProps(state, ownProps) {
     return {
@@ -39,7 +50,7 @@ function mapDispatchToProps(dispatch) {
         updateActiveLabels: (action, label, newLabel, query, activeLabels, currentPage, csrfHeaderName, csrfToken) => {
             return dispatch(updateActiveLabels(action, label, newLabel, query, activeLabels, currentPage, csrfHeaderName, csrfToken));
         }
-    }
+    };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps) (LabelList);
+export default connect(mapStateToProps, mapDispatchToProps)(LabelList);

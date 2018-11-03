@@ -1,4 +1,6 @@
-import { connect } from 'react-redux';
+import {
+    connect
+} from 'react-redux';
 
 //Custom imports
 import NavBar from '../../components/navigation/NavBar';
@@ -12,4 +14,4 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(mapStateToProps) (NavBar);
+export default connect(mapStateToProps)(NavBar);

@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import {
+    withStyles
+} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import CategoryIcon from '@material-ui/icons/Category'
+import CategoryIcon from '@material-ui/icons/Category';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -18,7 +20,16 @@ import Collapse from '@material-ui/core/Collapse';
 
 import LabelListContainer from '../../containers/labels/LabelListContainer';
 import CreateLabelButtonWrapperContainer from '../../containers/labels/CreateLabelButtonWrapperContainer';
-import { USER_THUMBNAIL_URL, DRAWER_WIDTH, LABEL_LOADER_SPEED, USER_LOADER_HEIGHT, USER_LOADER_SPEED, LOADER_RECT_RX, LOADER_RECT_RY, APP_BAR_HEIGHT } from '../../../common/constants';
+import {
+    USER_THUMBNAIL_PATH,
+    DRAWER_WIDTH,
+    LABEL_LOADER_SPEED,
+    USER_LOADER_HEIGHT,
+    USER_LOADER_SPEED,
+    LOADER_RECT_RX,
+    LOADER_RECT_RY,
+    APP_BAR_HEIGHT
+} from '../../../common/constants';
 import ContentLoaderWrapper from '../loading/ContentLoaderWrapper';
 
 const styles = theme => ({
@@ -69,14 +80,11 @@ class DrawerContentWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            categoriesOpen: true,
-            width: 0,
-            height: 0
+            categoriesOpen: true
         };
 
         //Bind functions in constructor so a new function isn't made in every render
         this.handleCategoriesClick = this.handleCategoriesClick.bind(this);
-        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
 
     handleCategoriesClick() {
@@ -85,35 +93,23 @@ class DrawerContentWrapper extends React.Component {
         });
     }
 
-    updateWindowDimensions() {
-        this.setState({
-            width: window.innerWidth,
-            height: window.innerHeight
-        });
-    }
-
     componentDidMount() {
-        this.updateWindowDimensions();
-        window.addEventListener('resize', this.updateWindowDimensions);
         this.props.fetchUser();
     }
 
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.updateWindowDimensions);
-    }
-
     render() {
-        const { 
+        const {
             classes,
-            theme, 
-            username, 
-            handleDrawerClose, 
-            drawerOpen, 
+            theme,
+            username,
+            handleDrawerClose,
+            drawerOpen,
             isLabelsInitializing,
-            isUserInitializing
+            isUserInitializing,
+            windowHeight
         } = this.props;
 
-        let labelLoadingHeight = this.state.height - APP_BAR_HEIGHT < 0 ? 0 : this.state.height - APP_BAR_HEIGHT;
+        let labelLoadingHeight = windowHeight - APP_BAR_HEIGHT < 0 ? 0 : windowHeight - APP_BAR_HEIGHT;
         //Calculate number of loading rects
         let possibleLength = Math.floor(labelLoadingHeight / (SPACE_USED));
         let loadingArrLength = possibleLength < 0 ? 0 : possibleLength;
@@ -121,56 +117,111 @@ class DrawerContentWrapper extends React.Component {
         return (
             <div>
                 {
-                    isUserInitializing ? 
-                    <div className={classes.loadingToolbar}>
-                        <ContentLoaderWrapper 
-                            visible={isUserInitializing && drawerOpen} 
-                            height={USER_LOADER_HEIGHT}
-                            width={DRAWER_WIDTH}
-                            speed={USER_LOADER_SPEED}
-                            svgElements={[
-                                <circle key={"circle1"} cx={CIRCLE_START_X} cy={CIRCLE_START_Y} r={USER_CIRCLE_R} />,
-                                <rect key={"longRect1"} x={RECT_X} y={LONG_RECT_START_Y} rx={LOADER_RECT_RX} ry={LOADER_RECT_RY} width={LONG_RECT_WIDTH} height={LONG_RECT_HEIGHT} />,
-                                <rect key={"shortRect1"} x={RECT_X} y={SHORT_RECT_START_Y} rx={LOADER_RECT_RX} ry={LOADER_RECT_RY} width={SHORT_RECT_WIDTH} height={SHORT_RECT_HEIGHT} />
-                            ]}
-                        />
-                    </div>
-                    :
-                    <div className={classes.toolbar}>
-                        <div className={classes.toolbarUserInfo}>
-                            <Avatar alt="User Avatar" src={USER_THUMBNAIL_URL} className={classes.avatar} />
-                            <Typography variant="subtitle1" >
-                                {username}
-                            </Typography>
+                    isUserInitializing ?
+                        <div className={classes.loadingToolbar} >
+                            <ContentLoaderWrapper
+                                visible={isUserInitializing && drawerOpen}
+                                height={USER_LOADER_HEIGHT}
+                                width={DRAWER_WIDTH}
+                                speed={USER_LOADER_SPEED}
+                                svgElements={
+                                    [
+                                        <circle
+                                            key={"circle1"}
+                                            cx={CIRCLE_START_X}
+                                            cy={CIRCLE_START_Y}
+                                            r={USER_CIRCLE_R}
+                                        />,
+                                        <rect
+                                            key={"longRect1"}
+                                            x={RECT_X}
+                                            y={LONG_RECT_START_Y}
+                                            rx={LOADER_RECT_RX}
+                                            ry={LOADER_RECT_RY}
+                                            width={LONG_RECT_WIDTH}
+                                            height={LONG_RECT_HEIGHT}
+                                        />,
+                                        <rect
+                                            key={"shortRect1"}
+                                            x={RECT_X}
+                                            y={SHORT_RECT_START_Y}
+                                            rx={LOADER_RECT_RX}
+                                            ry={LOADER_RECT_RY}
+                                            width={SHORT_RECT_WIDTH}
+                                            height={SHORT_RECT_HEIGHT}
+                                        />
+                                    ]
+                                }
+                            />
                         </div>
-                        <IconButton onClick={handleDrawerClose}>
-                            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                        </IconButton>
-                    </div>
+                        :
+                        <div className={classes.toolbar}>
+                            <div className={classes.toolbarUserInfo}>
+                                <Avatar
+                                    alt="User Avatar"
+                                    src={USER_THUMBNAIL_PATH}
+                                    className={classes.avatar}
+                                />
+                                <Typography variant="subtitle1">{username}</Typography>
+                            </div>
+                            <IconButton onClick={handleDrawerClose} >
+                                {theme.direction === 'rtl' ? < ChevronRightIcon /> : < ChevronLeftIcon />}
+                            </IconButton>
+                        </div>
                 }
                 <Divider />
                 <div>
                     <List>
-                        <ListItem button onClick={this.handleCategoriesClick} className={isLabelsInitializing ? classes.hidden : null}>
-                            <ListItemIcon>
+                        <ListItem
+                            button
+                            onClick={this.handleCategoriesClick}
+                            className={isLabelsInitializing ? classes.hidden : null}
+                        >
+                            <ListItemIcon >
                                 <CategoryIcon />
                             </ListItemIcon>
-                            <ListItemText inset primary="Categories" />
-                            {this.state.categoriesOpen ? <ExpandLess /> : <ExpandMore />}
+                            <ListItemText
+                                inset
+                                primary="Categories"
+                            />
+                            {
+                                this.state.categoriesOpen ? < ExpandLess /> : < ExpandMore />
+                            }
                         </ListItem>
                         <Collapse in={this.state.categoriesOpen} timeout="auto" >
-                            <ContentLoaderWrapper 
-                                visible={isLabelsInitializing && drawerOpen} 
+                            <ContentLoaderWrapper
+                                visible={isLabelsInitializing && drawerOpen}
                                 height={labelLoadingHeight}
                                 width={DRAWER_WIDTH}
                                 speed={LABEL_LOADER_SPEED}
                                 svgElements={
-                                    Array(loadingArrLength).fill().map(function(el, i) {
+                                    Array(loadingArrLength).fill().map(function (el, i) {
                                         let adjustedSpace = SPACE_USED * i;
                                         return [
-                                                <circle key={"circle" + i} cx={CIRCLE_START_X} cy={CIRCLE_START_Y + adjustedSpace} r={CIRCLE_R} />,
-                                                <rect key={"longRect" + i} x={RECT_X} y={LONG_RECT_START_Y + adjustedSpace} rx={LOADER_RECT_RX} ry={LOADER_RECT_RY} width={LONG_RECT_WIDTH} height={LONG_RECT_HEIGHT} />,
-                                                <rect key={"shortRect" + i} x={RECT_X} y={SHORT_RECT_START_Y + adjustedSpace} rx={LOADER_RECT_RX} ry={LOADER_RECT_RY} width={SHORT_RECT_WIDTH} height={SHORT_RECT_HEIGHT} />
+                                            <circle
+                                                key={"circle" + i}
+                                                cx={CIRCLE_START_X}
+                                                cy={CIRCLE_START_Y + adjustedSpace}
+                                                r={CIRCLE_R}
+                                            />,
+                                            <rect
+                                                key={"longRect" + i}
+                                                x={RECT_X}
+                                                y={LONG_RECT_START_Y + adjustedSpace}
+                                                rx={LOADER_RECT_RX}
+                                                ry={LOADER_RECT_RY}
+                                                width={LONG_RECT_WIDTH}
+                                                height={LONG_RECT_HEIGHT}
+                                            />,
+                                            <rect
+                                                key={"shortRect" + i}
+                                                x={RECT_X}
+                                                y={SHORT_RECT_START_Y + adjustedSpace}
+                                                rx={LOADER_RECT_RX}
+                                                ry={LOADER_RECT_RY}
+                                                width={SHORT_RECT_WIDTH}
+                                                height={SHORT_RECT_HEIGHT}
+                                            />
                                         ];
                                     }).flat()
                                 }
@@ -197,7 +248,10 @@ DrawerContentWrapper.propTypes = {
     drawerOpen: PropTypes.bool.isRequired,
     isLabelsInitializing: PropTypes.bool.isRequired,
     isUserInitializing: PropTypes.bool.isRequired,
-    handleDrawerClose: PropTypes.func.isRequired
+    handleDrawerClose: PropTypes.func.isRequired,
+    windowHeight: PropTypes.number.isRequired
 };
 
-export default withStyles(styles, { withTheme: true })(DrawerContentWrapper);
+export default withStyles(styles, {
+    withTheme: true
+})(DrawerContentWrapper);

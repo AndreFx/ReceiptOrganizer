@@ -22,7 +22,7 @@ function labels(state = {
         isInitializing: false,
         isLoading: false,
         items: []
-    }, 
+    },
     action
 ) {
     switch (action.type) {
@@ -57,7 +57,7 @@ function labels(state = {
                     isLoading: false,
                     items: [
                         ...state.items.filter(function(value, index, arr) {
-                            return value.name !== action.label.name
+                            return value.name !== action.label.name;
                         })
                     ]
                 });
