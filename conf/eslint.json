@@ -9,5 +9,26 @@
     "parser": "babel-eslint",
     "rules": {
         "semi": 2
-    }
+    },
+    "plugins": [
+        "prettier"
+    ],
+    "env": {
+        "browser": true
+    },
+    "settings": {
+        "react": {
+            "createClass": "createReactClass",
+            "pragma": "React",
+            "version": "16.6"
+        },
+        "propWrapperFunctions": [
+            "forbidExtraProps"
+        ]
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "plugin:prettier/recommended",
+        "prettier/react"
+    ]
 }

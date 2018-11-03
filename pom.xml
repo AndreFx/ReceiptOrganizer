@@ -17,145 +17,189 @@
 		</repository>
 	</repositories>
 
+	<properties>
+		<!-- Project properties -->
+		<directory.sass.theme1>/src/main/webapp/resources/theme1/scss</directory.sass.theme1>
+		<directory.css.theme1>/resources/theme1/css</directory.css.theme1>
+
+		<!-- Versions -->
+		<java.version>1.8</java.version>
+		<javax.version>7.0</javax.version>
+		<log4j.version>2.8.2</log4j.version>
+		<spring.version>5.0.9.RELEASE</spring.version>
+		<spring.data.version>2.1.1.RELEASE</spring.data.version>
+		<spring.ldap.version>2.3.2.RELEASE</spring.ldap.version>
+		<jackson.version>2.9.7</jackson.version>
+		<google.vision.version>1.14.0</google.vision.version>
+		<commons.lang.version>3.6</commons.lang.version>
+		<commons.codec.version>1.10</commons.codec.version>
+		<commons.fileupload.version>1.3.1</commons.fileupload.version>
+		<commons.io.version>2.4</commons.io.version>
+		<jstl.version>1.2</jstl.version>
+		<hibernate.version>6.0.0.Final</hibernate.version>
+		<mssql.jdbc.version>6.2.1.jre8</mssql.jdbc.version>
+		<jai.core.version>1.1.3</jai.core.version>
+		<levigo.version>1.6.5</levigo.version>
+		<icepdf.version>6.2.2</icepdf.version>
+		<servlet.api.version>3.1.0</servlet.api.version>
+		<hamcrest.version>1.3</hamcrest.version>
+		<junit.version>4.12</junit.version>
+		<mockito.version>2.16.0</mockito.version>
+		<jsonpath.version>2.4.0</jsonpath.version>
+		<jsonpath.assert.version>2.4.0</jsonpath.assert.version>
+		<slf4j.version>1.7.25</slf4j.version>
+
+		<!-- Plugin versions -->
+		<plugin.compiler.version>3.6.1</plugin.compiler.version>
+		<plugin.clean.version>3.1.0</plugin.clean.version>
+		<plugin.sass.version>3.5.5</plugin.sass.version>
+		<plugin.frontend.version>1.6</plugin.frontend.version>
+		<node.version>v10.11.0</node.version>
+		<npm.version>6.4.1</npm.version>
+		<plugin.war.version>3.0.0</plugin.war.version>
+		<plugin.wildfly.version>1.2.2.Final</plugin.wildfly.version>
+		<plugin.surefire.version>2.22.1</plugin.surefire.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
-			<version>7.0</version>
+			<version>${javax.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.8.2</version>
+			<version>${log4j.version}</version>
 		</dependency>
 
 		<!-- Spring dependencies -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>5.0.9.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>5.0.9.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons</artifactId>
-			<version>2.1.1.RELEASE</version>
+			<version>${spring.data.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>5.0.9.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.ldap</groupId>
 			<artifactId>spring-ldap-core</artifactId>
-			<version>2.3.2.RELEASE</version>
+			<version>${spring.ldap.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>5.0.8.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-ldap</artifactId>
-			<version>5.0.8.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
-			<version>5.0.8.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
-			<version>5.0.8.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.9.7</version>
+			<version>${jackson.version}</version>
 		</dependency>
 
 		<!-- Other Dependencies -->
 		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-vision</artifactId>
-			<version>1.14.0</version>
+			<version>${google.vision.version}</version>
 		</dependency>
         <dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.6</version>
+			<version>${commons.lang.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.10</version>
+			<version>${commons.codec.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.3.1</version>
+			<version>${commons.fileupload.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
+			<version>${commons.io.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<version>1.2</version>
+			<version>${jstl.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
+			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>6.0.0.Final</version>
+			<version>${hibernate.version}</version>
 		</dependency>
 		<dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>6.2.1.jre8</version>
+            <version>${mssql.jdbc.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.media</groupId>
             <artifactId>jai_core</artifactId>
-            <version>1.1.3</version>
+            <version>${jai.core.version}</version>
         </dependency>
 		<dependency>
 			<groupId>com.levigo.jbig2</groupId>
 			<artifactId>levigo-jbig2-imageio</artifactId>
-			<version>1.6.5</version>
+			<version>${levigo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.icepdf.os</groupId>
 			<artifactId>icepdf-core</artifactId>
-			<version>6.2.2</version>
+			<version>${icepdf.version}</version>
 		</dependency>
 
 		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
+			<version>${servlet.api.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-all</artifactId>
-			<version>1.3</version>
+			<version>${hamcrest.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -167,31 +211,31 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>2.16.0</version>
+			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
-			<version>2.4.0</version>
+			<version>${jsonpath.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path-assert</artifactId>
-			<version>2.4.0</version>
+			<version>${jsonpath.assert.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.25</version>
+			<version>${slf4j.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>5.0.0.RELEASE</version>
+			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -199,21 +243,21 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.1</version>
+				<version>${plugin.compiler.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>${plugin.clean.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>nl.geodienstencentrum.maven</groupId>
 				<artifactId>sass-maven-plugin</artifactId>
-				<version>3.5.5</version>
+				<version>${plugin.sass.version}</version>
 				<executions>
 					<execution>
 						<id>generate-css</id>
@@ -225,8 +269,8 @@
 							<sassOptions>
 								<always_update>true</always_update>
 							</sassOptions>
-							<sassSourceDirectory>${project.basedir}/src/main/webapp/resources/theme1/scss</sassSourceDirectory>
-							<destination>${project.build.directory}/${project.build.finalName}/resources/theme1/css</destination>
+							<sassSourceDirectory>${project.basedir}${directory.sass.theme1}</sassSourceDirectory>
+							<destination>${project.build.directory}/${project.build.finalName}${directory.css.theme1}</destination>
 						</configuration>
 					</execution>
 				</executions>
@@ -234,7 +278,7 @@
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
-				<version>1.6</version>
+				<version>${plugin.frontend.version}</version>
 				<configuration>
 					<installDirectory>target</installDirectory>
 				</configuration>
@@ -245,8 +289,8 @@
 							<goal>install-node-and-npm</goal>
 						</goals>
 						<configuration>
-							<nodeVersion>v10.11.0</nodeVersion>
-							<npmVersion>6.4.1</npmVersion>
+							<nodeVersion>${node.version}</nodeVersion>
+							<npmVersion>${npm.version}</npmVersion>
 						</configuration>
 					</execution>
 					<execution>
@@ -264,14 +308,14 @@
 							<goal>webpack</goal>
 						</goals>
 						<configuration>
-							<arguments>--config webpack.dev.js</arguments>
+							<arguments>--config ${webpack-config}</arguments>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>${plugin.war.version}</version>
 				<configuration>
 					<warSourceExcludes>/resources/theme1/scss/**</warSourceExcludes>
 				</configuration>
@@ -279,7 +323,7 @@
 			<plugin>
 				<groupId>org.wildfly.plugins</groupId>
 				<artifactId>wildfly-maven-plugin</artifactId>
-				<version>1.2.2.Final</version>
+				<version>${plugin.wildfly.version}</version>
 				<configuration>
 					<username>${jboss-username}</username>
 					<password>${jboss-password}</password>
@@ -290,13 +334,25 @@
 	</build>
 	<profiles>
 		<profile>
+            <id>dev</id>
+            <properties>
+                <webpack-config>webpack.dev.js</webpack-config>
+            </properties>
+        </profile>
+		<profile>
+            <id>prod</id>
+            <properties>
+                <webpack-config>webpack.prod.js</webpack-config>
+            </properties>
+        </profile>
+		<profile>
 			<id>pipeline-test</id>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
-						<version>2.22.1</version>
+						<version>${plugin.surefire.version}</version>
 						<configuration>
 							<useSystemClassLoader>false</useSystemClassLoader>
 						</configuration>
@@ -311,7 +367,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
-						<version>2.22.1</version>
+						<version>${plugin.surefire.version}</version>
 						<configuration>
 							<useSystemClassLoader>false</useSystemClassLoader>
 							<environmentVariables>

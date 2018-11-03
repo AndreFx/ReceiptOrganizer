@@ -1,107 +1,120 @@
 //Custom imports
 import {
-    GET_RECEIPTS_PATH,
-    ADD_ACTIVE_LABEL,
-    REMOVE_ACTIVE_LABEL,
-    SERVER_ERROR,
-    ERROR_SNACKBAR,
-    EDIT_ACTIVE_LABEL,
-    SNACKBAR_AUTOHIDE_DURATION_DEFAULT
-} from '../../../common/constants';
+  GET_RECEIPTS_PATH,
+  ADD_ACTIVE_LABEL,
+  REMOVE_ACTIVE_LABEL,
+  SERVER_ERROR,
+  ERROR_SNACKBAR,
+  EDIT_ACTIVE_LABEL,
+  SNACKBAR_AUTOHIDE_DURATION_DEFAULT
+} from "../../../common/constants";
 import {
-    requestAddActiveLabel,
-    requestRemoveActiveLabel,
-    receiveAddActiveLabel,
-    receiveRemoveActiveLabel,
-    requestEditActiveLabel,
-    receiveEditActiveLabel
-} from './activeLabelsActions';
-import {
-    addSnackbar
-} from '../ui/snackbar/snackbarActions';
+  requestAddActiveLabel,
+  requestRemoveActiveLabel,
+  receiveAddActiveLabel,
+  receiveRemoveActiveLabel,
+  requestEditActiveLabel,
+  receiveEditActiveLabel
+} from "./activeLabelsActions";
+import { addSnackbar } from "../ui/snackbar/snackbarActions";
 import doFetch, {
-    checkResponseStatus
-} from '../../../common/utils/fetchService';
+  checkResponseStatus
+} from "../../../common/utils/fetchService";
 
-export function updateActiveLabels(action, label, newLabel, query, activeLabels, currentPage, csrfHeaderName, csrfToken) {
-    return function(dispatch) {
-        let requestActionCreator = null;
-        let responseActionCreator = null;
-        let url = new URL('https://' + window.location.host + GET_RECEIPTS_PATH);
-        let params = {
-            query: query,
-            pageNum: currentPage
-        };
+export function updateActiveLabels(
+  action,
+  label,
+  newLabel,
+  query,
+  activeLabels,
+  currentPage,
+  csrfHeaderName,
+  csrfToken
+) {
+  return function(dispatch) {
+    let requestActionCreator = null;
+    let responseActionCreator = null;
+    let url = new URL("https://" + window.location.host + GET_RECEIPTS_PATH);
+    let params = {
+      query: query,
+      pageNum: currentPage
+    };
 
-        if (action === ADD_ACTIVE_LABEL) {
-            requestActionCreator = requestAddActiveLabel;
-            responseActionCreator = receiveAddActiveLabel;
-            params.activeLabelNames = [
-                ...activeLabels.map(function(el) {
-                    return el.name;
-                }),
-                label.name
-            ];
-        } else if (action === REMOVE_ACTIVE_LABEL) {
-            requestActionCreator = requestRemoveActiveLabel;
-            responseActionCreator = receiveRemoveActiveLabel;
-            params.activeLabelNames = [
-                ...activeLabels.map(function(el) {
-                    return el.name;
-                })
-                .filter(function(name, ind, arr) {
-                    return name !== label.name;
-                })
-            ];
-        } else if (action === EDIT_ACTIVE_LABEL) {
-            requestActionCreator = requestEditActiveLabel;
-            responseActionCreator = receiveEditActiveLabel;
-            params.activeLabelNames = [
-                ...activeLabels.map(function(el, ind, arr) {
-                    return el.name === label.name ? newLabel.name : el.name;
-                })
-            ];
+    if (action === ADD_ACTIVE_LABEL) {
+      requestActionCreator = requestAddActiveLabel;
+      responseActionCreator = receiveAddActiveLabel;
+      params.activeLabelNames = [
+        ...activeLabels.map(function(el) {
+          return el.name;
+        }),
+        label.name
+      ];
+    } else if (action === REMOVE_ACTIVE_LABEL) {
+      requestActionCreator = requestRemoveActiveLabel;
+      responseActionCreator = receiveRemoveActiveLabel;
+      params.activeLabelNames = [
+        ...activeLabels
+          .map(function(el) {
+            return el.name;
+          })
+          .filter(function(name, ind, arr) {
+            return name !== label.name;
+          })
+      ];
+    } else if (action === EDIT_ACTIVE_LABEL) {
+      requestActionCreator = requestEditActiveLabel;
+      responseActionCreator = receiveEditActiveLabel;
+      params.activeLabelNames = [
+        ...activeLabels.map(function(el, ind, arr) {
+          return el.name === label.name ? newLabel.name : el.name;
+        })
+      ];
+    }
+
+    //Dispatch appropriate action
+    dispatch(requestActionCreator());
+
+    //Create full url
+    Object.keys(params).forEach(function(key) {
+      if (
+        params[key] &&
+        (Array.isArray(params[key]) && params[key].length != 0)
+      ) {
+        url.searchParams.append(key, params[key]);
+      }
+    });
+    return doFetch(GET_RECEIPTS_PATH, null, url)
+      .then(function(response) {
+        checkResponseStatus(response);
+        return response.json();
+      })
+      .then(function(json) {
+        if (action !== EDIT_ACTIVE_LABEL) {
+          dispatch(responseActionCreator(label, json.success, json.message));
+        } else {
+          dispatch(
+            responseActionCreator(newLabel, label, json.success, json.message)
+          );
         }
 
-        //Dispatch appropriate action
-        dispatch(requestActionCreator());
+        return Promise.resolve(json);
+      })
+      .catch(function(error) {
+        let newSnackbar = {
+          msg: SERVER_ERROR,
+          variant: ERROR_SNACKBAR,
+          actions: [],
+          handlers: [],
+          handlerParams: [],
+          autohideDuration: SNACKBAR_AUTOHIDE_DURATION_DEFAULT
+        };
 
-        //Create full url
-        Object.keys(params).forEach(function(key) {
-            if (params[key] && (Array.isArray(params[key]) && params[key].length != 0)) {
-                url.searchParams.append(key, params[key]);
-            }
-        });
-        return doFetch(GET_RECEIPTS_PATH, null, url)
-            .then(function(response) {
-                checkResponseStatus(response);
-                return response.json();
-            })
-            .then(function(json) {
-                if (action !== EDIT_ACTIVE_LABEL) {
-                    dispatch(responseActionCreator(label, json.success, json.message));
-                } else {
-                    dispatch(responseActionCreator(newLabel, label, json.success, json.message));
-                }
-
-                return Promise.resolve(json);
-            })
-            .catch(function(error) {
-                let newSnackbar = {
-                    msg: SERVER_ERROR,
-                    variant: ERROR_SNACKBAR,
-                    actions: [],
-                    handlers: [],
-                    handlerParams: [],
-                    autohideDuration: SNACKBAR_AUTOHIDE_DURATION_DEFAULT
-                };
-
-                if (action !== EDIT_ACTIVE_LABEL) {
-                    dispatch(responseActionCreator(label, false, SERVER_ERROR));
-                } else {
-                    dispatch(responseActionCreator(newLabel, label, false, SERVER_ERROR));
-                }
-                dispatch(addSnackbar(newSnackbar));
-            });
-    };
+        if (action !== EDIT_ACTIVE_LABEL) {
+          dispatch(responseActionCreator(label, false, SERVER_ERROR));
+        } else {
+          dispatch(responseActionCreator(newLabel, label, false, SERVER_ERROR));
+        }
+        dispatch(addSnackbar(newSnackbar));
+      });
+  };
 }

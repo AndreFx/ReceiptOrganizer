@@ -1,30 +1,20 @@
 module.exports = function(grunt) {
-    grunt.loadNpmTasks('grunt-eslint');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-prettier');
+  grunt.loadNpmTasks("grunt-eslint");
+  grunt.loadNpmTasks("grunt-contrib-watch");
 
-    const targetFiles = [
-        'Gruntfile.js',
-        'src/**/*.js',
-        '!**/built/**'
-    ];
+  const targetFiles = ["Gruntfile.js", "src/**/*.js", "!**/built/**"];
 
-    grunt.initConfig({
-        eslint: {
-            options: {
-                configFile: 'conf/eslint.json'
-            },
-            target: targetFiles
-        },
-        prettier: {
-            files: targetFiles,
-            options: {
-                progress: true
-            }
-        },
-        watch: {
-            files: targetFiles,
-            tasks: ['eslint']
-        }
-    });
+  grunt.initConfig({
+    eslint: {
+      options: {
+        configFile: "conf/eslint.json"
+        // fix: true
+      },
+      target: targetFiles
+    },
+    watch: {
+      files: targetFiles,
+      tasks: ["eslint"]
+    }
+  });
 };

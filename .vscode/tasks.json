@@ -4,13 +4,6 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "package",
-            "command": "mvn package -Dmaven.test.skip=true",
-            "isShellCommand": true,
-            "showOutput": "always",
-            "problemMatcher": []
-        },
-        {
             "label": "client-build",
             "command": "npm run build && cp -TR ./src/main/webapp/resources/theme1/js/ ./target/ReceiptOrganizer-1.0.2-SNAPSHOT/Resources/theme1/js",
             "isShellCommand": true,
@@ -26,14 +19,21 @@
         },
         {
             "label": "full-build",
-            "command": "TASKKILL //F //IM node.exe; mvn clean install -Dmaven.test.skip=true",
+            "command": "TASKKILL //F //IM node.exe; mvn clean install -P dev -Dmaven.test.skip=true",
+            "isShellCommand": true,
+            "showOutput": "always",
+            "problemMatcher": []
+        },
+        {
+            "label": "full-build-prod",
+            "command": "TASKKILL //F //IM node.exe; mvn clean install -P prod -Dmaven.test.skip=true",
             "isShellCommand": true,
             "showOutput": "always",
             "problemMatcher": []
         },
         {
             "label": "test",
-            "command": "mvn clean test -P local-test",
+            "command": "mvn clean test -P local-test,dev",
             "isShellCommand": true,
             "showOutput": "always"
         },
@@ -76,13 +76,6 @@
             "dependsOn": [
                 "full-build-prod"
             ]
-        },
-        {
-            "label": "beautify",
-            "command": "js-beautify -r ../ReceiptOrganizer/src/main/webapp/resources/theme1/js/*.js",
-            "isShellCommand": true,
-            "showOutput": "always",
-            "problemMatcher": []
         },
         {
             "label": "run debug",
