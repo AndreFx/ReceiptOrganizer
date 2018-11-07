@@ -7,11 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.afx.web.receiptorganizer.receipts.types.responses.ReceiptsPage;
-import com.afx.web.receiptorganizer.types.Label;
-import com.afx.web.receiptorganizer.types.Receipt;
-import com.afx.web.receiptorganizer.types.ReceiptFile;
-import com.afx.web.receiptorganizer.types.ReceiptItem;
+import com.afx.web.receiptorganizer.rest.model.response.receipt.ReceiptPage;
+import com.afx.web.receiptorganizer.dao.model.label.Label;
+import com.afx.web.receiptorganizer.dao.model.receipt.Receipt;
+import com.afx.web.receiptorganizer.dao.model.receipt.ReceiptFile;
+import com.afx.web.receiptorganizer.dao.model.receipt.ReceiptItem;
+import com.afx.web.receiptorganizer.dao.receipt.mapper.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -304,8 +305,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
         return receiptFile;
     }
 
-    public ReceiptsPage getRangeUserReceipts(String username, String searchQuery, List<String> labelNames, int start, int numRows) {
-        ReceiptsPage receiptsPage = null;
+    public ReceiptPage getRangeUserReceipts(String username, String searchQuery, List<String> labelNames, int start, int numRows) {
+        ReceiptPage receiptsPage = null;
         if (searchQuery.equals("")) {
             StringBuilder temp = new StringBuilder(searchQuery);
             temp.insert(0, '%');
@@ -348,7 +349,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
                     "ON TOP_RECEIPTS.ReceiptId = RECEIPT_ITEM.ReceiptId " +
                     "ORDER BY TOP_RECEIPTS.Title";
 
-            receiptsPage = this.jdbcTemplate.query(sqlQuery, parameters, new ReceiptsPageResultSetExtractor());
+            receiptsPage = this.jdbcTemplate.query(sqlQuery, parameters, new ReceiptPageResultSetExtractor());
         } catch(DataAccessException e) {
             logger.error("Unable to fetch user receipts from the database: " + e.getMessage());
             throw e;

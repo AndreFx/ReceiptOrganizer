@@ -33,7 +33,7 @@
         },
         {
             "label": "test",
-            "command": "mvn clean test -P local-test,dev",
+            "command": "TASKKILL //F //IM node.exe; mvn clean test -P local-test,dev",
             "isShellCommand": true,
             "showOutput": "always"
         },
@@ -59,7 +59,7 @@
         },
         {
             "label": "deploy-build full",
-            "command": "cp -TR target/ReceiptOrganizer-1.0.2-SNAPSHOT ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war && rm ../../jboss-eap-7.0/standalone/deployments/*.deployed && touch ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war.dodeploy",
+            "command": "rm -rf ../../jboss-eap-7.0/standalone/deployments/*.deployed && cp -TR target/ReceiptOrganizer-1.0.2-SNAPSHOT ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war && touch ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war.dodeploy",
             "isShellCommand": true,
             "showOutput": "always",
             "problemMatcher": [],
@@ -69,7 +69,7 @@
         },
         {
             "label": "deploy-build-prod full",
-            "command": "cp -TR target/ReceiptOrganizer-1.0.2-SNAPSHOT ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war && rm ../../jboss-eap-7.0/standalone/deployments/*.deployed && touch ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war.dodeploy",
+            "command": "rm -rf ../../jboss-eap-7.0/standalone/deployments/*.deployed && cp -TR target/ReceiptOrganizer-1.0.2-SNAPSHOT ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war && touch ../../jboss-eap-7.0/standalone/deployments/ReceiptOrganizer-1.0.2-SNAPSHOT.war.dodeploy",
             "isShellCommand": true,
             "showOutput": "always",
             "problemMatcher": [],

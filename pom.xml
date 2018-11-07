@@ -24,7 +24,7 @@
 
 		<!-- Versions -->
 		<java.version>1.8</java.version>
-		<javax.version>7.0</javax.version>
+		<javaee.version>7.0</javaee.version>
 		<log4j.version>2.8.2</log4j.version>
 		<spring.version>5.0.9.RELEASE</spring.version>
 		<spring.data.version>2.1.1.RELEASE</spring.data.version>
@@ -36,7 +36,10 @@
 		<commons.fileupload.version>1.3.1</commons.fileupload.version>
 		<commons.io.version>2.4</commons.io.version>
 		<jstl.version>1.2</jstl.version>
-		<hibernate.version>6.0.0.Final</hibernate.version>
+		<javax.el-api.version>3.0.0</javax.el-api.version>
+		<javax.el.version>2.2.6</javax.el.version>
+		<javax.validation.version>1.1.0.Final</javax.validation.version>
+		<hibernate.version>5.4.2.Final</hibernate.version>
 		<mssql.jdbc.version>6.2.1.jre8</mssql.jdbc.version>
 		<jai.core.version>1.1.3</jai.core.version>
 		<levigo.version>1.6.5</levigo.version>
@@ -65,7 +68,7 @@
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
-			<version>${javax.version}</version>
+			<version>${javaee.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -158,9 +161,29 @@
 			<version>${jstl.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate.validator</groupId>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>${javax.validation.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator-annotation-processor</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.web</groupId>
+			<artifactId>javax.el</artifactId>
+			<version>${javax.el.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>javax.el-api</artifactId>
+			<version>${javax.el-api.version}</version>
 		</dependency>
 		<dependency>
             <groupId>com.microsoft.sqlserver</groupId>

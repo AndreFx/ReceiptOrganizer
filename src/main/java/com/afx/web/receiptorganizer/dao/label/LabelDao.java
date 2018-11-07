@@ -1,6 +1,6 @@
 package com.afx.web.receiptorganizer.dao.label;
 
-import com.afx.web.receiptorganizer.types.Label;
+import com.afx.web.receiptorganizer.dao.model.label.Label;
 
 import java.util.List;
 

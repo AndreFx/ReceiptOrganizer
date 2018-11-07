@@ -1,6 +1,7 @@
 package com.afx.web.receiptorganizer.dao.user;
 
-import com.afx.web.receiptorganizer.types.User;
+import com.afx.web.receiptorganizer.dao.model.user.User;
+import com.afx.web.receiptorganizer.dao.user.mapper.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

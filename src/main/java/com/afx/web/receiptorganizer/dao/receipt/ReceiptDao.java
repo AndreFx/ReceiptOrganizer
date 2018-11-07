@@ -2,9 +2,9 @@ package com.afx.web.receiptorganizer.dao.receipt;
 
 import java.util.List;
 
-import com.afx.web.receiptorganizer.receipts.types.responses.ReceiptsPage;
-import com.afx.web.receiptorganizer.types.Receipt;
-import com.afx.web.receiptorganizer.types.ReceiptFile;
+import com.afx.web.receiptorganizer.rest.model.response.receipt.ReceiptPage;
+import com.afx.web.receiptorganizer.dao.model.receipt.Receipt;
+import com.afx.web.receiptorganizer.dao.model.receipt.ReceiptFile;
 
 public interface ReceiptDao {
 
@@ -20,6 +20,6 @@ public interface ReceiptDao {
 
     ReceiptFile getReceiptThumbnail(String username, int receiptId);
 
-    ReceiptsPage getRangeUserReceipts(String username, String searchQuery, List<String> labelNames, int start, int numRows);
+    ReceiptPage getRangeUserReceipts(String username, String searchQuery, List<String> labelNames, int start, int numRows);
 
 }
