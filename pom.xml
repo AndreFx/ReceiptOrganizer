@@ -348,6 +348,7 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>${plugin.war.version}</version>
 				<executions>
@@ -421,7 +422,7 @@
 						<version>${plugin.surefire.version}</version>
 						<configuration>
 							<useSystemClassLoader>false</useSystemClassLoader>
-							<outputDirectory>${basedir}/target/reports/junit</outputDirectory>
+							<reportsDirectory>${basedir}/target/reports/junit</reportsDirectory>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -437,7 +438,7 @@
 						<version>${plugin.surefire.version}</version>
 						<configuration>
 							<useSystemClassLoader>false</useSystemClassLoader>
-							<outputDirectory>${basedir}/target/reports/junit</outputDirectory>
+							<reportsDirectory>${basedir}/target/reports/junit</reportsDirectory>
 							<environmentVariables>
 								<SERVER_PORT>${server-port}</SERVER_PORT>
 								<DATABASE_NAME>${database-name}</DATABASE_NAME>

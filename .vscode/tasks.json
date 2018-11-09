@@ -33,7 +33,7 @@
         },
         {
             "label": "test",
-            "command": "TASKKILL //F //IM node.exe; mvn clean test -P local-test,dev; npm test",
+            "command": "TASKKILL //F //IM node.exe; mvn clean test -P local-test,dev",
             "isShellCommand": true,
             "showOutput": "always"
         },
