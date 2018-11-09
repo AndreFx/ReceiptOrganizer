@@ -7,8 +7,8 @@ module.exports = function(grunt) {
   grunt.initConfig({
     eslint: {
       options: {
-        configFile: "conf/eslint.json"
-        // fix: true
+        configFile: "conf/eslint.json",
+        fix: grunt.option("fix")
       },
       target: targetFiles
     },

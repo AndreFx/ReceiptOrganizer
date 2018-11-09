@@ -212,6 +212,7 @@ public class WebAppContextTests {
         verify(labelServiceMock, never()).addLabel(anyString(), any());
     }
 
+    //TODO: Check if I need throws exception
     @Test
     public void getLabels_shouldReturnAllUserLabels() throws Exception {
         //Setup

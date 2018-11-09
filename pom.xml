@@ -62,6 +62,7 @@
 		<plugin.war.version>3.0.0</plugin.war.version>
 		<plugin.wildfly.version>1.2.2.Final</plugin.wildfly.version>
 		<plugin.surefire.version>2.22.1</plugin.surefire.version>
+		<plugin.install.version>2.5.2</plugin.install.version>
 	</properties>
 
 	<dependencies>
@@ -326,6 +327,16 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>client tests</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<phase>test</phase>
+						<configuration>
+							<arguments>test</arguments>
+						</configuration>
+					</execution>
+					<execution>
 						<id>webpack build</id>
 						<goals>
 							<goal>webpack</goal>
@@ -339,9 +350,33 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>${plugin.war.version}</version>
+				<executions>
+					<execution>
+						<id>default-war</id>
+						<phase>${default-war-phase}</phase>
+					</execution>
+					<execution>
+						<id>war-exploded</id>
+						<phase>${war-exploded-phase}</phase>
+						<goals>
+							<goal>exploded</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
-					<warSourceExcludes>/resources/theme1/scss/**</warSourceExcludes>
+					<warSourceExcludes>${war-source-excludes}</warSourceExcludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>${plugin.install.version}</version>
+				<executions>
+					<execution>
+						<id>default-install</id>
+						<phase>${default-install-phase}</phase>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.wildfly.plugins</groupId>
@@ -360,12 +395,20 @@
             <id>dev</id>
             <properties>
                 <webpack-config>webpack.dev.js</webpack-config>
+				<default-war-phase>none</default-war-phase>
+				<war-exploded-phase>package</war-exploded-phase>
+				<war-source-excludes>resources/theme1/scss/,resources/theme1/js/test/,resources/theme1/js/app/,resources/theme1/js/login/,resources/theme1/js/common/</war-source-excludes>
+				<default-install-phase>none</default-install-phase>
             </properties>
         </profile>
 		<profile>
             <id>prod</id>
             <properties>
                 <webpack-config>webpack.prod.js</webpack-config>
+				<default-war-phase>package</default-war-phase>
+				<war-exploded-phase>none</war-exploded-phase>
+				<war-source-excludes>resources/theme1/scss/,resources/theme1/js/test/,resources/theme1/js/app/,resources/theme1/js/login/,resources/theme1/js/common/</war-source-excludes>
+				<default-install-phase>install</default-install-phase>
             </properties>
         </profile>
 		<profile>

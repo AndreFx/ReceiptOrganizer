@@ -1,4 +1,4 @@
-import fetch from "cross-fetch";
+import "cross-fetch";
 
 export function checkResponseStatus(response) {
   if (response.status != 200) {
