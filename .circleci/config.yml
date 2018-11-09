@@ -41,5 +41,5 @@ jobs:
       - run: mvn test -P pipeline-test,prod
 
       - store_artifacts:
-          path: /target/ReceiptOrganizer-1.0.2-SNAPSHOT.war
+          path: ~/repo/target/ReceiptOrganizer-1.0.2-SNAPSHOT.war
 
