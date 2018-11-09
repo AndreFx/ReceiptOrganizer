@@ -421,6 +421,7 @@
 						<version>${plugin.surefire.version}</version>
 						<configuration>
 							<useSystemClassLoader>false</useSystemClassLoader>
+							<outputDirectory>${basedir}/target/reports/junit</outputDirectory>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -436,6 +437,7 @@
 						<version>${plugin.surefire.version}</version>
 						<configuration>
 							<useSystemClassLoader>false</useSystemClassLoader>
+							<outputDirectory>${basedir}/target/reports/junit</outputDirectory>
 							<environmentVariables>
 								<SERVER_PORT>${server-port}</SERVER_PORT>
 								<DATABASE_NAME>${database-name}</DATABASE_NAME>
