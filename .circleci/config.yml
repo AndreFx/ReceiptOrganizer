@@ -38,7 +38,7 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run tests!
-      - run: mvn test install -P pipeline-test,prod
+      - run: mvn install -P pipeline-test,prod
 
       - store_artifacts:
           path: ~/repo/target/ReceiptOrganizer-1.0.2-SNAPSHOT.war
