@@ -17,6 +17,8 @@ function activeLabels(
         return Object.assign({}, state, {
           items: [...state.items, action.label]
         });
+      } else {
+        return state;
       }
     case RECEIVE_REMOVE_ACTIVE_LABEL:
       if (action.success) {
@@ -27,6 +29,8 @@ function activeLabels(
             })
           ]
         });
+      } else {
+        return state;
       }
     case RECEIVE_EDIT_ACTIVE_LABEL:
       if (action.success) {
@@ -39,6 +43,8 @@ function activeLabels(
             })
           ]
         });
+      } else {
+        return state;
       }
     default:
       return state;

@@ -16,14 +16,13 @@ function compare(a, b) {
   return 0;
 }
 
-function labels(
-  state = {
-    isInitializing: false,
-    isLoading: false,
-    items: []
-  },
-  action
-) {
+const initialState = {
+  isInitializing: false,
+  isLoading: false,
+  items: []
+};
+
+function labels(state = initialState, action) {
   switch (action.type) {
     case RECEIVE_LABELS:
       if (action.success) {
