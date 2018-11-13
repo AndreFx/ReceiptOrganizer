@@ -1,4 +1,4 @@
 module.exports = {
-  "reporters": [ "default", "jest-junit" ],
-  "rootDir": "../"
+  reporters: ["default", "jest-junit"],
+  rootDir: "../"
 };
