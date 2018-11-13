@@ -35,9 +35,11 @@
     "eslint-plugin-react": "^7.11.1",
     "fetch-mock": "^7.2.5",
     "grunt": "^1.0.3",
+    "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-jshint": "^2.0.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-eslint": "^21.0.0",
+    "grunt-shell": "^2.1.0",
     "jest": "^23.6.0",
     "jest-junit": "^5.2.0",
     "prettier": "^1.15.1",
@@ -54,7 +56,8 @@
     "test": "jest --config conf/jest.config.js --runInBand",
     "test:watch": "npm test -- --watch",
     "build": "webpack --config webpack.dev.js",
-    "build-prod": "webpack --config webpack.prod.js"
+    "build-prod": "webpack --config webpack.prod.js",
+    "postinstall": "grunt hookmeup"
   },
   "repository": {
     "type": "git",
