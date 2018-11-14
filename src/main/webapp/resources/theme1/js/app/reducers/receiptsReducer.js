@@ -8,12 +8,11 @@ import {
   RECEIVE_EDIT_ACTIVE_LABEL
 } from "../actions/receipts/activeLabelsActions";
 
-function receipts(
-  state = {
-    isLoading: false
-  },
-  action
-) {
+export const RECEIPTS_INITIAL_STATE = {
+  isLoading: false
+};
+
+function receipts(state = RECEIPTS_INITIAL_STATE, action) {
   switch (action.type) {
     case REQUEST_ADD_ACTIVE_LABEL:
     case REQUEST_REMOVE_ACTIVE_LABEL:

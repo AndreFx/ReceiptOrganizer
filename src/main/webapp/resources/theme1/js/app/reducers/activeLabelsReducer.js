@@ -5,12 +5,11 @@ import {
   RECEIVE_EDIT_ACTIVE_LABEL
 } from "../actions/receipts/activeLabelsActions";
 
-function activeLabels(
-  state = {
-    items: []
-  },
-  action
-) {
+export const ACTIVE_LABELS_INITIAL_STATE = {
+  items: []
+};
+
+function activeLabels(state = ACTIVE_LABELS_INITIAL_STATE, action) {
   switch (action.type) {
     case RECEIVE_ADD_ACTIVE_LABEL:
       if (action.success) {

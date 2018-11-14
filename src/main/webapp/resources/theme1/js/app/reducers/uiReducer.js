@@ -10,14 +10,13 @@ import windowReducer, { WINDOW_INITIAL_STATE } from "./windowReducer";
 import { OPEN_DIALOG, CLOSE_DIALOG } from "../actions/ui/dialog/dialogActions";
 import { UPDATE_WINDOW_DIMENSIONS } from "../actions/ui/window/windowActions";
 
-function uiReducer(
-  state = {
-    snackbar: SNACKBAR_INITIAL_STATE,
-    dialog: DIALOG_INITIAL_STATE,
-    window: WINDOW_INITIAL_STATE
-  },
-  action
-) {
+export const UI_INITIAL_STATE = {
+  snackbar: SNACKBAR_INITIAL_STATE,
+  dialog: DIALOG_INITIAL_STATE,
+  window: WINDOW_INITIAL_STATE
+};
+
+function uiReducer(state = UI_INITIAL_STATE, action) {
   switch (action.type) {
     case PROCESS_SNACKBAR_QUEUE:
     case FINISH_CURRENT_SNACKBAR:
