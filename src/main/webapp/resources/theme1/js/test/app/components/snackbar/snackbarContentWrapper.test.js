@@ -1,6 +1,6 @@
 import React from "React";
 import Enzyme, { shallow, mount } from "enzyme";
-import { createShallow, createMount } from "@material-ui/core/test-utils"
+import { createShallow, createMount } from "@material-ui/core/test-utils";
 import Adapter from "enzyme-adapter-react-16";
 import SnackbarContentWrapper from "../../../../app/components/snackbar/SnackbarContentWrapper";
 import * as constants from "../../../../common/constants";
@@ -18,7 +18,7 @@ describe("SnackbarContentWrapper", function() {
 
   it("should render self and subcomponents", function() {
     const props = {
-      message: "Added categories!",
+      message: "Added category!",
       onClose: jest.fn(),
       variant: constants.SUCCESS_SNACKBAR,
       actions: [],
@@ -33,6 +33,8 @@ describe("SnackbarContentWrapper", function() {
 
     //Should only have close action
     expect(snackbarContentProps.action.length).toBe(1);
-    expect(enzymeWrapper.find("span#client-snackbar").text()).toEqual(props.message);
+    expect(enzymeWrapper.find("span#client-snackbar").text()).toEqual(
+      props.message
+    );
   });
 });

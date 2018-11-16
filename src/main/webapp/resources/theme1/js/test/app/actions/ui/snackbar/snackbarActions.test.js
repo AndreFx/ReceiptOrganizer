@@ -24,7 +24,7 @@ describe("snackbarActions", function() {
 
   describe("addSnackbar", function() {
     it("should create an action to add a new snackbar to the queue", function() {
-      const handler = (param) => {
+      const handler = param => {
         return param;
       };
       const newSnackbar = {

@@ -31,7 +31,8 @@ export function fetchUser() {
     //Notify that we are beginning a fetch
     dispatch(requestUser());
 
-    return fetchService.doFetch(GET_USER_PATH)
+    return fetchService
+      .doFetch(GET_USER_PATH)
       .then(function(response) {
         fetchService.checkResponseStatus(response);
         return response.json();

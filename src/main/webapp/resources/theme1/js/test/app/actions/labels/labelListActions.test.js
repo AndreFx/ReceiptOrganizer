@@ -11,12 +11,10 @@ const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
 
 describe("labelListActions", function() {
-
   const mockCSRFHeaderName = "CSRF_TOKEN";
   const mockCSRFToken = "MY_RANDOM_CSRF_TOKEN";
 
   describe("fetchLabels", function() {
-
     afterEach(function() {
       fetchMock.restore();
     });
@@ -122,9 +120,11 @@ describe("labelListActions", function() {
         }
       ];
 
-      const spy = jest.spyOn(fetchService, "checkResponseStatus").mockImplementation(() => {
-        throw new Error("Unable to parse response");
-      });
+      const spy = jest
+        .spyOn(fetchService, "checkResponseStatus")
+        .mockImplementation(() => {
+          throw new Error("Unable to parse response");
+        });
       fetchMock.getOnce(
         "https://" + window.location.host + constants.GET_LABELS_PATH,
         {
@@ -156,7 +156,7 @@ describe("labelListActions", function() {
     it("creates REQUEST and RECEIVE actions on success", function() {
       const mockLabel = { name: "MyTestLabelName" };
       const mockMsg = "Success";
-      const expectedState = { labels: [mockLabel]};
+      const expectedState = { labels: [mockLabel] };
       const expectedActions = [
         {
           type: actions.REQUEST_ADD_LABEL
@@ -193,9 +193,20 @@ describe("labelListActions", function() {
       );
       const store = mockStore({ labels: [] });
 
-      return store.dispatch(actions.addLabel(mockLabel, [], [], constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT, mockCSRFHeaderName, mockCSRFToken)).then(function() {
-        expect(store.getActions()).toEqual(expectedActions);
-      });
+      return store
+        .dispatch(
+          actions.addLabel(
+            mockLabel,
+            [],
+            [],
+            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
+            mockCSRFHeaderName,
+            mockCSRFToken
+          )
+        )
+        .then(function() {
+          expect(store.getActions()).toEqual(expectedActions);
+        });
     });
 
     it("creates an error snackbar on failure", function() {
@@ -238,9 +249,20 @@ describe("labelListActions", function() {
       );
       const store = mockStore({ labels: [] });
 
-      return store.dispatch(actions.addLabel(mockLabel, ["Retry"], [dummyHandler], constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT, mockCSRFHeaderName, mockCSRFToken)).then(function() {
-        expect(store.getActions()).toEqual(expectedActions);
-      });
+      return store
+        .dispatch(
+          actions.addLabel(
+            mockLabel,
+            ["Retry"],
+            [dummyHandler],
+            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
+            mockCSRFHeaderName,
+            mockCSRFToken
+          )
+        )
+        .then(function() {
+          expect(store.getActions()).toEqual(expectedActions);
+        });
     });
 
     it("handles errors in response processing", function() {
@@ -272,9 +294,11 @@ describe("labelListActions", function() {
         }
       ];
 
-      const spy = jest.spyOn(fetchService, "checkResponseStatus").mockImplementation(() => {
-        throw new Error("Unable to parse response");
-      });
+      const spy = jest
+        .spyOn(fetchService, "checkResponseStatus")
+        .mockImplementation(() => {
+          throw new Error("Unable to parse response");
+        });
       fetchMock.postOnce(
         "https://" + window.location.host + constants.ADD_LABEL_PATH,
         {
@@ -289,10 +313,21 @@ describe("labelListActions", function() {
       );
       const store = mockStore({ labels: [] });
 
-      return store.dispatch(actions.addLabel(mockLabel, ["Retry"], [dummyHandler], constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT, mockCSRFHeaderName, mockCSRFToken)).then(function() {
-        expect(store.getActions()).toEqual(expectedActions);
-        spy.mockRestore();
-      });
+      return store
+        .dispatch(
+          actions.addLabel(
+            mockLabel,
+            ["Retry"],
+            [dummyHandler],
+            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
+            mockCSRFHeaderName,
+            mockCSRFToken
+          )
+        )
+        .then(function() {
+          expect(store.getActions()).toEqual(expectedActions);
+          spy.mockRestore();
+        });
     });
   });
 
@@ -340,9 +375,13 @@ describe("labelListActions", function() {
       );
       const store = mockStore({ labels: [] });
 
-      return store.dispatch(actions.deleteLabel(mockLabel, mockCSRFHeaderName, mockCSRFToken)).then(function() {
-        expect(store.getActions()).toEqual(expectedActions);
-      });
+      return store
+        .dispatch(
+          actions.deleteLabel(mockLabel, mockCSRFHeaderName, mockCSRFToken)
+        )
+        .then(function() {
+          expect(store.getActions()).toEqual(expectedActions);
+        });
     });
 
     it("creates an error snackbar on failure", function() {
@@ -382,9 +421,13 @@ describe("labelListActions", function() {
       );
       const store = mockStore({ labels: [] });
 
-      return store.dispatch(actions.deleteLabel(mockLabel, mockCSRFHeaderName, mockCSRFToken)).then(function() {
-        expect(store.getActions()).toEqual(expectedActions);
-      });
+      return store
+        .dispatch(
+          actions.deleteLabel(mockLabel, mockCSRFHeaderName, mockCSRFToken)
+        )
+        .then(function() {
+          expect(store.getActions()).toEqual(expectedActions);
+        });
     });
 
     it("handles errors in response processing", function() {
@@ -413,9 +456,11 @@ describe("labelListActions", function() {
         }
       ];
 
-      const spy = jest.spyOn(fetchService, "checkResponseStatus").mockImplementation(() => {
-        throw new Error("Unable to parse response");
-      });
+      const spy = jest
+        .spyOn(fetchService, "checkResponseStatus")
+        .mockImplementation(() => {
+          throw new Error("Unable to parse response");
+        });
       fetchMock.postOnce(
         "https://" + window.location.host + constants.DELETE_LABEL_PATH,
         {
@@ -430,10 +475,14 @@ describe("labelListActions", function() {
       );
       const store = mockStore({ labels: [] });
 
-      return store.dispatch(actions.deleteLabel(mockLabel, mockCSRFHeaderName, mockCSRFToken)).then(function() {
-        expect(store.getActions()).toEqual(expectedActions);
-        spy.mockRestore();
-      });
+      return store
+        .dispatch(
+          actions.deleteLabel(mockLabel, mockCSRFHeaderName, mockCSRFToken)
+        )
+        .then(function() {
+          expect(store.getActions()).toEqual(expectedActions);
+          spy.mockRestore();
+        });
     });
   });
 
@@ -444,7 +493,7 @@ describe("labelListActions", function() {
 
     it("creates REQUEST and RECEIVE actions on edit success", function() {
       const mockLabel = { name: "MyTestLabelName" };
-      const newMockLabel = { name: "MyNewLabelName"};
+      const newMockLabel = { name: "MyNewLabelName" };
       const mockMsg = "Success";
       const expectedActions = [
         {
@@ -483,14 +532,26 @@ describe("labelListActions", function() {
       );
       const store = mockStore({ labels: [] });
 
-      return store.dispatch(actions.editLabel(newMockLabel, mockLabel, [], [], constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT, mockCSRFHeaderName, mockCSRFToken)).then(function() {
-        expect(store.getActions()).toEqual(expectedActions);
-      });
+      return store
+        .dispatch(
+          actions.editLabel(
+            newMockLabel,
+            mockLabel,
+            [],
+            [],
+            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
+            mockCSRFHeaderName,
+            mockCSRFToken
+          )
+        )
+        .then(function() {
+          expect(store.getActions()).toEqual(expectedActions);
+        });
     });
 
     it("creates an error snackbar on failure", function() {
       const mockLabel = { name: "MyTestLabelName" };
-      const newMockLabel = { name: "MyNewLabelName"};
+      const newMockLabel = { name: "MyNewLabelName" };
       const dummyFunc = function(param) {
         return null;
       };
@@ -530,14 +591,26 @@ describe("labelListActions", function() {
       );
       const store = mockStore({ labels: [] });
 
-      return store.dispatch(actions.editLabel(newMockLabel, mockLabel, [constants.SNACKBAR_ACTION_RETRY], [dummyFunc], constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT, mockCSRFHeaderName, mockCSRFToken)).then(function() {
-        expect(store.getActions()).toEqual(expectedActions);
-      });
+      return store
+        .dispatch(
+          actions.editLabel(
+            newMockLabel,
+            mockLabel,
+            [constants.SNACKBAR_ACTION_RETRY],
+            [dummyFunc],
+            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
+            mockCSRFHeaderName,
+            mockCSRFToken
+          )
+        )
+        .then(function() {
+          expect(store.getActions()).toEqual(expectedActions);
+        });
     });
 
     it("handles errors in response processing", function() {
       const mockLabel = { name: "MyTestLabelName" };
-      const newMockLabel = { name: "MyNewLabelName"};
+      const newMockLabel = { name: "MyNewLabelName" };
       const dummyFunc = function(param) {
         return null;
       };
@@ -566,9 +639,11 @@ describe("labelListActions", function() {
         }
       ];
 
-      const spy = jest.spyOn(fetchService, "checkResponseStatus").mockImplementation(() => {
-        throw new Error("Unable to parse response");
-      });
+      const spy = jest
+        .spyOn(fetchService, "checkResponseStatus")
+        .mockImplementation(() => {
+          throw new Error("Unable to parse response");
+        });
       fetchMock.postOnce(
         "https://" + window.location.host + constants.EDIT_LABEL_PATH,
         {
@@ -582,10 +657,22 @@ describe("labelListActions", function() {
       );
       const store = mockStore({ labels: [] });
 
-      return store.dispatch(actions.editLabel(newMockLabel, mockLabel, [constants.SNACKBAR_ACTION_RETRY], [dummyFunc], constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT, mockCSRFHeaderName, mockCSRFToken)).then(function() {
-        expect(store.getActions()).toEqual(expectedActions);
-        spy.mockRestore();
-      });
+      return store
+        .dispatch(
+          actions.editLabel(
+            newMockLabel,
+            mockLabel,
+            [constants.SNACKBAR_ACTION_RETRY],
+            [dummyFunc],
+            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
+            mockCSRFHeaderName,
+            mockCSRFToken
+          )
+        )
+        .then(function() {
+          expect(store.getActions()).toEqual(expectedActions);
+          spy.mockRestore();
+        });
     });
   });
 });

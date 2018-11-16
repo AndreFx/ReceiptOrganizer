@@ -39,7 +39,9 @@ describe("dialogActions", function() {
         options: options
       };
 
-      expect(actions.openDialog(title, submitHandler, closeHandler, options)).toEqual(expectedAction);
+      expect(
+        actions.openDialog(title, submitHandler, closeHandler, options)
+      ).toEqual(expectedAction);
     });
   });
 });

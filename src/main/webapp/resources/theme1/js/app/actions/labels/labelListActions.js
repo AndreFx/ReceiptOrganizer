@@ -42,7 +42,8 @@ export function fetchLabels() {
     //Notify that we are beginning a fetch
     dispatch(requestLabels());
 
-    return fetchService.doFetch(GET_LABELS_PATH)
+    return fetchService
+      .doFetch(GET_LABELS_PATH)
       .then(function(response) {
         fetchService.checkResponseStatus(response);
         return response.json();
@@ -93,15 +94,16 @@ export function addLabel(
     //Notify that we are beginning a fetch
     dispatch(requestAddLabel());
 
-    return fetchService.doFetch(ADD_LABEL_PATH, {
-      method: "post",
-      headers: {
-        Accept: CONTENT_TYPE_JSON,
-        "Content-Type": CONTENT_TYPE_JSON,
-        [csrfHeaderName]: csrfToken //Must be sent in the header when using application/json
-      },
-      body: JSON.stringify(label)
-    })
+    return fetchService
+      .doFetch(ADD_LABEL_PATH, {
+        method: "post",
+        headers: {
+          Accept: CONTENT_TYPE_JSON,
+          "Content-Type": CONTENT_TYPE_JSON,
+          [csrfHeaderName]: csrfToken //Must be sent in the header when using application/json
+        },
+        body: JSON.stringify(label)
+      })
       .then(function(response) {
         fetchService.checkResponseStatus(response);
         return response.json();
@@ -164,15 +166,16 @@ export function deleteLabel(label, csrfHeaderName, csrfToken) {
     //Notify that we are beginning a fetch
     dispatch(requestDeleteLabel());
 
-    return fetchService.doFetch(DELETE_LABEL_PATH, {
-      method: "post",
-      headers: {
-        Accept: CONTENT_TYPE_JSON,
-        "Content-Type": CONTENT_TYPE_JSON,
-        [csrfHeaderName]: csrfToken //Must be sent in the header when using application/json
-      },
-      body: JSON.stringify(label)
-    })
+    return fetchService
+      .doFetch(DELETE_LABEL_PATH, {
+        method: "post",
+        headers: {
+          Accept: CONTENT_TYPE_JSON,
+          "Content-Type": CONTENT_TYPE_JSON,
+          [csrfHeaderName]: csrfToken //Must be sent in the header when using application/json
+        },
+        body: JSON.stringify(label)
+      })
       .then(function(response) {
         fetchService.checkResponseStatus(response);
         return response.json();
@@ -237,18 +240,19 @@ export function editLabel(
     //Notify that we are beginning a fetch
     dispatch(requestEditLabel());
 
-    return fetchService.doFetch(EDIT_LABEL_PATH, {
-      method: "post",
-      headers: {
-        Accept: CONTENT_TYPE_JSON,
-        "Content-Type": CONTENT_TYPE_JSON,
-        [csrfHeaderName]: csrfToken //Must be sent in the header when using application/json
-      },
-      body: JSON.stringify({
-        newLabel: newLabel,
-        oldLabel: oldLabel
+    return fetchService
+      .doFetch(EDIT_LABEL_PATH, {
+        method: "post",
+        headers: {
+          Accept: CONTENT_TYPE_JSON,
+          "Content-Type": CONTENT_TYPE_JSON,
+          [csrfHeaderName]: csrfToken //Must be sent in the header when using application/json
+        },
+        body: JSON.stringify({
+          newLabel: newLabel,
+          oldLabel: oldLabel
+        })
       })
-    })
       .then(function(response) {
         fetchService.checkResponseStatus(response);
         return response.json();

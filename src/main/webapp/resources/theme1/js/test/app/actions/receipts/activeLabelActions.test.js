@@ -43,7 +43,9 @@ describe("activeLabelsActions", function() {
         success: success
       };
 
-      expect(actions.receiveAddActiveLabel(label, success, msg)).toEqual(expectedAction);
+      expect(actions.receiveAddActiveLabel(label, success, msg)).toEqual(
+        expectedAction
+      );
     });
   });
 
@@ -61,7 +63,9 @@ describe("activeLabelsActions", function() {
         success: success
       };
 
-      expect(actions.receiveEditActiveLabel(newLabel, oldLabel, success, msg)).toEqual(expectedAction);
+      expect(
+        actions.receiveEditActiveLabel(newLabel, oldLabel, success, msg)
+      ).toEqual(expectedAction);
     });
   });
 
@@ -77,7 +81,9 @@ describe("activeLabelsActions", function() {
         success: success
       };
 
-      expect(actions.receiveRemoveActiveLabel(label, success, msg)).toEqual(expectedAction);
+      expect(actions.receiveRemoveActiveLabel(label, success, msg)).toEqual(
+        expectedAction
+      );
     });
   });
 });

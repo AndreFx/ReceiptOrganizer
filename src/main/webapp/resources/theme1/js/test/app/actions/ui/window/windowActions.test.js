@@ -11,7 +11,9 @@ describe("windowActions", function() {
         height: height
       };
 
-      expect(actions.updateWindowDimensions(width, height)).toEqual(expectedAction);
+      expect(actions.updateWindowDimensions(width, height)).toEqual(
+        expectedAction
+      );
     });
   });
 });

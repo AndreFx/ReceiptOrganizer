@@ -79,7 +79,8 @@ export function updateActiveLabels(
         url.searchParams.append(key, params[key]);
       }
     });
-    return fetchService.doFetch(GET_RECEIPTS_PATH, {}, url)
+    return fetchService
+      .doFetch(GET_RECEIPTS_PATH, {}, url)
       .then(function(response) {
         fetchService.checkResponseStatus(response);
         return response.json();
