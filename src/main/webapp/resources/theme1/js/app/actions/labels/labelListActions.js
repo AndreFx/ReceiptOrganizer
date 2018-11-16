@@ -10,9 +10,7 @@ import {
   EDIT_LABEL_PATH,
   CONTENT_TYPE_JSON
 } from "../../../common/constants";
-import doFetch, {
-  checkResponseStatus
-} from "../../../common/utils/fetchService";
+import fetchService from "../../../common/utils/fetchService";
 import { addSnackbar } from "../ui/snackbar/snackbarActions";
 
 export const REQUEST_LABELS = "REQUEST_LABELS";
@@ -44,9 +42,9 @@ export function fetchLabels() {
     //Notify that we are beginning a fetch
     dispatch(requestLabels());
 
-    return doFetch(GET_LABELS_PATH)
+    return fetchService.doFetch(GET_LABELS_PATH)
       .then(function(response) {
-        checkResponseStatus(response);
+        fetchService.checkResponseStatus(response);
         return response.json();
       })
       .then(function(json) {
@@ -95,7 +93,7 @@ export function addLabel(
     //Notify that we are beginning a fetch
     dispatch(requestAddLabel());
 
-    return doFetch(ADD_LABEL_PATH, {
+    return fetchService.doFetch(ADD_LABEL_PATH, {
       method: "post",
       headers: {
         Accept: CONTENT_TYPE_JSON,
@@ -105,7 +103,7 @@ export function addLabel(
       body: JSON.stringify(label)
     })
       .then(function(response) {
-        checkResponseStatus(response);
+        fetchService.checkResponseStatus(response);
         return response.json();
       })
       .then(function(json) {
@@ -166,7 +164,7 @@ export function deleteLabel(label, csrfHeaderName, csrfToken) {
     //Notify that we are beginning a fetch
     dispatch(requestDeleteLabel());
 
-    return doFetch(DELETE_LABEL_PATH, {
+    return fetchService.doFetch(DELETE_LABEL_PATH, {
       method: "post",
       headers: {
         Accept: CONTENT_TYPE_JSON,
@@ -176,7 +174,7 @@ export function deleteLabel(label, csrfHeaderName, csrfToken) {
       body: JSON.stringify(label)
     })
       .then(function(response) {
-        checkResponseStatus(response);
+        fetchService.checkResponseStatus(response);
         return response.json();
       })
       .then(function(json) {
@@ -239,7 +237,7 @@ export function editLabel(
     //Notify that we are beginning a fetch
     dispatch(requestEditLabel());
 
-    return doFetch(EDIT_LABEL_PATH, {
+    return fetchService.doFetch(EDIT_LABEL_PATH, {
       method: "post",
       headers: {
         Accept: CONTENT_TYPE_JSON,
@@ -252,7 +250,7 @@ export function editLabel(
       })
     })
       .then(function(response) {
-        checkResponseStatus(response);
+        fetchService.checkResponseStatus(response);
         return response.json();
       })
       .then(function(json) {
@@ -280,7 +278,6 @@ export function editLabel(
         return Promise.resolve(json);
       })
       .catch(function(error) {
-        //TODO: This will catch errors in previous then as well
         let newSnackbar = {
           msg: SERVER_ERROR,
           variant: ERROR_SNACKBAR,

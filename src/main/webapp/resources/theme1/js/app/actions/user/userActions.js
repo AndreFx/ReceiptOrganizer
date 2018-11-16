@@ -5,9 +5,7 @@ import {
   ERROR_SNACKBAR,
   GET_USER_PATH
 } from "../../../common/constants";
-import doFetch, {
-  checkResponseStatus
-} from "../../../common/utils/fetchService";
+import fetchService from "../../../common/utils/fetchService";
 import { addSnackbar } from "../ui/snackbar/snackbarActions";
 
 export const REQUEST_USER = "REQUEST_USER";
@@ -33,9 +31,9 @@ export function fetchUser() {
     //Notify that we are beginning a fetch
     dispatch(requestUser());
 
-    return doFetch(GET_USER_PATH)
+    return fetchService.doFetch(GET_USER_PATH)
       .then(function(response) {
-        checkResponseStatus(response);
+        fetchService.checkResponseStatus(response);
         return response.json();
       })
       .then(function(json) {

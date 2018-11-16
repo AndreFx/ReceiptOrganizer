@@ -118,7 +118,7 @@ function SnackbarContentWrapper(props) {
 SnackbarContentWrapper.propTypes = {
   classes: PropTypes.object.isRequired,
   className: PropTypes.string,
-  message: PropTypes.node,
+  message: PropTypes.string,
   onClose: PropTypes.func,
   variant: PropTypes.oneOf([
     SUCCESS_SNACKBAR,

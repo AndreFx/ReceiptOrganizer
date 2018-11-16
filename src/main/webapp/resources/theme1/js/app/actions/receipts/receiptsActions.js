@@ -17,9 +17,7 @@ import {
   receiveEditActiveLabel
 } from "./activeLabelsActions";
 import { addSnackbar } from "../ui/snackbar/snackbarActions";
-import doFetch, {
-  checkResponseStatus
-} from "../../../common/utils/fetchService";
+import fetchService from "../../../common/utils/fetchService";
 
 export function updateActiveLabels(
   action,
@@ -27,9 +25,7 @@ export function updateActiveLabels(
   newLabel,
   query,
   activeLabels,
-  currentPage,
-  csrfHeaderName,
-  csrfToken
+  currentPage
 ) {
   return function(dispatch) {
     let requestActionCreator = null;
@@ -83,9 +79,9 @@ export function updateActiveLabels(
         url.searchParams.append(key, params[key]);
       }
     });
-    return doFetch(GET_RECEIPTS_PATH, null, url)
+    return fetchService.doFetch(GET_RECEIPTS_PATH, {}, url)
       .then(function(response) {
-        checkResponseStatus(response);
+        fetchService.checkResponseStatus(response);
         return response.json();
       })
       .then(function(json) {
