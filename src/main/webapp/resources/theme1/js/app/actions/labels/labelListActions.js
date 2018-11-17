@@ -59,7 +59,7 @@ export function fetchLabels() {
       })
       .then(function(json) {
         dispatch(receiveLabels(json.labels, json.success));
-        return Promise.resolve(json.success)
+        return Promise.resolve(json.success);
       })
       .catch(function(error) {
         dispatch(receiveLabels(null, false));
