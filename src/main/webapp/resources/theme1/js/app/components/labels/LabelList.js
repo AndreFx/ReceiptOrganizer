@@ -19,11 +19,11 @@ class LabelList extends React.Component {
       labels,
       deleteLabel,
       editLabel,
-      csrfToken,
-      csrfHeaderName,
       openDialog,
       closeDialog,
-      updateActiveLabels,
+      addActiveLabel,
+      editActiveLabel,
+      removeActiveLabel,
       activeLabels,
       query,
       currentReceiptPage,
@@ -38,13 +38,13 @@ class LabelList extends React.Component {
           <Label
             key={l.name}
             label={l}
-            csrfHeaderName={csrfHeaderName}
-            csrfToken={csrfToken}
             deleteLabel={deleteLabel}
             editLabel={editLabel}
             openDialog={openDialog}
             closeDialog={closeDialog}
-            updateActiveLabels={updateActiveLabels}
+            addActiveLabel={addActiveLabel}
+            editActiveLabel={editActiveLabel}
+            removeActiveLabel={removeActiveLabel}
             activeLabels={activeLabels}
             query={query}
             currentReceiptPage={currentReceiptPage}
@@ -71,14 +71,14 @@ LabelList.propTypes = {
   query: PropTypes.string,
   currentReceiptPage: PropTypes.number,
   listItemClassName: PropTypes.string.isRequired,
-  csrfHeaderName: PropTypes.string.isRequired,
-  csrfToken: PropTypes.string.isRequired,
   openDialog: PropTypes.func.isRequired,
   closeDialog: PropTypes.func.isRequired,
   fetchLabels: PropTypes.func.isRequired,
   deleteLabel: PropTypes.func.isRequired,
   editLabel: PropTypes.func.isRequired,
-  updateActiveLabels: PropTypes.func.isRequired,
+  editActiveLabel: PropTypes.func.isRequired,
+  addActiveLabel: PropTypes.func.isRequired,
+  removeActiveLabel: PropTypes.func.isRequired,
   drawerOpen: PropTypes.bool.isRequired
 };
 

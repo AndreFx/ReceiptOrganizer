@@ -55,9 +55,7 @@ class CreateLabelButtonWrapper extends React.Component {
       label,
       [SNACKBAR_ACTION_RETRY],
       [this.handleClickOpen],
-      SNACKBAR_AUTOHIDE_DISABLED,
-      this.props.csrfHeaderName,
-      this.props.csrfToken
+      SNACKBAR_AUTOHIDE_DISABLED
     );
   }
 
@@ -80,8 +78,6 @@ class CreateLabelButtonWrapper extends React.Component {
 }
 
 CreateLabelButtonWrapper.propTypes = {
-  csrfHeaderName: PropTypes.string.isRequired,
-  csrfToken: PropTypes.string.isRequired,
   isLoading: PropTypes.bool.isRequired,
   openDialog: PropTypes.func.isRequired,
   closeDialog: PropTypes.func.isRequired,

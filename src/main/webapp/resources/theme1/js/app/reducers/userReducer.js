@@ -1,5 +1,10 @@
 //Custom imports
-import { REQUEST_USER, RECEIVE_USER } from "../actions/user/userActions";
+import {
+  REQUEST_USER,
+  RECEIVE_USER,
+  REQUEST_USER_LOGOUT,
+  RECEIVE_USER_LOGOUT
+} from "../actions/user/userActions";
 import {
   DEFAULT_FNAME,
   DEFAULT_LNAME,
@@ -8,12 +13,13 @@ import {
 
 export const USER_INITIAL_STATE = {
   isInitializing: false,
+  isLoading: false,
   fName: DEFAULT_FNAME,
   lName: DEFAULT_LNAME,
   username: DEFAULT_USERNAME
 };
 
-function dialogReducer(state = USER_INITIAL_STATE, action) {
+function userReducer(state = USER_INITIAL_STATE, action) {
   switch (action.type) {
     case RECEIVE_USER:
       if (action.success) {
@@ -26,13 +32,21 @@ function dialogReducer(state = USER_INITIAL_STATE, action) {
           isInitializing: false
         });
       }
+    case RECEIVE_USER_LOGOUT:
+      return Object.assign({}, state, {
+        isLoading: false
+      });
     case REQUEST_USER:
       return Object.assign({}, state, {
         isInitializing: true
+      });
+    case REQUEST_USER_LOGOUT:
+      return Object.assign({}, state, {
+        isLoading: true
       });
     default:
       return state;
   }
 }
 
-export default dialogReducer;
+export default userReducer;

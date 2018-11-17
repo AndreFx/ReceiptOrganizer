@@ -45,11 +45,9 @@ class ContentWrapper extends React.Component {
       isLoading,
       drawerOpen,
       activeLabels,
-      csrfHeaderName,
-      csrfToken,
-      updateActiveLabels,
+      removeActiveLabel,
+      currentPage,
       query,
-      currentReceiptPage,
       windowWidth,
       windowHeight
     } = this.props;
@@ -74,11 +72,9 @@ class ContentWrapper extends React.Component {
       >
         <ReceiptViewOptionBar
           activeLabels={activeLabels}
-          csrfHeaderName={csrfHeaderName}
-          csrfToken={csrfToken}
-          updateActiveLabels={updateActiveLabels}
+          removeActiveLabel={removeActiveLabel}
+          currentPage={currentPage}
           query={query}
-          currentReceiptPage={currentReceiptPage}
         />
         {isLoading ? (
           <ContentLoaderWrapper
@@ -116,11 +112,9 @@ ContentWrapper.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   drawerOpen: PropTypes.bool.isRequired,
   activeLabels: PropTypes.array,
-  csrfHeaderName: PropTypes.string.isRequired,
-  csrfToken: PropTypes.string.isRequired,
-  updateActiveLabels: PropTypes.func.isRequired,
-  query: PropTypes.string,
-  currentReceiptPage: PropTypes.number,
+  removeActiveLabel: PropTypes.func.isRequired,
+  query: PropTypes.string.isRequired,
+  currentPage: PropTypes.number.isRequired,
   windowWidth: PropTypes.number.isRequired,
   windowHeight: PropTypes.number.isRequired
 };

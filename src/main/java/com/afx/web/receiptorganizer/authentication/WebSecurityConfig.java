@@ -57,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/resources/**", "/login").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated()
                 .and().formLogin().loginPage("/login").permitAll().successHandler(authSuccess)
-                .and().logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccess).logoutSuccessUrl("/login?logout").invalidateHttpSession(true);
+                .and().logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccess).invalidateHttpSession(true);
 
         http.exceptionHandling().accessDeniedHandler(getAccessDeniedHandler());
     }

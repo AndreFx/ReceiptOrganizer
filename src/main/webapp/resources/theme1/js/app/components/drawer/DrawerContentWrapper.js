@@ -224,7 +224,7 @@ class DrawerContentWrapper extends React.Component {
               />
               <LabelListContainer
                 drawerOpen={drawerOpen}
-                listItemClassName={drawerOpen ? classes.nested : null}
+                listItemClassName={drawerOpen ? classes.nested : ""}
               />
             </Collapse>
           </List>

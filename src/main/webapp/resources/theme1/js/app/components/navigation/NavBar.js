@@ -15,7 +15,12 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreIcon from "@material-ui/icons/MoreVert";
 
 //Custom imports
-import { DRAWER_WIDTH } from "../../../common/constants";
+import {
+  DRAWER_WIDTH,
+  LOGIN_PATH,
+  SNACKBAR_ACTION_RETRY
+} from "../../../common/constants";
+import { logoutUser } from "../../actions/user/userActions";
 
 const styles = theme => ({
   grow: {
@@ -107,7 +112,8 @@ class NavBar extends React.Component {
     super(props);
     this.state = {
       anchorEl: null,
-      mobileMoreAnchorEl: null
+      mobileMoreAnchorEl: null,
+      queryString: ""
     };
 
     //Bind functions in constructor so a new function isn't made in every render
@@ -116,6 +122,10 @@ class NavBar extends React.Component {
     this.handleMenuClose = this.handleMenuClose.bind(this);
     this.handleMobileMenuOpen = this.handleMobileMenuOpen.bind(this);
     this.handleMobileMenuClose = this.handleMobileMenuClose.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+    this.handleSearchInput = this.handleSearchInput.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
+    this.onEnterPressed = this.onEnterPressed.bind(this);
   }
 
   handleDrawerOpen() {
@@ -147,6 +157,34 @@ class NavBar extends React.Component {
     });
   }
 
+  handleLogout() {
+    this.props
+      .logoutUser(SNACKBAR_ACTION_RETRY, this.handleLogout)
+      .then(function(response) {
+        if (response) {
+          window.location = LOGIN_PATH;
+        }
+      });
+  }
+
+  handleSearchInput(event) {
+    const value = event.target.value;
+    this.setState({
+      queryString: value
+    });
+  }
+
+  onEnterPressed(event) {
+    if (event.keyCode == 13 && event.shiftKey == false) {
+      event.preventDefault();
+      this.handleSearch();
+    }
+  }
+
+  handleSearch() {
+    this.props.queryReceipts(this.state.queryString);
+  }
+
   render() {
     const { anchorEl, mobileMoreAnchorEl } = this.state;
     const classes = this.props.classes;
@@ -167,8 +205,8 @@ class NavBar extends React.Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-        <MenuItem onClick={this.handleClose}>Logout</MenuItem>
+        <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
+        <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
       </Menu>
     );
 
@@ -218,7 +256,7 @@ class NavBar extends React.Component {
             </IconButton>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
-                <SearchIcon />
+                <SearchIcon onClick={this.handleSearch} />
               </div>
               <Input
                 placeholder="Search…"
@@ -227,6 +265,8 @@ class NavBar extends React.Component {
                   root: classes.inputRoot,
                   input: classes.inputInput
                 }}
+                onChange={this.handleSearchInput}
+                onKeyDown={this.onEnterPressed}
               />
             </div>
             <div className={classes.grow} />
@@ -261,7 +301,9 @@ class NavBar extends React.Component {
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
-  onDrawerBtnClick: PropTypes.func.isRequired
+  onDrawerBtnClick: PropTypes.func.isRequired,
+  logoutUser: PropTypes.func.isRequired,
+  queryReceipts: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(NavBar);

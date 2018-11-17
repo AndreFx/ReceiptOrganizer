@@ -109,6 +109,7 @@ public class ReceiptController {
         ReceiptPage response = this.receiptService.getReceiptPage(user.getUsername(), query, activeLabelNames, user.getPaginationSize() * pageNum, user.getPaginationSize());
 
         //Setup response
+        response.setTotalNumReceipts(response.getTotalNumReceipts() == null ? 0 : response.getTotalNumReceipts());
         response.setReceipts(response.getReceipts());
         response.setSuccess(true);
         response.setMessage(messageSource.getMessage("receipt.index.success", null, locale));

@@ -12,7 +12,9 @@ describe("userReducer", function() {
     const action = {
       type: actions.REQUEST_USER
     };
-    let expectedState = _.cloneDeep(USER_INITIAL_STATE);
+    const expectedState = Object.assign({}, USER_INITIAL_STATE, {
+      isInitializing: true
+    });
     expectedState.isInitializing = true;
 
     expect(reducer(USER_INITIAL_STATE, action)).toEqual(expectedState);
@@ -29,10 +31,12 @@ describe("userReducer", function() {
       user: userInfo,
       success: true
     };
-    let initialState = _.cloneDeep(USER_INITIAL_STATE);
-    initialState.isInitializing = true;
+    const initialState = Object.assign({}, USER_INITIAL_STATE, {
+      isInitializing: true
+    });
     const expectedState = {
       isInitializing: false,
+      isLoading: false,
       ...userInfo
     };
 
@@ -45,9 +49,35 @@ describe("userReducer", function() {
       user: null,
       success: false
     };
-    let initialState = _.cloneDeep(USER_INITIAL_STATE);
-    initialState.isInitializing = true;
+    const initialState = Object.assign({}, USER_INITIAL_STATE, {
+      isInitializing: true
+    });
 
     expect(reducer(initialState, action)).toEqual(USER_INITIAL_STATE);
+  });
+
+  it("should handle REQUEST_USER_LOGOUT", function() {
+    const action = {
+      type: actions.REQUEST_USER_LOGOUT
+    };
+    const expectedState = Object.assign({}, USER_INITIAL_STATE, {
+      isLoading: true
+    });
+
+    expect(reducer(USER_INITIAL_STATE, action)).toEqual(expectedState);
+  });
+
+  it("should handle a successful RECEIVE_USER_LOGOUT", function() {
+    const action = {
+      type: actions.RECEIVE_USER_LOGOUT
+    };
+    const initialState = Object.assign({}, USER_INITIAL_STATE, {
+      isLoading: true
+    });
+    const expectedState = Object.assign({}, initialState, {
+      isLoading: false
+    });
+
+    expect(reducer(initialState, action)).toEqual(expectedState);
   });
 });

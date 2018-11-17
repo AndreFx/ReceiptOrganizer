@@ -7,36 +7,10 @@ class LoginMessage extends React.Component {
   }
 
   render() {
-    const isError = this.props.error;
-    const isLogout = this.props.logout;
-    const validateErrors = this.props.validateErrors;
+    const { error, logout, validateErrors } = this.props;
 
     let errorContainer;
-    if (isError) {
-      errorContaner = (
-        <div
-          className="login-form-main-message show invalid"
-          id="form-errors-container"
-        >
-          <p className="submission-status">
-            {" "}
-            Invalid username and / or password.{" "}
-          </p>
-        </div>
-      );
-    } else if (isLogout) {
-      errorContainer = (
-        <div
-          className="login-form-main-message show success"
-          id="form-errors-container"
-        >
-          <p className="submission-status">
-            {" "}
-            You have been logged out successfully.{" "}
-          </p>
-        </div>
-      );
-    } else if (
+    if (
       validateErrors.username.length > 0 ||
       validateErrors.password.length > 0
     ) {
@@ -53,6 +27,30 @@ class LoginMessage extends React.Component {
           })}
         </div>
       );
+    } else if (error) {
+      errorContainer = (
+        <div
+          className="login-form-main-message show invalid"
+          id="form-errors-container"
+        >
+          <p className="submission-status">
+            {" "}
+            Invalid username and / or password.{" "}
+          </p>
+        </div>
+      );
+    } else if (logout) {
+      errorContainer = (
+        <div
+          className="login-form-main-message show success"
+          id="form-errors-container"
+        >
+          <p className="submission-status">
+            {" "}
+            You have been logged out successfully.{" "}
+          </p>
+        </div>
+      );
     } else {
       errorContainer = (
         <div
@@ -67,8 +65,8 @@ class LoginMessage extends React.Component {
 }
 
 LoginMessage.propTypes = {
-  error: PropTypes.string,
-  logout: PropTypes.string.isRequired,
+  error: PropTypes.bool.isRequired,
+  logout: PropTypes.bool.isRequired,
   validateErrors: PropTypes.object
 };
 

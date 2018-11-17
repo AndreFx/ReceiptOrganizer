@@ -49,11 +49,6 @@ export const DELETE_LABEL_DIALOG_HELP = "Are you sure want to delete ";
 export const DELETE_LABEL_CANCEL = "No";
 export const DELETE_LABEL_SUBMIT = "Yes";
 
-/* Active label actions */
-export const REMOVE_ACTIVE_LABEL = "REMOVE";
-export const ADD_ACTIVE_LABEL = "ADD";
-export const EDIT_ACTIVE_LABEL = "EDIT";
-
 //Dialog Defaults
 
 /* Default Text */
@@ -87,9 +82,12 @@ export const SNACKBAR_ACTION_RETRY = "Retry";
 
 //Network Requests
 export const CONTENT_TYPE_JSON = "application/json";
+export const CONTENT_TYPE_URL_ENCODED = "application/x-www-form-urlencoded";
 
 /* URLS */
-export const LOGOUT_PATH = "/ReceiptOrganizer/logout";
+export const HOST_URL = "https://" + window.location.host;
+export const LOGOUT_USER_PATH = "/ReceiptOrganizer/logout";
+export const LOGIN_PATH = "/ReceiptOrganizer/login?logout";
 
 /* User */
 export const USER_THUMBNAIL_PATH =

@@ -27,20 +27,11 @@ class ReceiptViewOptionBar extends React.Component {
   }
 
   handleChipDelete(label) {
-    this.props.updateActiveLabels(
-      REMOVE_ACTIVE_LABEL,
-      label,
-      null,
-      this.props.query,
-      this.props.activeLabels,
-      this.props.currentReceiptPage,
-      this.props.csrfHeaderName,
-      this.props.csrfToken
-    );
+    this.props.removeActiveLabel(label);
   }
 
   render() {
-    const { activeLabels, query, currentReceiptPage, classes } = this.props;
+    const { activeLabels, query, currentPage, classes } = this.props;
 
     return (
       <div className={classes.root}>
@@ -67,11 +58,9 @@ ReceiptViewOptionBar.propTypes = {
     }).isRequired
   ).isRequired,
   classes: PropTypes.object.isRequired,
-  csrfHeaderName: PropTypes.string.isRequired,
-  csrfToken: PropTypes.string.isRequired,
-  updateActiveLabels: PropTypes.func.isRequired,
-  query: PropTypes.string,
-  currentReceiptPage: PropTypes.number
+  removeActiveLabel: PropTypes.func.isRequired,
+  query: PropTypes.string.isRequired,
+  currentPage: PropTypes.number.isRequired
 };
 
 export default withStyles(styles)(ReceiptViewOptionBar);

@@ -2,13 +2,13 @@ import { connect } from "react-redux";
 
 //Custom imports
 import ContentWrapper from "../../components/content/ContentWrapper";
-import { updateActiveLabels } from "../../actions/receipts/receiptsActions";
+import { removeActiveLabel } from "../../actions/receipts/receiptsActions";
 
 function mapStateToProps(state, ownProps) {
   return {
-    csrfHeaderName: state.csrf.csrfheadername,
-    csrfToken: state.csrf.csrftoken,
     activeLabels: state.activeLabels.items,
+    query: state.receipts.query,
+    currentPage: state.receipts.currentPage,
     isLoading: state.receipts.isLoading,
     drawerOpen: ownProps.drawerOpen,
     windowWidth: state.ui.window.width,
@@ -18,28 +18,8 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateActiveLabels: (
-      action,
-      label,
-      newLabel,
-      query,
-      activeLabels,
-      currentPage,
-      csrfHeaderName,
-      csrfToken
-    ) => {
-      return dispatch(
-        updateActiveLabels(
-          action,
-          label,
-          newLabel,
-          query,
-          activeLabels,
-          currentPage,
-          csrfHeaderName,
-          csrfToken
-        )
-      );
+    removeActiveLabel: label => {
+      return dispatch(removeActiveLabel(label));
     }
   };
 }

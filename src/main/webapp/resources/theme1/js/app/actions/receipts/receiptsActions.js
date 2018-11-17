@@ -1,12 +1,10 @@
 //Custom imports
 import {
   GET_RECEIPTS_PATH,
-  ADD_ACTIVE_LABEL,
-  REMOVE_ACTIVE_LABEL,
   SERVER_ERROR,
   ERROR_SNACKBAR,
-  EDIT_ACTIVE_LABEL,
-  SNACKBAR_AUTOHIDE_DURATION_DEFAULT
+  SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
+  HOST_URL
 } from "../../../common/constants";
 import {
   requestAddActiveLabel,
@@ -19,99 +17,275 @@ import {
 import { addSnackbar } from "../ui/snackbar/snackbarActions";
 import fetchService from "../../../common/utils/fetchService";
 
-export function updateActiveLabels(
-  action,
-  label,
-  newLabel,
+export const REQUEST_QUERY_RECEIPTS = "REQUEST_QUERY_RECEIPTS";
+export const RECEIVE_QUERY_RECEIPTS = "RECEIVE_QUERY_RECEIPTS";
+export const REQUEST_RECEIPT_PAGE_CHANGE = "REQUEST_RECEIPT_PAGE_CHANGE";
+export const RECEIVE_RECEIPT_PAGE_CHANGE = "RECEIVE_RECEIPT_PAGE_CHANGE";
+
+const errorSnackbar = {
+  msg: SERVER_ERROR,
+  variant: ERROR_SNACKBAR,
+  actions: [],
+  handlers: [],
+  handlerParams: [],
+  autohideDuration: SNACKBAR_AUTOHIDE_DURATION_DEFAULT
+};
+
+export function requestQueryReceipts() {
+  return {
+    type: REQUEST_QUERY_RECEIPTS
+  };
+}
+
+export function receiveQueryReceipts(
   query,
-  activeLabels,
-  currentPage
+  receipts,
+  numReceipts,
+  numPages,
+  success
 ) {
-  return function(dispatch) {
-    let requestActionCreator = null;
-    let responseActionCreator = null;
-    let url = new URL("https://" + window.location.host + GET_RECEIPTS_PATH);
+  return {
+    type: RECEIVE_QUERY_RECEIPTS,
+    receipts: receipts,
+    query: query,
+    numPages: numPages,
+    numReceipts: numReceipts,
+    success: success
+  };
+}
+
+export function queryReceipts(query) {
+  return function(dispatch, getState) {
+    const { activeLabels } = getState();
+    let url = new URL(HOST_URL + GET_RECEIPTS_PATH);
+
     let params = {
       query: query,
-      pageNum: currentPage
+      activeLabelNames: [
+        ...activeLabels.items.map(function(el) {
+          return el.name;
+        })
+      ],
+      pageNum: 0
     };
 
-    if (action === ADD_ACTIVE_LABEL) {
-      requestActionCreator = requestAddActiveLabel;
-      responseActionCreator = receiveAddActiveLabel;
-      params.activeLabelNames = [
-        ...activeLabels.map(function(el) {
+    dispatch(requestQueryReceipts());
+
+    //Create full url
+    url = fetchService.encodeURLParams(url, params);
+    return fetchService
+      .doFetch(url)
+      .then(function(response) {
+        fetchService.checkResponseStatus(response);
+        return response.json();
+      })
+      .then(function(json) {
+        dispatch(
+          receiveQueryReceipts(
+            query,
+            json.receipts,
+            json.totalNumReceipts,
+            json.numPages,
+            json.success
+          )
+        );
+
+        return Promise.resolve(json.success);
+      })
+      .catch(function(error) {
+        dispatch(receiveQueryReceipts(query, [], 0, 0, false));
+        dispatch(addSnackbar(errorSnackbar));
+        return Promise.resolve(false);
+      });
+  };
+}
+
+export function requestReceiptPageChange() {
+  return {
+    type: REQUEST_RECEIPT_PAGE_CHANGE
+  };
+}
+
+export function receiveReceiptPageChange(pageNum, receipts, success) {
+  return {
+    type: RECEIVE_RECEIPT_PAGE_CHANGE,
+    receipts: receipts,
+    pageNum: pageNum,
+    success: success
+  };
+}
+
+export function changeReceiptPage(pageNum) {
+  return function(dispatch, getState) {
+    const { activeLabels, receipts } = getState();
+    let url = new URL(HOST_URL + GET_RECEIPTS_PATH);
+    let params = {
+      pageNum: pageNum,
+      query: receipts.pageNum,
+      activeLabelNames: [
+        ...activeLabels.items.map(function(el) {
+          return el.name;
+        })
+      ]
+    };
+
+    //Dispatch appropriate action
+    dispatch(requestReceiptPageChange());
+
+    //Create full url
+    url = fetchService.encodeURLParams(url, params);
+    return fetchService
+      .doFetch(url)
+      .then(function(response) {
+        fetchService.checkResponseStatus(response);
+        return response.json();
+      })
+      .then(function(json) {
+        dispatch(
+          receiveReceiptPageChange(json.pageNum, json.receipts, json.success)
+        );
+
+        return Promise.resolve(json.success);
+      })
+      .catch(function(error) {
+        dispatch(receiveReceiptPageChange(pageNum, [], false));
+        dispatch(addSnackbar(errorSnackbar));
+        return Promise.resolve(false);
+      });
+  };
+}
+
+export function addActiveLabel(label) {
+  return function(dispatch, getState) {
+    const { activeLabels, receipts } = getState();
+    let url = new URL(HOST_URL + GET_RECEIPTS_PATH);
+    let params = {
+      activeLabelNames: [
+        ...activeLabels.items.map(function(el) {
           return el.name;
         }),
         label.name
-      ];
-    } else if (action === REMOVE_ACTIVE_LABEL) {
-      requestActionCreator = requestRemoveActiveLabel;
-      responseActionCreator = receiveRemoveActiveLabel;
-      params.activeLabelNames = [
-        ...activeLabels
+      ],
+      query: receipts.query,
+      pageNum: 0
+    };
+
+    //Dispatch appropriate action
+    dispatch(requestAddActiveLabel());
+
+    //Create full url
+    url = fetchService.encodeURLParams(url, params);
+    return fetchService
+      .doFetch(url)
+      .then(function(response) {
+        fetchService.checkResponseStatus(response);
+        return response.json();
+      })
+      .then(function(json) {
+        dispatch(
+          receiveAddActiveLabel(
+            label,
+            json.receipts,
+            json.totalNumReceipts,
+            json.numPages,
+            json.success
+          )
+        );
+
+        return Promise.resolve(json.success);
+      })
+      .catch(function(error) {
+        dispatch(receiveAddActiveLabel(label, [], 0, 0, false));
+        dispatch(addSnackbar(errorSnackbar));
+        return Promise.resolve(false);
+      });
+  };
+}
+
+export function editActiveLabel(oldLabel, newLabel) {
+  return function(dispatch, getState) {
+    const { activeLabels, receipts } = getState();
+    let url = new URL(HOST_URL + GET_RECEIPTS_PATH);
+    let params = {
+      pageNum: 0,
+      activeLabelNames: [
+        ...activeLabels.items.map(function(el, ind, arr) {
+          return el.name === oldLabel.name ? newLabel.name : el.name;
+        })
+      ],
+      query: receipts.query
+    };
+
+    //Dispatch appropriate action
+    dispatch(requestEditActiveLabel());
+
+    //Create full url
+    url = fetchService.encodeURLParams(url, params);
+    return fetchService
+      .doFetch(url)
+      .then(function(response) {
+        fetchService.checkResponseStatus(response);
+        return response.json();
+      })
+      .then(function(json) {
+        dispatch(receiveEditActiveLabel(newLabel, oldLabel, json.success));
+
+        return Promise.resolve(json.success);
+      })
+      .catch(function(error) {
+        dispatch(receiveEditActiveLabel(newLabel, oldLabel, false));
+        dispatch(addSnackbar(errorSnackbar));
+        return Promise.resolve(false);
+      });
+  };
+}
+
+export function removeActiveLabel(label) {
+  return function(dispatch, getState) {
+    const { activeLabels, receipts } = getState();
+    let url = new URL(HOST_URL + GET_RECEIPTS_PATH);
+    let params = {
+      activeLabelNames: [
+        ...activeLabels.items
           .map(function(el) {
             return el.name;
           })
           .filter(function(name, ind, arr) {
             return name !== label.name;
           })
-      ];
-    } else if (action === EDIT_ACTIVE_LABEL) {
-      requestActionCreator = requestEditActiveLabel;
-      responseActionCreator = receiveEditActiveLabel;
-      params.activeLabelNames = [
-        ...activeLabels.map(function(el, ind, arr) {
-          return el.name === label.name ? newLabel.name : el.name;
-        })
-      ];
-    }
+      ],
+      query: receipts.query,
+      pageNum: 0
+    };
 
     //Dispatch appropriate action
-    dispatch(requestActionCreator());
+    dispatch(requestRemoveActiveLabel());
 
     //Create full url
-    Object.keys(params).forEach(function(key) {
-      if (
-        params[key] &&
-        (Array.isArray(params[key]) && params[key].length != 0)
-      ) {
-        url.searchParams.append(key, params[key]);
-      }
-    });
+    url = fetchService.encodeURLParams(url, params);
     return fetchService
-      .doFetch(GET_RECEIPTS_PATH, {}, url)
+      .doFetch(url)
       .then(function(response) {
         fetchService.checkResponseStatus(response);
         return response.json();
       })
       .then(function(json) {
-        if (action !== EDIT_ACTIVE_LABEL) {
-          dispatch(responseActionCreator(label, json.success, json.message));
-        } else {
-          dispatch(
-            responseActionCreator(newLabel, label, json.success, json.message)
-          );
-        }
+        dispatch(
+          receiveRemoveActiveLabel(
+            label,
+            json.receipts,
+            json.totalNumReceipts,
+            json.numPages,
+            json.success
+          )
+        );
 
-        return Promise.resolve(json);
+        return Promise.resolve(json.success);
       })
       .catch(function(error) {
-        let newSnackbar = {
-          msg: SERVER_ERROR,
-          variant: ERROR_SNACKBAR,
-          actions: [],
-          handlers: [],
-          handlerParams: [],
-          autohideDuration: SNACKBAR_AUTOHIDE_DURATION_DEFAULT
-        };
-
-        if (action !== EDIT_ACTIVE_LABEL) {
-          dispatch(responseActionCreator(label, false, SERVER_ERROR));
-        } else {
-          dispatch(responseActionCreator(newLabel, label, false, SERVER_ERROR));
-        }
-        dispatch(addSnackbar(newSnackbar));
+        dispatch(receiveRemoveActiveLabel(label, [], 0, 0, false));
+        dispatch(addSnackbar(errorSnackbar));
+        return Promise.resolve(false);
       });
   };
 }

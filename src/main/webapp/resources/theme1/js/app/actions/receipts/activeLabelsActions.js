@@ -12,12 +12,20 @@ export function requestAddActiveLabel() {
   };
 }
 
-export function receiveAddActiveLabel(label, success, msg) {
+export function receiveAddActiveLabel(
+  label,
+  receipts,
+  numReceipts,
+  numPages,
+  success
+) {
   return {
     type: RECEIVE_ADD_ACTIVE_LABEL,
     label: label,
-    success: success,
-    msg: msg
+    receipts: receipts,
+    numPages: numPages,
+    numReceipts: numReceipts,
+    success: success
   };
 }
 
@@ -27,12 +35,20 @@ export function requestRemoveActiveLabel() {
   };
 }
 
-export function receiveRemoveActiveLabel(label, success, msg) {
+export function receiveRemoveActiveLabel(
+  label,
+  receipts,
+  numReceipts,
+  numPages,
+  success
+) {
   return {
     type: RECEIVE_REMOVE_ACTIVE_LABEL,
     label: label,
-    success: success,
-    msg: msg
+    receipts: receipts,
+    numReceipts: numReceipts,
+    numPages: numPages,
+    success: success
   };
 }
 
@@ -42,12 +58,11 @@ export function requestEditActiveLabel() {
   };
 }
 
-export function receiveEditActiveLabel(newLabel, oldLabel, success, msg) {
+export function receiveEditActiveLabel(newLabel, oldLabel, success) {
   return {
     type: RECEIVE_EDIT_ACTIVE_LABEL,
     newLabel: newLabel,
     oldLabel: oldLabel,
-    success: success,
-    msg: msg
+    success: success
   };
 }

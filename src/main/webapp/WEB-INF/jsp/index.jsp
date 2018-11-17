@@ -26,7 +26,7 @@
     <title>ReceiptOrganizer</title>
 </head>
 <body style="margin: 0;">
-    <div id="react" data-csrfToken="${_csrf.token}" data-csrfHeaderName="${_csrf.headerName}"></div>
+    <div id="react" data-csrfToken="${_csrf.token}" data-csrfHeaderName="${_csrf.headerName}" data-csrfParameterName="${_csrf.parameterName}"></div>
 
     <script src="${organizerApp}"></script>
 </body>

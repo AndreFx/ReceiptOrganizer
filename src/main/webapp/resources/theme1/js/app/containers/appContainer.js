@@ -10,7 +10,10 @@ import { updateWindowDimensions } from "../actions/ui/window/windowActions";
 
 function mapStateToProps(state) {
   return {
-    isLoading: state.labels.isLoading || state.receipts.isLoading,
+    isLoading:
+      state.labels.isLoading ||
+      state.receipts.isLoading ||
+      state.user.isLoading,
     currentSnackbar: state.ui.snackbar.currentSnackbar,
     snackbarOpen: state.ui.snackbar.snackbarOpen,
     snackbarQueueLength: state.ui.snackbar.snackbarQueue.length,

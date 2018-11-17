@@ -7,32 +7,14 @@ import CreateLabelButtonWrapper from "../../components/labels/CreateLabelButtonW
 
 function mapStateToProps(state) {
   return {
-    csrfHeaderName: state.csrf.csrfheadername,
-    csrfToken: state.csrf.csrftoken,
     isLoading: state.labels.isLoading
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    addLabel: (
-      labelName,
-      actions,
-      handlers,
-      autohideDuration,
-      csrfHeaderName,
-      csrfToken
-    ) => {
-      return dispatch(
-        addLabel(
-          labelName,
-          actions,
-          handlers,
-          autohideDuration,
-          csrfHeaderName,
-          csrfToken
-        )
-      );
+    addLabel: (labelName, actions, handlers, autohideDuration) => {
+      return dispatch(addLabel(labelName, actions, handlers, autohideDuration));
     },
     closeDialog: () => {
       return dispatch(closeDialog());

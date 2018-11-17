@@ -8,12 +8,14 @@ import {
 } from "../../actions/labels/labelListActions";
 import { openDialog, closeDialog } from "../../actions/ui/dialog/dialogActions";
 import LabelList from "../../components/labels/LabelList";
-import { updateActiveLabels } from "../../actions/receipts/receiptsActions";
+import {
+  addActiveLabel,
+  editActiveLabel,
+  removeActiveLabel
+} from "../../actions/receipts/receiptsActions";
 
 function mapStateToProps(state, ownProps) {
   return {
-    csrfHeaderName: state.csrf.csrfheadername,
-    csrfToken: state.csrf.csrftoken,
     labels: state.labels.items,
     activeLabels: state.activeLabels.items,
     query: state.ui.query,
@@ -28,17 +30,15 @@ function mapDispatchToProps(dispatch) {
     fetchLabels: () => {
       return dispatch(fetchLabels());
     },
-    deleteLabel: (labelName, csrfHeaderName, csrfToken) => {
-      return dispatch(deleteLabel(labelName, csrfHeaderName, csrfToken));
+    deleteLabel: labelName => {
+      return dispatch(deleteLabel(labelName));
     },
     editLabel: (
       newLabelName,
       oldLabelName,
       actions,
       handlers,
-      autohideDuration,
-      csrfHeaderName,
-      csrfToken
+      autohideDuration
     ) => {
       return dispatch(
         editLabel(
@@ -46,9 +46,7 @@ function mapDispatchToProps(dispatch) {
           oldLabelName,
           actions,
           handlers,
-          autohideDuration,
-          csrfHeaderName,
-          csrfToken
+          autohideDuration
         )
       );
     },
@@ -58,28 +56,14 @@ function mapDispatchToProps(dispatch) {
     openDialog: (title, submit, close, options) => {
       return dispatch(openDialog(title, submit, close, options));
     },
-    updateActiveLabels: (
-      action,
-      label,
-      newLabel,
-      query,
-      activeLabels,
-      currentPage,
-      csrfHeaderName,
-      csrfToken
-    ) => {
-      return dispatch(
-        updateActiveLabels(
-          action,
-          label,
-          newLabel,
-          query,
-          activeLabels,
-          currentPage,
-          csrfHeaderName,
-          csrfToken
-        )
-      );
+    addActiveLabel: label => {
+      return dispatch(addActiveLabel(label));
+    },
+    editActiveLabel: (oldLabel, newLabel) => {
+      return dispatch(editActiveLabel(oldLabel, newLabel));
+    },
+    removeActiveLabel: label => {
+      return dispatch(removeActiveLabel(label));
     }
   };
 }

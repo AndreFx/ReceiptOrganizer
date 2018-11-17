@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import LoginMessage from "./loginMessage";
 import {
   INVALID_PASSWORD_MESSAGE,
-  INVALID_USERNAME_MESSAGE
+  INVALID_USERNAME_MESSAGE,
+  SNACKBAR_AUTOHIDE_DURATION_DEFAULT
 } from "../common/constants";
 
 class LoginForm extends React.Component {
@@ -18,7 +19,10 @@ class LoginForm extends React.Component {
       },
       usernameValid: false,
       passwordValid: false,
-      formValid: false
+      formValid: false,
+      logout: false,
+      error: false,
+      intervalID: null
     };
 
     this.handleUserInput = this.handleUserInput.bind(this);
@@ -26,20 +30,36 @@ class LoginForm extends React.Component {
     this.validateForm = this.validateForm.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onEnterPressed = this.onEnterPressed.bind(this);
+    this.removeServerMessages = this.removeServerMessages.bind(this);
   }
 
   handleUserInput(event) {
     const name = event.target.name;
     const value = event.target.value;
-    this.setState(
-      {
-        [name]: value,
-        successfulSubmit: undefined
-      },
-      () => {
-        this.validateField(name, value);
-      }
-    );
+    if (this.state.error || this.state.logout) {
+      clearInterval(this.state.intervalID);
+      this.setState(
+        {
+          [name]: value,
+          successfulSubmit: undefined,
+          error: false,
+          logout: false
+        },
+        () => {
+          this.validateField(name, value);
+        }
+      );
+    } else {
+      this.setState(
+        {
+          [name]: value,
+          successfulSubmit: undefined
+        },
+        () => {
+          this.validateField(name, value);
+        }
+      );
+    }
   }
 
   validateField(fieldName, value) {
@@ -117,6 +137,31 @@ class LoginForm extends React.Component {
     }
   }
 
+  removeServerMessages() {
+    if (this.state.error || this.state.logout) {
+      this.setState({
+        error: false,
+        logout: false
+      });
+      clearInterval(this.state.intervalID);
+    }
+  }
+
+  componentDidMount() {
+    const { error, logout } = this.props;
+
+    let intervalID = setInterval(
+      this.removeServerMessages,
+      SNACKBAR_AUTOHIDE_DURATION_DEFAULT
+    );
+
+    this.setState({
+      error: error ? true : false,
+      logout: logout ? true : false,
+      intervalID: intervalID
+    });
+  }
+
   render() {
     const submitStatus = this.state.successfulSubmit;
     let button;
@@ -165,8 +210,8 @@ class LoginForm extends React.Component {
           onSubmit={event => this.handleSubmit(event)}
         >
           <LoginMessage
-            error={this.props.error}
-            logout={this.props.logout}
+            error={this.state.error}
+            logout={this.state.logout}
             validateErrors={this.state.formErrors}
           />
           <div className="main-login-form">
@@ -218,8 +263,8 @@ class LoginForm extends React.Component {
 
 LoginForm.propTypes = {
   loginUrl: PropTypes.string.isRequired,
-  error: PropTypes.string,
-  logout: PropTypes.string,
+  error: PropTypes.string.isRequired,
+  logout: PropTypes.string.isRequired,
   csrfParameterName: PropTypes.string.isRequired,
   csrfToken: PropTypes.string.isRequired
 };

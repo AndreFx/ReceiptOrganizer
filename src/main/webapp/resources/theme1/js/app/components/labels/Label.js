@@ -27,10 +27,7 @@ import {
   DELETE_LABEL_DIALOG_HELP,
   DELETE_LABEL_CANCEL,
   DELETE_LABEL_SUBMIT,
-  DELETE_LABEL_DIALOG_TITLE,
-  ADD_ACTIVE_LABEL,
-  REMOVE_ACTIVE_LABEL,
-  EDIT_ACTIVE_LABEL
+  DELETE_LABEL_DIALOG_TITLE
 } from "../../../common/constants";
 
 class Label extends React.Component {
@@ -60,16 +57,7 @@ class Label extends React.Component {
     if (
       !this.props.activeLabels.some(el => el.name === this.props.label.name)
     ) {
-      this.props.updateActiveLabels(
-        ADD_ACTIVE_LABEL,
-        this.props.label,
-        null,
-        this.props.query,
-        this.props.activeLabels,
-        this.props.receiptCurrentPage,
-        this.props.csrfHeaderName,
-        this.props.csrfToken
-      );
+      this.props.addActiveLabel(this.props.label);
     }
   }
 
@@ -100,30 +88,13 @@ class Label extends React.Component {
 
     if (_.indexOf(this.props.activeLabels, this.props.label) != -1) {
       //Remove from active labels after delete
-      this.props
-        .deleteLabel(
-          this.props.label,
-          this.props.csrfHeaderName,
-          this.props.csrfToken
-        )
-        .then(function(resp) {
-          savedProps.updateActiveLabels(
-            REMOVE_ACTIVE_LABEL,
-            savedProps.label,
-            null,
-            savedProps.query,
-            savedProps.activeLabels,
-            savedProps.receiptCurrentPage,
-            savedProps.csrfHeaderName,
-            savedProps.csrfToken
-          );
-        });
+      this.props.deleteLabel(this.props.label).then(function(resp) {
+        if (resp) {
+          savedProps.removeActiveLabel(savedProps.label);
+        }
+      });
     } else {
-      this.props.deleteLabel(
-        this.props.label,
-        this.props.csrfHeaderName,
-        this.props.csrfToken
-      );
+      this.props.deleteLabel(this.props.label);
     }
   }
 
@@ -166,21 +137,12 @@ class Label extends React.Component {
           this.props.label,
           [SNACKBAR_ACTION_RETRY],
           [this.handleEditClick],
-          SNACKBAR_AUTOHIDE_DISABLED,
-          this.props.csrfHeaderName,
-          this.props.csrfToken
+          SNACKBAR_AUTOHIDE_DISABLED
         )
         .then(function(resp) {
-          savedProps.updateActiveLabels(
-            EDIT_ACTIVE_LABEL,
-            savedProps.label,
-            newCategory,
-            savedProps.query,
-            savedProps.activeLabels,
-            savedProps.receiptCurrentPage,
-            savedProps.csrfHeaderName,
-            savedProps.csrfToken
-          );
+          if (resp) {
+            savedProps.editActiveLabel(savedProps.label, newCategory);
+          }
         });
     } else {
       this.props.editLabel(
@@ -188,9 +150,7 @@ class Label extends React.Component {
         this.props.label,
         [SNACKBAR_ACTION_RETRY],
         [this.handleEditClick],
-        SNACKBAR_AUTOHIDE_DISABLED,
-        this.props.csrfHeaderName,
-        this.props.csrfToken
+        SNACKBAR_AUTOHIDE_DISABLED
       );
     }
   }
@@ -256,8 +216,6 @@ class Label extends React.Component {
 
 Label.propTypes = {
   label: PropTypes.object.isRequired,
-  csrfToken: PropTypes.string.isRequired,
-  csrfHeaderName: PropTypes.string.isRequired,
   activeLabels: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired
@@ -270,7 +228,9 @@ Label.propTypes = {
   editLabel: PropTypes.func.isRequired,
   openDialog: PropTypes.func.isRequired,
   closeDialog: PropTypes.func.isRequired,
-  updateActiveLabels: PropTypes.func.isRequired,
+  addActiveLabel: PropTypes.func.isRequired,
+  editActiveLabel: PropTypes.func.isRequired,
+  removeActiveLabel: PropTypes.func.isRequired,
   drawerOpen: PropTypes.bool.isRequired
 };
 

@@ -11,8 +11,10 @@ const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
 
 describe("labelListActions", function() {
-  const mockCSRFHeaderName = "CSRF_TOKEN";
-  const mockCSRFToken = "MY_RANDOM_CSRF_TOKEN";
+  const mockCsrfState = {
+    csrfheadername: "CSRF_TOKEN",
+    csrftoken: "MY_RANDOM_CSRF_TOKEN"
+  };
 
   describe("fetchLabels", function() {
     afterEach(function() {
@@ -29,8 +31,7 @@ describe("labelListActions", function() {
         {
           type: actions.RECEIVE_LABELS,
           labels: mockLabels,
-          success: true,
-          msg: mockMsg
+          success: true
         }
       ];
 
@@ -61,8 +62,7 @@ describe("labelListActions", function() {
         {
           type: actions.RECEIVE_LABELS,
           labels: null,
-          success: false,
-          msg: constants.SERVER_ERROR
+          success: false
         },
         {
           type: snackbarActions.ADD_SNACKBAR,
@@ -104,8 +104,7 @@ describe("labelListActions", function() {
         {
           type: actions.RECEIVE_LABELS,
           labels: null,
-          success: false,
-          msg: constants.SERVER_ERROR
+          success: false
         },
         {
           type: snackbarActions.ADD_SNACKBAR,
@@ -156,7 +155,6 @@ describe("labelListActions", function() {
     it("creates REQUEST and RECEIVE actions on success", function() {
       const mockLabel = { name: "MyTestLabelName" };
       const mockMsg = "Success";
-      const expectedState = { labels: [mockLabel] };
       const expectedActions = [
         {
           type: actions.REQUEST_ADD_LABEL
@@ -164,8 +162,7 @@ describe("labelListActions", function() {
         {
           type: actions.RECEIVE_ADD_LABEL,
           label: mockLabel,
-          success: true,
-          msg: mockMsg
+          success: true
         },
         {
           type: snackbarActions.ADD_SNACKBAR,
@@ -191,7 +188,10 @@ describe("labelListActions", function() {
           headers: { "Content-Type": constants.CONTENT_TYPE_JSON }
         }
       );
-      const store = mockStore({ labels: [] });
+      const store = mockStore({
+        labels: [],
+        csrf: mockCsrfState
+      });
 
       return store
         .dispatch(
@@ -199,9 +199,7 @@ describe("labelListActions", function() {
             mockLabel,
             [],
             [],
-            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
-            mockCSRFHeaderName,
-            mockCSRFToken
+            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT
           )
         )
         .then(function() {
@@ -221,8 +219,7 @@ describe("labelListActions", function() {
         {
           type: actions.RECEIVE_ADD_LABEL,
           label: mockLabel,
-          success: false,
-          msg: constants.SERVER_ERROR
+          success: false
         },
         {
           type: snackbarActions.ADD_SNACKBAR,
@@ -247,7 +244,10 @@ describe("labelListActions", function() {
           headers: { "Content-Type": constants.CONTENT_TYPE_JSON }
         }
       );
-      const store = mockStore({ labels: [] });
+      const store = mockStore({
+        labels: [],
+        csrf: mockCsrfState
+      });
 
       return store
         .dispatch(
@@ -255,9 +255,7 @@ describe("labelListActions", function() {
             mockLabel,
             ["Retry"],
             [dummyHandler],
-            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
-            mockCSRFHeaderName,
-            mockCSRFToken
+            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT
           )
         )
         .then(function() {
@@ -278,8 +276,7 @@ describe("labelListActions", function() {
         {
           type: actions.RECEIVE_ADD_LABEL,
           label: mockLabel,
-          success: false,
-          msg: constants.SERVER_ERROR
+          success: false
         },
         {
           type: snackbarActions.ADD_SNACKBAR,
@@ -311,7 +308,10 @@ describe("labelListActions", function() {
           headers: { "Content-Type": constants.CONTENT_TYPE_JSON }
         }
       );
-      const store = mockStore({ labels: [] });
+      const store = mockStore({
+        labels: [],
+        csrf: mockCsrfState
+      });
 
       return store
         .dispatch(
@@ -319,9 +319,7 @@ describe("labelListActions", function() {
             mockLabel,
             ["Retry"],
             [dummyHandler],
-            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
-            mockCSRFHeaderName,
-            mockCSRFToken
+            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT
           )
         )
         .then(function() {
@@ -346,8 +344,7 @@ describe("labelListActions", function() {
         {
           type: actions.RECEIVE_DELETE_LABEL,
           label: mockLabel,
-          success: true,
-          msg: mockMsg
+          success: true
         },
         {
           type: snackbarActions.ADD_SNACKBAR,
@@ -373,15 +370,14 @@ describe("labelListActions", function() {
           headers: { "Content-Type": constants.CONTENT_TYPE_JSON }
         }
       );
-      const store = mockStore({ labels: [] });
+      const store = mockStore({
+        labels: [],
+        csrf: mockCsrfState
+      });
 
-      return store
-        .dispatch(
-          actions.deleteLabel(mockLabel, mockCSRFHeaderName, mockCSRFToken)
-        )
-        .then(function() {
-          expect(store.getActions()).toEqual(expectedActions);
-        });
+      return store.dispatch(actions.deleteLabel(mockLabel)).then(function() {
+        expect(store.getActions()).toEqual(expectedActions);
+      });
     });
 
     it("creates an error snackbar on failure", function() {
@@ -393,8 +389,7 @@ describe("labelListActions", function() {
         {
           type: actions.RECEIVE_DELETE_LABEL,
           label: mockLabel,
-          success: false,
-          msg: constants.SERVER_ERROR
+          success: false
         },
         {
           type: snackbarActions.ADD_SNACKBAR,
@@ -419,15 +414,14 @@ describe("labelListActions", function() {
           headers: { "Content-Type": constants.CONTENT_TYPE_JSON }
         }
       );
-      const store = mockStore({ labels: [] });
+      const store = mockStore({
+        labels: [],
+        csrf: mockCsrfState
+      });
 
-      return store
-        .dispatch(
-          actions.deleteLabel(mockLabel, mockCSRFHeaderName, mockCSRFToken)
-        )
-        .then(function() {
-          expect(store.getActions()).toEqual(expectedActions);
-        });
+      return store.dispatch(actions.deleteLabel(mockLabel)).then(function() {
+        expect(store.getActions()).toEqual(expectedActions);
+      });
     });
 
     it("handles errors in response processing", function() {
@@ -440,8 +434,7 @@ describe("labelListActions", function() {
         {
           type: actions.RECEIVE_DELETE_LABEL,
           label: mockLabel,
-          success: false,
-          msg: constants.SERVER_ERROR
+          success: false
         },
         {
           type: snackbarActions.ADD_SNACKBAR,
@@ -473,16 +466,15 @@ describe("labelListActions", function() {
           headers: { "Content-Type": constants.CONTENT_TYPE_JSON }
         }
       );
-      const store = mockStore({ labels: [] });
+      const store = mockStore({
+        labels: [],
+        csrf: mockCsrfState
+      });
 
-      return store
-        .dispatch(
-          actions.deleteLabel(mockLabel, mockCSRFHeaderName, mockCSRFToken)
-        )
-        .then(function() {
-          expect(store.getActions()).toEqual(expectedActions);
-          spy.mockRestore();
-        });
+      return store.dispatch(actions.deleteLabel(mockLabel)).then(function() {
+        expect(store.getActions()).toEqual(expectedActions);
+        spy.mockRestore();
+      });
     });
   });
 
@@ -503,8 +495,7 @@ describe("labelListActions", function() {
           type: actions.RECEIVE_EDIT_LABEL,
           newLabel: newMockLabel,
           oldLabel: mockLabel,
-          success: true,
-          msg: mockMsg
+          success: true
         },
         {
           type: snackbarActions.ADD_SNACKBAR,
@@ -530,7 +521,10 @@ describe("labelListActions", function() {
           headers: { "Content-Type": constants.CONTENT_TYPE_JSON }
         }
       );
-      const store = mockStore({ labels: [] });
+      const store = mockStore({
+        labels: [],
+        csrf: mockCsrfState
+      });
 
       return store
         .dispatch(
@@ -539,9 +533,7 @@ describe("labelListActions", function() {
             mockLabel,
             [],
             [],
-            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
-            mockCSRFHeaderName,
-            mockCSRFToken
+            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT
           )
         )
         .then(function() {
@@ -563,8 +555,7 @@ describe("labelListActions", function() {
           type: actions.RECEIVE_EDIT_LABEL,
           oldLabel: mockLabel,
           newLabel: newMockLabel,
-          success: false,
-          msg: constants.SERVER_ERROR
+          success: false
         },
         {
           type: snackbarActions.ADD_SNACKBAR,
@@ -589,7 +580,10 @@ describe("labelListActions", function() {
           headers: { "Content-Type": constants.CONTENT_TYPE_JSON }
         }
       );
-      const store = mockStore({ labels: [] });
+      const store = mockStore({
+        labels: [],
+        csrf: mockCsrfState
+      });
 
       return store
         .dispatch(
@@ -598,9 +592,7 @@ describe("labelListActions", function() {
             mockLabel,
             [constants.SNACKBAR_ACTION_RETRY],
             [dummyFunc],
-            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
-            mockCSRFHeaderName,
-            mockCSRFToken
+            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT
           )
         )
         .then(function() {
@@ -623,8 +615,7 @@ describe("labelListActions", function() {
           type: actions.RECEIVE_EDIT_LABEL,
           oldLabel: mockLabel,
           newLabel: newMockLabel,
-          success: false,
-          msg: constants.SERVER_ERROR
+          success: false
         },
         {
           type: snackbarActions.ADD_SNACKBAR,
@@ -655,7 +646,10 @@ describe("labelListActions", function() {
           headers: { "Content-Type": constants.CONTENT_TYPE_JSON }
         }
       );
-      const store = mockStore({ labels: [] });
+      const store = mockStore({
+        labels: [],
+        csrf: mockCsrfState
+      });
 
       return store
         .dispatch(
@@ -664,9 +658,7 @@ describe("labelListActions", function() {
             mockLabel,
             [constants.SNACKBAR_ACTION_RETRY],
             [dummyFunc],
-            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
-            mockCSRFHeaderName,
-            mockCSRFToken
+            constants.SNACKBAR_AUTOHIDE_DURATION_DEFAULT
           )
         )
         .then(function() {

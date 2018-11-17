@@ -40,7 +40,15 @@
 	<title>Receipt Organizer Tool</title>
 </head>
 <body>
-	<div id="react" data-loginurl="${loginUrl}" data-error="${param.error}" data-logout="${param.logout}" data-csrftoken="${_csrf.token}" data-csrfparametername="${_csrf.parameterName}"></div>
+    <c:choose>
+        <c:when test="${param.error != null}">
+            <c:set value="true" var="error" />
+        </c:when>
+        <c:when test="${param.logout != null}">
+            <c:set value="true" var="logout" />
+        </c:when>
+    </c:choose>
+	<div id="react" data-loginurl="${loginUrl}" data-error="${error}" data-logout="${logout}" data-csrftoken="${_csrf.token}" data-csrfparametername="${_csrf.parameterName}"></div>
 	
 	<script src="${loginApp}"></script>
 </body>
