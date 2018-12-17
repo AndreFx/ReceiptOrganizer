@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.afx.web.receiptorganizer.dao.model.receipt.Receipt;
 import com.afx.web.receiptorganizer.dao.model.receipt.ReceiptFile;
 import com.afx.web.receiptorganizer.dao.model.user.User;
-import com.afx.web.receiptorganizer.rest.model.request.receipt.CreateReceiptRequest;
 import com.afx.web.receiptorganizer.rest.model.response.BaseResponse;
 import com.afx.web.receiptorganizer.rest.model.response.receipt.ReceiptPage;
 import com.afx.web.receiptorganizer.rest.model.response.receipt.ReceiptResponse;
@@ -40,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("receipts")
@@ -148,24 +148,25 @@ public class ReceiptController {
             receiptFile = this.receiptService.getReceiptFile(user.getUsername(), id);
     
             //Validate request for fileName until (if) multiple files are implemented
-            if (!fileName.equals(receiptFile.getFileName())) {
-                throw new Exception();
-            }
-
-            if (receiptFile.getOriginalMIME() != null) {
-                in = new ByteArrayInputStream(receiptFile.getOriginalFile());
-                length = receiptFile.getOriginalFile().length;
-                response.setContentType(receiptFile.getOriginalMIME());
-            } else {
+            if (receiptFile != null) {
+                if (!fileName.equals(receiptFile.getFileName())) {
+                    throw new Exception("Invalid filename");
+                }
+                
                 in = new ByteArrayInputStream(receiptFile.getFile());
                 length = receiptFile.getFile().length;
                 response.setContentType(receiptFile.getMIME());
+                response.setHeader(
+                    "content-Disposition", 
+                    "inline; filename=" + receiptFile.getFileName() + "." +
+                    receiptFile.getMIME().substring(receiptFile.getMIME().indexOf("/") + 1, receiptFile.getMIME().length()));
+                response.setContentLength(length);
+                IOUtils.copy(in, response.getOutputStream());
+                response.flushBuffer();
+                in.close();
+            } else {
+                throw new Exception("Unable to find any files attached to receipt: " + id);
             }
-            response.setHeader("content-Disposition", "inline; filename=" + id + "image.jpeg");
-            response.setContentLength(length);
-            IOUtils.copy(in, response.getOutputStream());
-            response.flushBuffer();
-            in.close();
         } catch (IOException e) {
             logger.error("Unable to send file id: " + id + " to user: " + user.getUsername());
         } catch (Exception e) {
@@ -184,13 +185,16 @@ public class ReceiptController {
     
             in = new ByteArrayInputStream(receiptFile.getThumbnail());    
             response.setContentType(receiptFile.getThumbnailMIME());    
-            response.setHeader("content-Disposition", "inline; filename=" + id + "image.jpeg");
+            response.setHeader(
+                "content-Disposition",
+                "inline; filename=" + receiptFile.getFileName() + "." +
+                receiptFile.getThumbnailMIME().substring(receiptFile.getThumbnailMIME().indexOf("/") + 1, receiptFile.getThumbnailMIME().length()));
             response.setContentLength(receiptFile.getThumbnail().length);
             IOUtils.copy(in, response.getOutputStream());
             response.flushBuffer();
             in.close();
         } catch (IOException e) {
-            logger.error("Unable to send file id: " + id + " to user: " + user.getUsername());
+            logger.error("Unable to send image thumbnail: " + id + " to user: " + user.getUsername());
         }
     }
 
@@ -228,8 +232,13 @@ public class ReceiptController {
     }
 
     @RequestMapping(value = "/create", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
-    public VisionResponse create(@ModelAttribute("user") User user, Locale locale, @RequestBody CreateReceiptRequest request) throws Exception {
-        Receipt receipt = request.getReceipt();
+    public VisionResponse create(@ModelAttribute("user") User user, Locale locale, @RequestParam("skipOcr") boolean skipOcr, @RequestParam("receiptFile") MultipartFile file) throws Exception {
+        Receipt receipt = new Receipt();
+        //Put multipart data into receipt
+        receipt.setFile(file.getBytes());
+        receipt.setMIME(file.getContentType());
+        receipt.setFileName(file.getOriginalFilename());
+        
         logger.debug("User: " + user.getUsername() + " performing OCR on file: " + receipt.getFileName());
 
         VisionResponse response = new VisionResponse();
@@ -238,9 +247,11 @@ public class ReceiptController {
         Receipt data = null;
 
         if (receipt.getFile().length != 0) {
-            data = this.receiptService.addReceipt(user.getUsername(), receipt, request.getSkipOCR());
+            data = this.receiptService.addReceipt(user.getUsername(), receipt, skipOcr);
             if (receipt.getMIME() != null && receipt.getMIME().equals("application/pdf")) {
                 message = messageSource.getMessage("receipt.create.pdf", null, locale);
+            } else {
+                message = messageSource.getMessage("receipt.create.success", null, locale);
             }
 
             success = true;
@@ -249,6 +260,9 @@ public class ReceiptController {
             message = messageSource.getMessage("receipt.create.failure.nofile", null, locale);;
         }
 
+        data.setFile(null);
+        data.setOriginalFile(null);
+        data.setThumbnail(null);
         response.setSuccess(success);
         response.setMessage(message);
         response.setNewReceipt(data);

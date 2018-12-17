@@ -50,6 +50,9 @@ const styles = theme => ({
   avatar: {
     margin: 5
   },
+  username: {
+    paddingLeft: 27
+  },
   nested: {
     paddingLeft: theme.spacing.unit * 4
   },
@@ -158,7 +161,9 @@ class DrawerContentWrapper extends React.Component {
                 src={USER_THUMBNAIL_PATH}
                 className={classes.avatar}
               />
-              <Typography variant="subtitle1">{username}</Typography>
+              <Typography variant="subtitle1" className={classes.username}>
+                {username}
+              </Typography>
             </div>
             <IconButton onClick={handleDrawerClose}>
               {theme.direction === "rtl" ? (

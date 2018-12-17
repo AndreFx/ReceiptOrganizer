@@ -27,7 +27,8 @@ import {
   DELETE_LABEL_DIALOG_HELP,
   DELETE_LABEL_CANCEL,
   DELETE_LABEL_SUBMIT,
-  DELETE_LABEL_DIALOG_TITLE
+  DELETE_LABEL_DIALOG_TITLE,
+  RECEIPT_LIBRARY
 } from "../../../common/constants";
 
 class Label extends React.Component {
@@ -54,6 +55,8 @@ class Label extends React.Component {
   }
 
   handleItemClick() {
+    this.props.updateContentView(RECEIPT_LIBRARY);
+
     if (
       !this.props.activeLabels.some(el => el.name === this.props.label.name)
     ) {
@@ -231,7 +234,8 @@ Label.propTypes = {
   addActiveLabel: PropTypes.func.isRequired,
   editActiveLabel: PropTypes.func.isRequired,
   removeActiveLabel: PropTypes.func.isRequired,
-  drawerOpen: PropTypes.bool.isRequired
+  drawerOpen: PropTypes.bool.isRequired,
+  updateContentView: PropTypes.func.isRequired
 };
 
 export default Label;

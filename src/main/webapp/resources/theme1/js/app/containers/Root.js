@@ -5,10 +5,10 @@ import thunkMiddleware from "redux-thunk";
 import { createLogger } from "redux-logger";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core";
 import red from "@material-ui/core/colors/red";
-
-//Custom imports
 import rootReducer from "../reducers/indexReducer";
 import AppContainer from "./AppContainer";
+import { MuiPickersUtilsProvider } from "material-ui-pickers";
+import MomentUtils from "@date-io/moment";
 
 const loggerMiddleware = createLogger();
 const root = document.getElementById("react");
@@ -38,7 +38,9 @@ class Root extends React.Component {
     return (
       <Provider store={store}>
         <MuiThemeProvider theme={theme}>
-          <AppContainer />
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <AppContainer />
+          </MuiPickersUtilsProvider>
         </MuiThemeProvider>
       </Provider>
     );

@@ -7,7 +7,7 @@ const styles = {
   root: {
     flexGrow: 1,
     width: "100%",
-    zIndex: 2,
+    zIndex: 10000,
     top: 0,
     left: 0,
     position: "absolute"

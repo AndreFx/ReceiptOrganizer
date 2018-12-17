@@ -13,6 +13,7 @@
 <head>
     <!-- FONTS -->
     <spring:url value="https://fonts.googleapis.com/css?family=Roboto:300,400,500" var="font"/>
+    <spring:url value="https://fonts.googleapis.com/icon?family=Material+Icons" var="materialIcons"/>
     <spring:url value="/resources/images/receipt.png" var="favicon"/>
 
     <!-- JAVASCRIPT -->
@@ -22,6 +23,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="icon" type="image/png" href="${favicon}">
+    <link rel="stylesheet" href="${materialIcons}">
 
     <title>ReceiptOrganizer</title>
 </head>

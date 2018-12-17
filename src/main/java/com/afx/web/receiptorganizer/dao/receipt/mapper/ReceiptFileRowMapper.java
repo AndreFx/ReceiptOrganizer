@@ -12,22 +12,8 @@ public class ReceiptFileRowMapper implements RowMapper<ReceiptFile> {
         ReceiptFile file = new ReceiptFile();
         file.setId(rs.getInt("ReceiptId"));
         
-        String originalFileMIME = null;
-        try {
-            originalFileMIME = rs.getString("OriginalFileMIME");
-        } catch(SQLException sqlE) {
-            //Don't need to do anything here
-        }
-        
-        //If this is declared, the original file was converted from something else (Probably a pdf)
-        if (originalFileMIME != null) {
-            file.setOriginalFile(rs.getBytes("OriginalFile"));
-            file.setOriginalMIME(originalFileMIME);
-        } else {
-            //Otherwise, get the normal image
-            file.setFile(rs.getBytes("FullImage"));
-            file.setMIME(rs.getString("MIME"));
-        }
+        file.setFile(rs.getBytes("FullFile"));
+        file.setMIME(rs.getString("MIME"));
 
         file.setFileName(rs.getString("OriginalFileName"));
         return file;

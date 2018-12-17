@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import NavBar from "../../components/navigation/NavBar";
 import { logoutUser } from "../../actions/user/userActions";
 import { queryReceipts } from "../../actions/receipts/receiptsActions";
+import { updateContentView } from "../../actions/ui/content/contentActions";
 
 function mapStateToProps(state, ownProps) {
   return {
@@ -19,6 +20,9 @@ function mapDispatchToProps(dispatch) {
     },
     queryReceipts: query => {
       dispatch(queryReceipts(query));
+    },
+    updateContentView: view => {
+      dispatch(updateContentView(view));
     }
   };
 }

@@ -269,7 +269,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
         try {
             SqlParameterSource parameters = new MapSqlParameterSource("receiptid", receiptId).addValue("username", username);
             //Selects the originalfile column if not null, or the image column if originalfile is null
-            String query = "SELECT RECEIPT.ReceiptId, ISNULL(OriginalFile, FullImage), ISNULL(OriginalFileMIME, MIME) " +
+            String query = "SELECT RECEIPT.ReceiptId, ISNULL(OriginalFile, FullImage) AS FullFile, ISNULL(OriginalFileMIME, MIME) AS MIME, OriginalFileName " +
                         "FROM USER_RECEIPTS " +
                         "INNER JOIN RECEIPT " +
                         "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
@@ -290,7 +290,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
         try {
             SqlParameterSource parameters = new MapSqlParameterSource("receiptid", receiptId).addValue("username", username);
             //Selects the originalfile column if not null, or the image column if originalfile is null
-            String query = "SELECT RECEIPT.ReceiptId, ImageThumbnail, MIME " +
+            String query = "SELECT RECEIPT.ReceiptId, ImageThumbnail, ThumbnailMIME, OriginalFileName " +
                         "FROM USER_RECEIPTS " +
                         "INNER JOIN RECEIPT " +
                         "ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
@@ -390,7 +390,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
                 List<ReceiptItem> items = receipt.getItems();
                 Map<String, Object> temp = new HashMap<>();
                 temp.put("receiptid", receipt.getId());
-                temp.put("itemnumber", i);
+                temp.put("itemnumber", items.get(i).getItemNumber());
                 temp.put("name", items.get(i).getName());
                 temp.put("quantity", items.get(i).getQuantity());
                 temp.put("unitprice", items.get(i).getUnitPrice());

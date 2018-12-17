@@ -8,6 +8,7 @@ import * as receiptActions from "../../../app/actions/receipts/receiptsActions";
 describe("receiptsReducer", function() {
   let loadingState = _.cloneDeep(RECEIPTS_INITIAL_STATE);
   loadingState.isLoading = true;
+  loadingState.isFullLoading = true;
 
   it("should return the initial state", function() {
     expect(reducer(undefined, {})).toEqual(RECEIPTS_INITIAL_STATE);
@@ -65,6 +66,7 @@ describe("receiptsReducer", function() {
     };
     const expectedState = {
       isLoading: false,
+      isFullLoading: false,
       items: receipts,
       currentPage: 0,
       numPages: 1,
@@ -123,6 +125,7 @@ describe("receiptsReducer", function() {
     const expectedState = Object.assign({}, loadingState, {
       items: receipts,
       isLoading: false,
+      isFullLoading: false,
       numPages: 1,
       totalNumReceipts: 1
     });
@@ -140,7 +143,8 @@ describe("receiptsReducer", function() {
       success: false
     };
     const expectedState = Object.assign({}, loadingState, {
-      isLoading: false
+      isLoading: false,
+      isFullLoading: false
     });
 
     expect(reducer(loadingState, action)).toEqual(expectedState);
@@ -165,6 +169,7 @@ describe("receiptsReducer", function() {
     };
     const expectedState = {
       isLoading: false,
+      isFullLoading: false,
       items: receipts,
       totalNumReceipts: 2,
       numPages: 1,
@@ -193,7 +198,8 @@ describe("receiptsReducer", function() {
       success: false
     };
     const expectedState = Object.assign({}, loadingState, {
-      isLoading: false
+      isLoading: false,
+      isFullLoading: false
     });
 
     expect(reducer(loadingState, action)).toEqual(expectedState);
@@ -228,10 +234,12 @@ describe("receiptsReducer", function() {
       numPages: 2,
       totalNumReceipts: 4,
       query: "Find my receipt!",
-      isLoading: true
+      isLoading: true,
+      isFullLoading: true
     });
     const expectedState = {
       isLoading: false,
+      isFullLoading: false,
       items: receiptsPage2,
       totalNumReceipts: 4,
       numPages: 2,
@@ -271,10 +279,12 @@ describe("receiptsReducer", function() {
       numPages: 2,
       totalNumReceipts: 4,
       query: "Find my receipt!",
-      isLoading: true
+      isLoading: true,
+      isFullLoading: true
     });
     const expectedState = Object.assign({}, initialState, {
-      isLoading: false
+      isLoading: false,
+      isFullLoading: false
     });
 
     expect(reducer(initialState, action)).toEqual(expectedState);

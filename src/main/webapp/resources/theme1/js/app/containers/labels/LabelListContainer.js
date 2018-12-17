@@ -13,6 +13,7 @@ import {
   editActiveLabel,
   removeActiveLabel
 } from "../../actions/receipts/receiptsActions";
+import { updateContentView } from "../../actions/ui/content/contentActions";
 
 function mapStateToProps(state, ownProps) {
   return {
@@ -64,6 +65,9 @@ function mapDispatchToProps(dispatch) {
     },
     removeActiveLabel: label => {
       return dispatch(removeActiveLabel(label));
+    },
+    updateContentView: view => {
+      return dispatch(updateContentView(view));
     }
   };
 }

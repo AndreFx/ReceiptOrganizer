@@ -18,9 +18,11 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import {
   DRAWER_WIDTH,
   LOGIN_PATH,
-  SNACKBAR_ACTION_RETRY
+  SNACKBAR_ACTION_RETRY,
+  RECEIPT_LIBRARY
 } from "../../../common/constants";
 import { logoutUser } from "../../actions/user/userActions";
+import { Typography } from "@material-ui/core";
 
 const styles = theme => ({
   grow: {
@@ -52,7 +54,8 @@ const styles = theme => ({
     display: "none",
     [theme.breakpoints.up("sm")]: {
       display: "block"
-    }
+    },
+    cursor: "pointer"
   },
   search: {
     position: "relative",
@@ -126,6 +129,11 @@ class NavBar extends React.Component {
     this.handleSearchInput = this.handleSearchInput.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.onEnterPressed = this.onEnterPressed.bind(this);
+    this.handleTitleClick = this.handleTitleClick.bind(this);
+  }
+
+  handleTitleClick() {
+    this.props.updateContentView(RECEIPT_LIBRARY);
   }
 
   handleDrawerOpen() {
@@ -254,6 +262,15 @@ class NavBar extends React.Component {
             >
               <MenuIcon />
             </IconButton>
+            <Typography
+              className={classes.title}
+              variant="h6"
+              color="inherit"
+              noWrap
+              onClick={this.handleTitleClick}
+            >
+              Receipt Organizer
+            </Typography>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon onClick={this.handleSearch} />
@@ -303,7 +320,8 @@ NavBar.propTypes = {
   open: PropTypes.bool.isRequired,
   onDrawerBtnClick: PropTypes.func.isRequired,
   logoutUser: PropTypes.func.isRequired,
-  queryReceipts: PropTypes.func.isRequired
+  queryReceipts: PropTypes.func.isRequired,
+  updateContentView: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(NavBar);

@@ -7,14 +7,16 @@ import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
 import Snackbar from "@material-ui/core/Snackbar";
 import EditIcon from "@material-ui/icons/Edit";
-
-//Custom imports
+import CloseIcon from "@material-ui/icons/Close";
 import {
   DRAWER_WIDTH,
   SNACKBAR_VERTICAL,
   SNACKBAR_HORIZONTAL,
   SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
-  SNACKBAR_EXPAND_QUERY_WIDTH
+  SNACKBAR_EXPAND_QUERY_WIDTH,
+  RECEIPT_CREATION,
+  ACTION_DRAWER_WIDTH,
+  RECEIPT_CREATION_TITLE
 } from "../../common/constants";
 import LinearIndeterminate from "./loading/linearIndeterminate";
 import NavContainer from "../containers/navigation/NavContainer";
@@ -22,6 +24,8 @@ import SnackbarContentWrapper from "./snackbar/SnackbarContentWrapper";
 import ContentWrapperContainer from "../containers/content/ContentWrapperContainer";
 import DrawerContentWrapperContainer from "../containers/drawer/DrawerContentWrapperContainer";
 import DialogWrapperContainer from "../containers/dialog/DialogWrapperContainer";
+import ReceiptCreationStepperContainer from "../containers/receipts/ReceiptCreationStepperContainer";
+import { IconButton, Typography, AppBar, Toolbar } from "@material-ui/core";
 
 const styles = theme => ({
   root: {
@@ -33,12 +37,22 @@ const styles = theme => ({
     position: "relative",
     display: "flex"
   },
+  title: {
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block"
+    }
+  },
   toolbar: {
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
     padding: "0 8px",
     ...theme.mixins.toolbar
+  },
+  menuButton: {
+    marginLeft: -12,
+    marginRight: 16
   },
   content: {
     flexGrow: 1,
@@ -67,18 +81,23 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit
   },
-  menuButton: {
-    marginLeft: 12,
-    marginRight: 36
-  },
   drawerPaper: {
-    position: "relative",
     whiteSpace: "nowrap",
-    width: DRAWER_WIDTH,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen
     })
+  },
+  labelDrawerPaper: {
+    position: "relative",
+    width: DRAWER_WIDTH
+  },
+  actionDrawerPaper: {
+    width: ACTION_DRAWER_WIDTH,
+    backgroundColor: "#fafafa"
+  },
+  actionDrawerContent: {
+    padding: "5px 25px 30px"
   },
   drawerPaperClose: {
     overflowX: "hidden",
@@ -101,7 +120,8 @@ class OrganizerApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: true
+      open: true,
+      actionDrawerOpen: false
     };
 
     //Bind functions in constructor so a new function isn't made in every render
@@ -110,6 +130,8 @@ class OrganizerApp extends React.Component {
     this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
     this.handleSnackbarExited = this.handleSnackbarExited.bind(this);
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+    this.handleFABClick = this.handleFABClick.bind(this);
+    this.toggleActionDrawer = this.toggleActionDrawer.bind(this);
   }
 
   handleDrawerOpen() {
@@ -122,6 +144,21 @@ class OrganizerApp extends React.Component {
     this.setState({
       open: false
     });
+  }
+
+  handleFABClick() {
+    this.toggleActionDrawer(true)();
+
+    this.props.updateActionDrawerView(RECEIPT_CREATION);
+  }
+
+  toggleActionDrawer(open) {
+    let toggle = function() {
+      this.setState({
+        actionDrawerOpen: open
+      });
+    };
+    return toggle.bind(this);
   }
 
   handleSnackbarClose(event, reason) {
@@ -159,18 +196,24 @@ class OrganizerApp extends React.Component {
       currentSnackbar,
       snackbarOpen,
       isLoading,
-      windowWidth
+      windowWidth,
+      actionDrawerView
     } = this.props;
-    const fabClasses = classNames(
-      classes.fab,
-      snackbarOpen && windowWidth <= SNACKBAR_EXPAND_QUERY_WIDTH
-        ? classes.fabMoveUp
-        : classes.fabMoveDown
-    );
     let autohideDuration = SNACKBAR_AUTOHIDE_DURATION_DEFAULT;
+    let actionDrawerContentView = null;
+    let actionDrawerTitle = null;
 
     if (currentSnackbar) {
       autohideDuration = currentSnackbar.autohideDuration;
+    }
+
+    if (actionDrawerView === RECEIPT_CREATION) {
+      actionDrawerContentView = (
+        <ReceiptCreationStepperContainer
+          onClose={this.toggleActionDrawer(false)}
+        />
+      );
+      actionDrawerTitle = RECEIPT_CREATION_TITLE;
     }
 
     return (
@@ -186,6 +229,7 @@ class OrganizerApp extends React.Component {
             classes={{
               paper: classNames(
                 classes.drawerPaper,
+                classes.labelDrawerPaper,
                 !this.state.open && classes.drawerPaperClose
               )
             }}
@@ -196,12 +240,60 @@ class OrganizerApp extends React.Component {
               drawerOpen={this.state.open}
             />
           </Drawer>
+          {/*TODO: Separate action drawer into its own component */}
+          <Drawer
+            variant="temporary"
+            anchor="right"
+            open={this.state.actionDrawerOpen}
+            onClose={this.toggleActionDrawer(false)}
+            classes={{
+              paper: classNames(
+                classes.drawerPaper,
+                classes.actionDrawerPaper,
+                !this.state.actionDrawerOpen && classes.drawerPaperClose
+              )
+            }}
+            disableBackdropClick={true}
+          >
+            <div>
+              <AppBar position="static" color="default">
+                <Toolbar>
+                  <IconButton
+                    disabled={isLoading}
+                    color="inherit"
+                    aria-label="Open drawer"
+                    onClick={this.toggleActionDrawer(false)}
+                    className={classes.menuButton}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                  <Typography
+                    className={classes.title}
+                    variant="h6"
+                    color="inherit"
+                    noWrap
+                  >
+                    {actionDrawerTitle}
+                  </Typography>
+                </Toolbar>
+              </AppBar>
+            </div>
+            <div className={classes.actionDrawerContent}>
+              {actionDrawerContentView}
+            </div>
+          </Drawer>
           <ContentWrapperContainer drawerOpen={this.state.open} />
           <Button
             variant="extendedFab"
             aria-label="Add"
-            className={fabClasses}
+            className={classNames(
+              classes.fab,
+              snackbarOpen && windowWidth <= SNACKBAR_EXPAND_QUERY_WIDTH
+                ? classes.fabMoveUp
+                : classes.fabMoveDown
+            )}
             color="primary"
+            onClick={this.handleFABClick}
           >
             <EditIcon className={classes.extendedIcon} />
             Add Receipt
@@ -244,7 +336,9 @@ OrganizerApp.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   processSnackbarQueue: PropTypes.func.isRequired,
   finishCurrentSnackbar: PropTypes.func.isRequired,
-  updateWindowDimensions: PropTypes.func.isRequired
+  updateWindowDimensions: PropTypes.func.isRequired,
+  updateActionDrawerView: PropTypes.func.isRequired,
+  actionDrawerView: PropTypes.string.isRequired
 };
 
 export default withStyles(styles, {

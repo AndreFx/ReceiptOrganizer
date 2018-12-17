@@ -92,6 +92,7 @@ public class AdvanceAutoReceiptParser extends ReceiptParserBase implements Recei
 
         //Items
         Matcher itemM = Pattern.compile(ITEM_REGEX).matcher(visionResponse.getDocumentText());
+        int i = 0;
         while (itemM.find()) {
             ReceiptItem item = new ReceiptItem();
 
@@ -99,6 +100,7 @@ public class AdvanceAutoReceiptParser extends ReceiptParserBase implements Recei
             String quantityMatch = itemM.group(2);
             String priceMatch = itemM.group(3);
             item.setName(nameMatch);
+            item.setItemNumber(i);
 
             try {
                 item.setQuantity(Integer.valueOf(quantityMatch));
@@ -119,6 +121,7 @@ public class AdvanceAutoReceiptParser extends ReceiptParserBase implements Recei
             }
 
             items.add(item);
+            i++;
         }
 
         data.setItems(items);

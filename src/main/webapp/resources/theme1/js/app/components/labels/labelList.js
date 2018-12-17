@@ -28,7 +28,8 @@ class LabelList extends React.Component {
       query,
       currentReceiptPage,
       drawerOpen,
-      listItemClassName
+      listItemClassName,
+      updateContentView
     } = this.props;
 
     return (
@@ -50,6 +51,7 @@ class LabelList extends React.Component {
             currentReceiptPage={currentReceiptPage}
             drawerOpen={drawerOpen}
             listItemClassName={listItemClassName}
+            updateContentView={updateContentView}
           />
         ))}
       </List>
@@ -79,7 +81,8 @@ LabelList.propTypes = {
   editActiveLabel: PropTypes.func.isRequired,
   addActiveLabel: PropTypes.func.isRequired,
   removeActiveLabel: PropTypes.func.isRequired,
-  drawerOpen: PropTypes.bool.isRequired
+  drawerOpen: PropTypes.bool.isRequired,
+  updateContentView: PropTypes.func.isRequired
 };
 
 export default LabelList;

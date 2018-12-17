@@ -64,22 +64,19 @@ public class ReceiptServiceV1 implements ReceiptService {
     private ReceiptParserFactory receiptParserFactory;
 
     public Receipt addReceipt(String username, Receipt receipt, boolean skipOcr) throws Exception {
-        Receipt newReceipt = null;
-
         if (receipt.getMIME() != null && !receipt.getMIME().equals("application/pdf") && skipOcr == false) {
             LogoAndDocumentResponse ocrResponse = callVisionService(receipt.getFile());
             try {
                 ReceiptParser parser = this.receiptParserFactory.getReceiptParser(ocrResponse.getLogoDescription());
-                newReceipt = parser.parseReceipt(receipt, ocrResponse);
+                receipt = parser.parseReceipt(receipt, ocrResponse);
             } catch (IOException iox) {
                 logger.error("Failed to convert user: " + username + " image for storage on database.");
                 throw new RuntimeException(iox.getMessage());
             }
         } else if (receipt.getMIME() != null && receipt.getMIME().equals("application/pdf")) {
             // Setup receipt
-            newReceipt = new Receipt();
             InputStream imageAsStream = new ByteArrayInputStream(receipt.getFile());
-            BufferedImage image = PDFImageCreator.createImageOfPDFPage(imageAsStream, newReceipt.getFileName(), 0);
+            BufferedImage image = PDFImageCreator.createImageOfPDFPage(imageAsStream, receipt.getFileName(), 0);
 
             // Convert pdf image back to bytes
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -88,27 +85,27 @@ public class ReceiptServiceV1 implements ReceiptService {
             byte[] pdfImageAsBytes = outputStream.toByteArray();
             outputStream.close();
 
-            newReceipt.setOriginalFile(receipt.getFile());
-            newReceipt.setOriginalMIME("application/pdf");
-            newReceipt.setMIME("image/jpeg");
-            newReceipt.setFile(pdfImageAsBytes);
+            receipt.setMIME("image/jpeg");
+            receipt.setFile(pdfImageAsBytes);
 
             // Create byte array for thumbnail
-            newReceipt.setThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
-            newReceipt.setThumbnailMIME("image/jpeg");
+            receipt.setThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
+            receipt.setThumbnailMIME("image/jpeg");
         } else {
             // Skip ocr selected on nonpdf file
-            newReceipt = new Receipt();
             InputStream imageAsStream = new ByteArrayInputStream(receipt.getFile());
             BufferedImage image = ImageIO.read(imageAsStream);
 
-            newReceipt.setFile(receipt.getFile());
-            newReceipt.setThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
-            newReceipt.setThumbnailMIME("image/jpeg");
+            receipt.setThumbnail(ImageThumbnailCreator.createThumbnail(image, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH));
+            receipt.setThumbnailMIME("image/jpeg");
         }
 
-        newReceipt.setId(this.receiptDao.addReceipt(username, newReceipt));
-        return newReceipt;
+        //Remove everything after the first period
+        receipt.setFileName(receipt.getFileName().substring(0, receipt.getFileName().indexOf(".")));
+        receipt.setOriginalFile(receipt.getFile());
+        receipt.setOriginalMIME(receipt.getMIME());
+        receipt.setId(this.receiptDao.addReceipt(username, receipt));
+        return receipt;
     }
 
     public void deleteReceipt(String username, int receiptId) {

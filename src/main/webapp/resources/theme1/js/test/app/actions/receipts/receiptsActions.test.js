@@ -539,6 +539,7 @@ describe("receiptsActions", function() {
 
     it("creates REQUEST and RECEIVE actions for RECEIPT_CHANGE_PAGE", function() {
       const currentPageNum = 1;
+      const newPageNum = 2;
       const mockMsg = "Success";
       const receipts = [
         {
@@ -561,12 +562,11 @@ describe("receiptsActions", function() {
         constants.HOST_URL +
           constants.GET_RECEIPTS_PATH +
           "?pageNum=" +
-          currentPageNum,
+          newPageNum,
         {
           body: {
             success: true,
             receipts: receipts,
-            pageNum: 2,
             message: mockMsg
           },
           status: 200,
@@ -588,7 +588,7 @@ describe("receiptsActions", function() {
       });
 
       return store
-        .dispatch(actions.changeReceiptPage(currentPageNum))
+        .dispatch(actions.changeReceiptPage(newPageNum))
         .then(function() {
           expect(store.getActions()).toEqual(expectedActions);
         });
