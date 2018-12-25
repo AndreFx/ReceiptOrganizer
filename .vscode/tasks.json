@@ -79,7 +79,7 @@
         },
         {
             "label": "run debug",
-            "command": "sh ~/Documents/Github/ReceiptOrganizer/run_debug.sh",
+            "command": "sh ~/Documents/workspace/ReceiptOrganizer/run_debug.sh",
             "isShellCommand": true,
             "showOutput": "always",
             "problemMatcher": []

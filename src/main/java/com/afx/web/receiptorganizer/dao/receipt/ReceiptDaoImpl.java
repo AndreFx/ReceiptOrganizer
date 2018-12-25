@@ -371,7 +371,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
                 Map<String, Object> temp = new HashMap<>();
                 temp.put("receiptid", receipt.getId());
                 temp.put("username", username);
-                temp.put("labelname", receipt.getLabels().get(i));
+                temp.put("labelname", receipt.getLabels().get(i).getName());
                 batchParams[i] = temp;
             }
         } else {

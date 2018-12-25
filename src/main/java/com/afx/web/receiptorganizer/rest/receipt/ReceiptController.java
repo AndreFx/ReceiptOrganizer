@@ -204,7 +204,7 @@ public class ReceiptController {
         boolean success = false;
         String message = "";
 
-        if (updatedReceipt.getId() != id) {
+        if (Integer.compare(updatedReceipt.getId(), id) == 0) {
             try {
                 this.receiptService.editReceipt(user.getUsername(), updatedReceipt);
     
@@ -216,6 +216,7 @@ public class ReceiptController {
                 message = messageSource.getMessage("receipt.edit.failure", null, locale);
             }
         } else {
+            logger.error("Invalid id parameter with updated receipt.");
             message = messageSource.getMessage("receipt.edit.failure.invalidid", null, locale);
         }
 

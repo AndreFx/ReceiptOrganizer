@@ -1,7 +1,11 @@
 import { connect } from "react-redux";
 
-import { uploadReceipt } from "../../actions/receipts/receiptsActions";
+import {
+  uploadReceipt,
+  editReceipt
+} from "../../actions/receipts/receiptsActions";
 import ReceiptCreationStepper from "../../components/receipts/ReceiptCreationStepper";
+import { addSnackbar } from "../../actions/ui/snackbar/snackbarActions";
 
 function mapStateToProps(state, ownProps) {
   return {
@@ -12,8 +16,14 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    addSnackbar: snackbar => {
+      return dispatch(addSnackbar(snackbar));
+    },
     uploadReceipt: (skipOcr, receiptFile) => {
       return dispatch(uploadReceipt(skipOcr, receiptFile));
+    },
+    editReceipt: updatedReceipt => {
+      return dispatch(editReceipt(updatedReceipt));
     }
   };
 }

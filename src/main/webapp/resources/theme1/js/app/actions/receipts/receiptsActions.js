@@ -7,7 +7,7 @@ import {
   HOST_URL,
   CONTENT_TYPE_JSON,
   CREATE_RECEIPT_PATH,
-  CONTENT_TYPE_MULTIPART
+  EDIT_RECEIPT_PATH
 } from "../../../common/constants";
 import {
   requestAddActiveLabel,
@@ -26,6 +26,8 @@ export const REQUEST_RECEIPT_PAGE_CHANGE = "REQUEST_RECEIPT_PAGE_CHANGE";
 export const RECEIVE_RECEIPT_PAGE_CHANGE = "RECEIVE_RECEIPT_PAGE_CHANGE";
 export const REQUEST_RECEIPT_UPLOAD = "REQUEST_RECEIPT_UPLOAD";
 export const RECEIVE_RECEIPT_UPLOAD = "RECEIVE_RECEIPT_UPLOAD";
+export const REQUEST_RECEIPT_EDIT = "REQUEST_RECEIPT_EDIT";
+export const RECEIVE_RECEIPT_EDIT = "RECEIVE_RECEIPT_EDIT";
 
 const errorSnackbar = {
   msg: SERVER_ERROR,
@@ -341,6 +343,56 @@ export function uploadReceipt(skipOcr, receiptFile) {
       })
       .catch(function(error) {
         dispatch(receiveReceiptUpload(false));
+        dispatch(addSnackbar(errorSnackbar));
+        return Promise.reject();
+      });
+  };
+}
+
+export function requestReceiptEdit() {
+  return {
+    type: REQUEST_RECEIPT_EDIT
+  };
+}
+
+export function receiveReceiptEdit(success) {
+  return {
+    type: RECEIVE_RECEIPT_EDIT,
+    success: success
+  };
+}
+
+export function editReceipt(updatedReceipt) {
+  return function(dispatch, getState) {
+    const state = getState();
+    const csrfHeaderName = state.csrf.csrfheadername;
+    const csrfToken = state.csrf.csrftoken;
+    let url = new URL(HOST_URL + EDIT_RECEIPT_PATH.format(updatedReceipt.id));
+
+    //Dispatch appropriate action
+    dispatch(requestReceiptEdit());
+
+    return fetchService
+      .doFetch(url, {
+        method: "post",
+        headers: {
+          Accept: CONTENT_TYPE_JSON,
+          "Content-Type": CONTENT_TYPE_JSON,
+          [csrfHeaderName]: csrfToken
+        },
+        body: JSON.stringify(updatedReceipt)
+      })
+      .then(function(response) {
+        fetchService.checkResponseStatus(response);
+        return response.json();
+      })
+      .then(function(json) {
+        dispatch(receiveReceiptEdit(json.success));
+
+        return Promise.resolve(json);
+      })
+      .catch(function(error) {
+        dispatch(receiveReceiptEdit(false));
         dispatch(addSnackbar(errorSnackbar));
         return Promise.reject();
       });

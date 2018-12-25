@@ -1,4 +1,5 @@
 //UI Constants
+//TODO: Separate out text constants
 /* Content Views */
 export const RECEIPT_LIBRARY = "RECEIPT_LIBRARY";
 
@@ -120,6 +121,13 @@ export const GET_RECEIPT_THUMBNAIL_PATH =
   "/ReceiptOrganizer/receipts/{0}/thumbnail";
 export const GET_RECEIPT_FILE_PATH = "/ReceiptOrganizer/receipts/{0}/file/{1}";
 export const CREATE_RECEIPT_PATH = "/ReceiptOrganizer/receipts/create";
+export const EDIT_RECEIPT_PATH = "/ReceiptOrganizer/receipts/{0}/edit";
+
+/* Validation & Form helpers */
+
+//Receipt validation checks
+export const MAX_TITLE_LENGTH = 50;
+export const MAX_DESCRIPTION_LENGTH = 2000;
 
 //Service Errors
 export const SERVER_ERROR = "Unable to reach server";
