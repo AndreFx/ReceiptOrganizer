@@ -10,15 +10,17 @@ class ReceiptCardList extends Component {
   }
 
   render() {
-    const { receipts } = this.props;
+    const { receipts, numColumns } = this.props;
+    let columns = [];
 
-    let columns = [[], [], []];
-
-    for (let i = 0; i < receipts.length; i++) {
-      columns[i % 3].push(receipts[i]);
+    for (let j = 0; j < numColumns; j++) {
+      columns.push([]);
     }
 
-    //TODO: Calculate the number of columns we can fit within the space we have
+    for (let i = 0; i < receipts.length; i++) {
+      columns[i % numColumns].push(receipts[i]);
+    }
+
     //TODO: Fix the loader for the final design
     return (
       <Grid
@@ -52,7 +54,7 @@ class ReceiptCardList extends Component {
 
 ReceiptCardList.propTypes = {
   receipts: PropTypes.array.isRequired,
-  currentPage: PropTypes.number.isRequired
+  numColumns: PropTypes.number.isRequired
 };
 
 export default ReceiptCardList;

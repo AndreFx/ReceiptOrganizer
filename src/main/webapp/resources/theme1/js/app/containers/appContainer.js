@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 import OrganizerApp from "../components/OrganizerApp";
 import {
   processSnackbarQueue,
-  finishCurrentSnackbar
+  finishCurrentSnackbar,
+  addSnackbar
 } from "../actions/ui/snackbar/snackbarActions";
 import { updateWindowDimensions } from "../actions/ui/window/windowActions";
 import { updateActionDrawerView } from "../actions/ui/actionDrawer/actionDrawerActions";
@@ -30,6 +31,9 @@ function mapDispatchToProps(dispatch) {
     },
     finishCurrentSnackbar: () => {
       dispatch(finishCurrentSnackbar());
+    },
+    addSnackbar: snackbar => {
+      dispatch(addSnackbar(snackbar));
     },
     updateWindowDimensions: (width, height) => {
       dispatch(updateWindowDimensions(width, height));

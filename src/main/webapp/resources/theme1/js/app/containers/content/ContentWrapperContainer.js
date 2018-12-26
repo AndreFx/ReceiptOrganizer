@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 import ContentWrapper from "../../components/content/ContentWrapper";
 import {
   removeActiveLabel,
-  changeReceiptPage
+  loadReceiptPage,
+  queryReceipts
 } from "../../actions/receipts/receiptsActions";
 
 function mapStateToProps(state, ownProps) {
@@ -12,6 +13,7 @@ function mapStateToProps(state, ownProps) {
     activeLabels: state.activeLabels.items,
     query: state.receipts.query,
     currentPage: state.receipts.currentPage,
+    numPages: state.receipts.numPages,
     receipts: state.receipts.items,
     isLoading: state.receipts.isFullLoading,
     drawerOpen: ownProps.drawerOpen,
@@ -26,8 +28,11 @@ function mapDispatchToProps(dispatch) {
     removeActiveLabel: label => {
       return dispatch(removeActiveLabel(label));
     },
-    changeReceiptPage: pageNum => {
-      return dispatch(changeReceiptPage(pageNum));
+    loadReceiptPage: pageNum => {
+      return dispatch(loadReceiptPage(pageNum));
+    },
+    queryReceipts: query => {
+      return dispatch(queryReceipts(query));
     }
   };
 }

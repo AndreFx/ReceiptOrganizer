@@ -6,9 +6,12 @@ import * as actions from "../../../app/actions/receipts/activeLabelsActions";
 import * as receiptActions from "../../../app/actions/receipts/receiptsActions";
 
 describe("receiptsReducer", function() {
+  let loadingStateFull = _.cloneDeep(RECEIPTS_INITIAL_STATE);
+  loadingStateFull.isLoading = true;
+  loadingStateFull.isFullLoading = true;
+
   let loadingState = _.cloneDeep(RECEIPTS_INITIAL_STATE);
   loadingState.isLoading = true;
-  loadingState.isFullLoading = true;
 
   it("should return the initial state", function() {
     expect(reducer(undefined, {})).toEqual(RECEIPTS_INITIAL_STATE);
@@ -19,7 +22,7 @@ describe("receiptsReducer", function() {
       type: actions.REQUEST_ADD_ACTIVE_LABEL
     };
 
-    expect(reducer(RECEIPTS_INITIAL_STATE, action)).toEqual(loadingState);
+    expect(reducer(RECEIPTS_INITIAL_STATE, action)).toEqual(loadingStateFull);
   });
 
   it("should handle REQUEST_EDIT_ACTIVE_LABEL", function() {
@@ -27,7 +30,7 @@ describe("receiptsReducer", function() {
       type: actions.REQUEST_EDIT_ACTIVE_LABEL
     };
 
-    expect(reducer(RECEIPTS_INITIAL_STATE, action)).toEqual(loadingState);
+    expect(reducer(RECEIPTS_INITIAL_STATE, action)).toEqual(loadingStateFull);
   });
 
   it("should handle REQUEST_REMOVE_ACTIVE_LABEL", function() {
@@ -35,7 +38,7 @@ describe("receiptsReducer", function() {
       type: actions.REQUEST_REMOVE_ACTIVE_LABEL
     };
 
-    expect(reducer(RECEIPTS_INITIAL_STATE, action)).toEqual(loadingState);
+    expect(reducer(RECEIPTS_INITIAL_STATE, action)).toEqual(loadingStateFull);
   });
 
   it("should handle REQUEST_QUERY_RECEIPTS", function() {
@@ -43,12 +46,12 @@ describe("receiptsReducer", function() {
       type: receiptActions.REQUEST_QUERY_RECEIPTS
     };
 
-    expect(reducer(RECEIPTS_INITIAL_STATE, action)).toEqual(loadingState);
+    expect(reducer(RECEIPTS_INITIAL_STATE, action)).toEqual(loadingStateFull);
   });
 
-  it("should handle REQUEST_RECEIPT_PAGE_CHANGE", function() {
+  it("should handle REQUEST_RECEIPT_PAGE_LOAD", function() {
     const action = {
-      type: receiptActions.REQUEST_RECEIPT_PAGE_CHANGE
+      type: receiptActions.REQUEST_RECEIPT_PAGE_LOAD
     };
 
     expect(reducer(RECEIPTS_INITIAL_STATE, action)).toEqual(loadingState);
@@ -74,7 +77,7 @@ describe("receiptsReducer", function() {
       query: ""
     };
 
-    expect(reducer(loadingState, action)).toEqual(expectedState);
+    expect(reducer(loadingStateFull, action)).toEqual(expectedState);
   });
 
   it("should handle unsuccessful RECEIVE_ADD_ACTIVE_LABEL", function() {
@@ -87,7 +90,7 @@ describe("receiptsReducer", function() {
       success: false
     };
 
-    expect(reducer(loadingState, action)).toEqual(RECEIPTS_INITIAL_STATE);
+    expect(reducer(loadingStateFull, action)).toEqual(RECEIPTS_INITIAL_STATE);
   });
 
   it("should handle successful RECEIVE_EDIT_ACTIVE_LABEL", function() {
@@ -98,7 +101,7 @@ describe("receiptsReducer", function() {
       success: true
     };
 
-    expect(reducer(loadingState, action)).toEqual(RECEIPTS_INITIAL_STATE);
+    expect(reducer(loadingStateFull, action)).toEqual(RECEIPTS_INITIAL_STATE);
   });
 
   it("should handle unsuccessful RECEIVE_EDIT_ACTIVE_LABEL", function() {
@@ -109,7 +112,7 @@ describe("receiptsReducer", function() {
       success: false
     };
 
-    expect(reducer(loadingState, action)).toEqual(RECEIPTS_INITIAL_STATE);
+    expect(reducer(loadingStateFull, action)).toEqual(RECEIPTS_INITIAL_STATE);
   });
 
   it("should handle successful RECEIVE_REMOVE_ACTIVE_LABEL", function() {
@@ -122,7 +125,7 @@ describe("receiptsReducer", function() {
       numPages: 1,
       success: true
     };
-    const expectedState = Object.assign({}, loadingState, {
+    const expectedState = Object.assign({}, loadingStateFull, {
       items: receipts,
       isLoading: false,
       isFullLoading: false,
@@ -130,7 +133,7 @@ describe("receiptsReducer", function() {
       totalNumReceipts: 1
     });
 
-    expect(reducer(loadingState, action)).toEqual(expectedState);
+    expect(reducer(loadingStateFull, action)).toEqual(expectedState);
   });
 
   it("should handle unsuccessful RECEIVE_REMOVE_ACTIVE_LABEL", function() {
@@ -142,12 +145,12 @@ describe("receiptsReducer", function() {
       numPages: 1,
       success: false
     };
-    const expectedState = Object.assign({}, loadingState, {
+    const expectedState = Object.assign({}, loadingStateFull, {
       isLoading: false,
       isFullLoading: false
     });
 
-    expect(reducer(loadingState, action)).toEqual(expectedState);
+    expect(reducer(loadingStateFull, action)).toEqual(expectedState);
   });
 
   it("should handle successful RECEIVE_QUERY_RECEIPTS", function() {
@@ -177,7 +180,7 @@ describe("receiptsReducer", function() {
       query: "Find my receipt!"
     };
 
-    expect(reducer(loadingState, action)).toEqual(expectedState);
+    expect(reducer(loadingStateFull, action)).toEqual(expectedState);
   });
 
   it("should handle unsuccessful RECEIVE_QUERY_RECEIPTS", function() {
@@ -197,15 +200,15 @@ describe("receiptsReducer", function() {
       numPages: 1,
       success: false
     };
-    const expectedState = Object.assign({}, loadingState, {
+    const expectedState = Object.assign({}, loadingStateFull, {
       isLoading: false,
       isFullLoading: false
     });
 
-    expect(reducer(loadingState, action)).toEqual(expectedState);
+    expect(reducer(loadingStateFull, action)).toEqual(expectedState);
   });
 
-  it("should handle successful RECEIVE_RECEIPT_CHANGE_PAGE", function() {
+  it("should handle successful RECEIVE_RECEIPT_PAGE_LOAD", function() {
     const receiptsPage1 = [
       {
         title: "MyReceipt"
@@ -223,24 +226,24 @@ describe("receiptsReducer", function() {
       }
     ];
     const action = {
-      type: receiptActions.RECEIVE_RECEIPT_PAGE_CHANGE,
+      type: receiptActions.RECEIVE_RECEIPT_PAGE_LOAD,
       receipts: receiptsPage2,
       pageNum: 1,
       success: true
     };
-    const initialState = Object.assign({}, loadingState, {
+    const initialState = Object.assign({}, loadingStateFull, {
       items: receiptsPage1,
       currentPage: 0,
       numPages: 2,
       totalNumReceipts: 4,
       query: "Find my receipt!",
       isLoading: true,
-      isFullLoading: true
+      isFullLoading: false
     });
     const expectedState = {
       isLoading: false,
       isFullLoading: false,
-      items: receiptsPage2,
+      items: [...receiptsPage1, ...receiptsPage2],
       totalNumReceipts: 4,
       numPages: 2,
       currentPage: 1,
@@ -250,7 +253,7 @@ describe("receiptsReducer", function() {
     expect(reducer(initialState, action)).toEqual(expectedState);
   });
 
-  it("should handle unsuccessful RECEIVE_QUERY_RECEIPTS", function() {
+  it("should handle unsuccessful RECEIVE_RECEIPT_PAGE_LOAD", function() {
     const receiptsPage1 = [
       {
         title: "MyReceipt"
@@ -268,19 +271,19 @@ describe("receiptsReducer", function() {
       }
     ];
     const action = {
-      type: receiptActions.RECEIVE_RECEIPT_PAGE_CHANGE,
+      type: receiptActions.RECEIVE_RECEIPT_PAGE_LOAD,
       receipts: receiptsPage2,
       pageNum: 1,
       success: false
     };
-    const initialState = Object.assign({}, loadingState, {
+    const initialState = Object.assign({}, loadingStateFull, {
       items: receiptsPage1,
       currentPage: 0,
       numPages: 2,
       totalNumReceipts: 4,
       query: "Find my receipt!",
       isLoading: true,
-      isFullLoading: true
+      isFullLoading: false
     });
     const expectedState = Object.assign({}, initialState, {
       isLoading: false,

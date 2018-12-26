@@ -22,12 +22,14 @@ import fetchService from "../../../common/utils/fetchService";
 
 export const REQUEST_QUERY_RECEIPTS = "REQUEST_QUERY_RECEIPTS";
 export const RECEIVE_QUERY_RECEIPTS = "RECEIVE_QUERY_RECEIPTS";
-export const REQUEST_RECEIPT_PAGE_CHANGE = "REQUEST_RECEIPT_PAGE_CHANGE";
-export const RECEIVE_RECEIPT_PAGE_CHANGE = "RECEIVE_RECEIPT_PAGE_CHANGE";
+export const REQUEST_RECEIPT_PAGE_LOAD = "REQUEST_RECEIPT_PAGE_LOAD";
+export const RECEIVE_RECEIPT_PAGE_LOAD = "RECEIVE_RECEIPT_PAGE_LOAD";
 export const REQUEST_RECEIPT_UPLOAD = "REQUEST_RECEIPT_UPLOAD";
 export const RECEIVE_RECEIPT_UPLOAD = "RECEIVE_RECEIPT_UPLOAD";
 export const REQUEST_RECEIPT_EDIT = "REQUEST_RECEIPT_EDIT";
 export const RECEIVE_RECEIPT_EDIT = "RECEIVE_RECEIPT_EDIT";
+export const REQUEST_RECEIPTS_REFRESH = "REQUEST_RECEIPTS_REFRESH";
+export const RECEIVE_RECEIPTS_REFRESH = "RECEIVE_RECEIPTS_REFRESH";
 
 const errorSnackbar = {
   msg: SERVER_ERROR,
@@ -107,22 +109,88 @@ export function queryReceipts(query) {
   };
 }
 
-export function requestReceiptPageChange() {
+export function requestReceiptsRefresh() {
   return {
-    type: REQUEST_RECEIPT_PAGE_CHANGE
+    type: REQUEST_RECEIPTS_REFRESH
   };
 }
 
-export function receiveReceiptPageChange(pageNum, receipts, success) {
+export function receiveReceiptsRefresh(
+  receipts,
+  numReceipts,
+  numPages,
+  success
+) {
   return {
-    type: RECEIVE_RECEIPT_PAGE_CHANGE,
+    type: RECEIVE_RECEIPTS_REFRESH,
+    receipts: receipts,
+    numPages: numPages,
+    numReceipts: numReceipts,
+    success: success
+  };
+}
+
+export function refreshReceipts() {
+  return function(dispatch, getState) {
+    const { activeLabels, receipts } = getState();
+    let url = new URL(HOST_URL + GET_RECEIPTS_PATH);
+
+    let params = {
+      query: receipts.query,
+      activeLabelNames: [
+        ...activeLabels.items.map(function(el) {
+          return el.name;
+        })
+      ],
+      pageNum: 0
+    };
+
+    dispatch(requestReceiptsRefresh());
+
+    //Create full url
+    url = fetchService.encodeURLParams(url, params);
+    return fetchService
+      .doFetch(url)
+      .then(function(response) {
+        fetchService.checkResponseStatus(response);
+        return response.json();
+      })
+      .then(function(json) {
+        dispatch(
+          receiveReceiptsRefresh(
+            json.receipts,
+            json.totalNumReceipts,
+            json.numPages,
+            json.success
+          )
+        );
+
+        return Promise.resolve(json.success);
+      })
+      .catch(function(error) {
+        dispatch(receiveReceiptsRefresh([], 0, 0, false));
+        dispatch(addSnackbar(errorSnackbar));
+        return Promise.resolve(false);
+      });
+  };
+}
+
+export function requestReceiptPageLoad() {
+  return {
+    type: REQUEST_RECEIPT_PAGE_LOAD
+  };
+}
+
+export function receiveReceiptPageLoad(pageNum, receipts, success) {
+  return {
+    type: RECEIVE_RECEIPT_PAGE_LOAD,
     receipts: receipts,
     pageNum: pageNum,
     success: success
   };
 }
 
-export function changeReceiptPage(pageNum) {
+export function loadReceiptPage(pageNum) {
   return function(dispatch, getState) {
     const { activeLabels, receipts } = getState();
     let url = new URL(HOST_URL + GET_RECEIPTS_PATH);
@@ -137,7 +205,7 @@ export function changeReceiptPage(pageNum) {
     };
 
     //Dispatch appropriate action
-    dispatch(requestReceiptPageChange());
+    dispatch(requestReceiptPageLoad());
 
     //Create full url
     url = fetchService.encodeURLParams(url, params);
@@ -148,14 +216,12 @@ export function changeReceiptPage(pageNum) {
         return response.json();
       })
       .then(function(json) {
-        dispatch(
-          receiveReceiptPageChange(pageNum, json.receipts, json.success)
-        );
+        dispatch(receiveReceiptPageLoad(pageNum, json.receipts, json.success));
 
         return Promise.resolve(json.success);
       })
       .catch(function(error) {
-        dispatch(receiveReceiptPageChange(pageNum, [], false));
+        dispatch(receiveReceiptPageLoad(pageNum, [], false));
         dispatch(addSnackbar(errorSnackbar));
         return Promise.resolve(false);
       });

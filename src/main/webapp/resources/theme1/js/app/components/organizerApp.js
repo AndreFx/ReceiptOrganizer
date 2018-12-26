@@ -7,7 +7,6 @@ import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
 import Snackbar from "@material-ui/core/Snackbar";
 import EditIcon from "@material-ui/icons/Edit";
-import CloseIcon from "@material-ui/icons/Close";
 import {
   DRAWER_WIDTH,
   SNACKBAR_VERTICAL,
@@ -15,7 +14,6 @@ import {
   SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
   SNACKBAR_EXPAND_QUERY_WIDTH,
   RECEIPT_CREATION,
-  ACTION_DRAWER_WIDTH,
   RECEIPT_CREATION_TITLE
 } from "../../common/constants";
 import LinearIndeterminate from "./loading/linearIndeterminate";
@@ -25,7 +23,7 @@ import ContentWrapperContainer from "../containers/content/ContentWrapperContain
 import DrawerContentWrapperContainer from "../containers/drawer/DrawerContentWrapperContainer";
 import DialogWrapperContainer from "../containers/dialog/DialogWrapperContainer";
 import ReceiptCreationStepperContainer from "../containers/receipts/ReceiptCreationStepperContainer";
-import { IconButton, Typography, AppBar, Toolbar } from "@material-ui/core";
+import ActionDrawer from "./drawer/ActionDrawer";
 
 const styles = theme => ({
   root: {
@@ -49,10 +47,6 @@ const styles = theme => ({
     justifyContent: "flex-end",
     padding: "0 8px",
     ...theme.mixins.toolbar
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 16
   },
   content: {
     flexGrow: 1,
@@ -91,13 +85,6 @@ const styles = theme => ({
   labelDrawerPaper: {
     position: "relative",
     width: DRAWER_WIDTH
-  },
-  actionDrawerPaper: {
-    width: ACTION_DRAWER_WIDTH,
-    backgroundColor: "#fafafa"
-  },
-  actionDrawerContent: {
-    padding: "5px 25px 30px"
   },
   drawerPaperClose: {
     overflowX: "hidden",
@@ -153,7 +140,10 @@ class OrganizerApp extends React.Component {
   }
 
   toggleActionDrawer(open) {
-    let toggle = function() {
+    let toggle = function(eventOrSnackbar) {
+      if (eventOrSnackbar && eventOrSnackbar.variant) {
+        this.props.addSnackbar(eventOrSnackbar);
+      }
       this.setState({
         actionDrawerOpen: open
       });
@@ -240,48 +230,13 @@ class OrganizerApp extends React.Component {
               drawerOpen={this.state.open}
             />
           </Drawer>
-          {/*TODO: Separate action drawer into its own component */}
-          <Drawer
-            variant="temporary"
-            anchor="right"
+          <ActionDrawer
             open={this.state.actionDrawerOpen}
             onClose={this.toggleActionDrawer(false)}
-            classes={{
-              paper: classNames(
-                classes.drawerPaper,
-                classes.actionDrawerPaper,
-                !this.state.actionDrawerOpen && classes.drawerPaperClose
-              )
-            }}
-            disableBackdropClick={true}
-          >
-            <div>
-              <AppBar position="static" color="default">
-                <Toolbar>
-                  <IconButton
-                    disabled={isLoading}
-                    color="inherit"
-                    aria-label="Open drawer"
-                    onClick={this.toggleActionDrawer(false)}
-                    className={classes.menuButton}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                  <Typography
-                    className={classes.title}
-                    variant="h6"
-                    color="inherit"
-                    noWrap
-                  >
-                    {actionDrawerTitle}
-                  </Typography>
-                </Toolbar>
-              </AppBar>
-            </div>
-            <div className={classes.actionDrawerContent}>
-              {actionDrawerContentView}
-            </div>
-          </Drawer>
+            title={actionDrawerTitle}
+            contentComponent={actionDrawerContentView}
+            isLoading={isLoading}
+          />
           <ContentWrapperContainer drawerOpen={this.state.open} />
           <Button
             variant="extendedFab"
@@ -334,6 +289,7 @@ OrganizerApp.propTypes = {
   currentSnackbar: PropTypes.object,
   snackbarQueueLength: PropTypes.number.isRequired,
   windowWidth: PropTypes.number.isRequired,
+  addSnackbar: PropTypes.func.isRequired,
   processSnackbarQueue: PropTypes.func.isRequired,
   finishCurrentSnackbar: PropTypes.func.isRequired,
   updateWindowDimensions: PropTypes.func.isRequired,

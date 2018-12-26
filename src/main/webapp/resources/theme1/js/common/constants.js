@@ -9,6 +9,7 @@ export const RECEIPT_CREATION = "RECEIPT_CREATION";
 /* UI Sizes */
 export const DRAWER_WIDTH = 360;
 export const DRAWER_WIDTH_CLOSED = 72;
+export const RECEIPT_CARD_WIDTH = 300;
 export const ACTION_DRAWER_WIDTH = "100%";
 export const APP_BAR_HEIGHT = 64;
 export const ITEM_HEIGHT = 48;

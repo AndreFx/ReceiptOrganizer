@@ -59,16 +59,16 @@ describe("receiptsActions", function() {
     });
   });
 
-  describe("receiptPageChange action creators", function() {
-    it("should create an action to request a receipt page change", function() {
+  describe("receiptPageLoad action creators", function() {
+    it("should create an action to request a receipt page load", function() {
       const expectedAction = {
-        type: actions.REQUEST_RECEIPT_PAGE_CHANGE
+        type: actions.REQUEST_RECEIPT_PAGE_LOAD
       };
 
-      expect(actions.requestReceiptPageChange()).toEqual(expectedAction);
+      expect(actions.requestReceiptPageLoad()).toEqual(expectedAction);
     });
 
-    it("should create an action to receive a page change", function() {
+    it("should create an action to receive a page load", function() {
       const receipts = [
         {
           title: "MyReceipts"
@@ -76,13 +76,13 @@ describe("receiptsActions", function() {
       ];
       const pageNum = 1;
       const expectedAction = {
-        type: actions.RECEIVE_RECEIPT_PAGE_CHANGE,
+        type: actions.RECEIVE_RECEIPT_PAGE_LOAD,
         receipts: receipts,
         pageNum: pageNum,
         success: true
       };
 
-      expect(actions.receiveReceiptPageChange(pageNum, receipts, true)).toEqual(
+      expect(actions.receiveReceiptPageLoad(pageNum, receipts, true)).toEqual(
         expectedAction
       );
     });
@@ -537,7 +537,7 @@ describe("receiptsActions", function() {
       fetchMock.restore();
     });
 
-    it("creates REQUEST and RECEIVE actions for RECEIPT_CHANGE_PAGE", function() {
+    it("creates REQUEST and RECEIVE actions for RECEIPT_PAGE_LOAD", function() {
       const currentPageNum = 1;
       const newPageNum = 2;
       const mockMsg = "Success";
@@ -548,10 +548,10 @@ describe("receiptsActions", function() {
       ];
       const expectedActions = [
         {
-          type: actions.REQUEST_RECEIPT_PAGE_CHANGE
+          type: actions.REQUEST_RECEIPT_PAGE_LOAD
         },
         {
-          type: actions.RECEIVE_RECEIPT_PAGE_CHANGE,
+          type: actions.RECEIVE_RECEIPT_PAGE_LOAD,
           receipts: receipts,
           pageNum: 2,
           success: true
@@ -588,21 +588,21 @@ describe("receiptsActions", function() {
       });
 
       return store
-        .dispatch(actions.changeReceiptPage(newPageNum))
+        .dispatch(actions.loadReceiptPage(newPageNum))
         .then(function() {
           expect(store.getActions()).toEqual(expectedActions);
         });
     });
 
-    it("creates REQUEST, RECEIVE, and ADD_SNACKBAR actions for unsuccessful RECEIPT_CHANGE_PAGE", function() {
+    it("creates REQUEST, RECEIVE, and ADD_SNACKBAR actions for unsuccessful RECEIPT_PAGE_LOAD", function() {
       const currentPageNum = 1;
       const mockMsg = "Failure";
       const expectedActions = [
         {
-          type: actions.REQUEST_RECEIPT_PAGE_CHANGE
+          type: actions.REQUEST_RECEIPT_PAGE_LOAD
         },
         {
-          type: actions.RECEIVE_RECEIPT_PAGE_CHANGE,
+          type: actions.RECEIVE_RECEIPT_PAGE_LOAD,
           receipts: [],
           pageNum: currentPageNum,
           success: false
@@ -642,7 +642,7 @@ describe("receiptsActions", function() {
       });
 
       return store
-        .dispatch(actions.changeReceiptPage(currentPageNum))
+        .dispatch(actions.loadReceiptPage(currentPageNum))
         .then(function() {
           expect(store.getActions()).toEqual(expectedActions);
         });

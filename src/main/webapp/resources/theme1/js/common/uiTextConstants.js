@@ -26,4 +26,4 @@ export const TOTAL_NOT_A_NUMBER = "Total is not a number";
 export const REQUIRED_FIELD = "Required";
 
 //Receipt snackbar messages
-export const RECEIPT_EDIT_SUCCESS = "Successfully updated receipt";
+export const RECEIPT_CREATION_SUCCESS = "Successfully created receipt";

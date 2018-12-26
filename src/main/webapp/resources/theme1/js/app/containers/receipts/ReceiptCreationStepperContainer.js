@@ -2,7 +2,8 @@ import { connect } from "react-redux";
 
 import {
   uploadReceipt,
-  editReceipt
+  editReceipt,
+  refreshReceipts
 } from "../../actions/receipts/receiptsActions";
 import ReceiptCreationStepper from "../../components/receipts/ReceiptCreationStepper";
 import { addSnackbar } from "../../actions/ui/snackbar/snackbarActions";
@@ -24,6 +25,9 @@ function mapDispatchToProps(dispatch) {
     },
     editReceipt: updatedReceipt => {
       return dispatch(editReceipt(updatedReceipt));
+    },
+    refreshReceipts: () => {
+      return dispatch(refreshReceipts());
     }
   };
 }

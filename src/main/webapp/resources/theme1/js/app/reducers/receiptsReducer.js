@@ -9,11 +9,15 @@ import {
 } from "../actions/receipts/activeLabelsActions";
 import {
   REQUEST_QUERY_RECEIPTS,
-  REQUEST_RECEIPT_PAGE_CHANGE,
   RECEIVE_QUERY_RECEIPTS,
-  RECEIVE_RECEIPT_PAGE_CHANGE,
   REQUEST_RECEIPT_UPLOAD,
-  RECEIVE_RECEIPT_UPLOAD
+  RECEIVE_RECEIPT_UPLOAD,
+  REQUEST_RECEIPT_EDIT,
+  RECEIVE_RECEIPT_EDIT,
+  REQUEST_RECEIPT_PAGE_LOAD,
+  RECEIVE_RECEIPT_PAGE_LOAD,
+  REQUEST_RECEIPTS_REFRESH,
+  RECEIVE_RECEIPTS_REFRESH
 } from "../actions/receipts/receiptsActions";
 
 export const RECEIPTS_INITIAL_STATE = {
@@ -32,16 +36,19 @@ function receipts(state = RECEIPTS_INITIAL_STATE, action) {
     case REQUEST_REMOVE_ACTIVE_LABEL:
     case REQUEST_EDIT_ACTIVE_LABEL:
     case REQUEST_QUERY_RECEIPTS:
-    case REQUEST_RECEIPT_PAGE_CHANGE:
+    case REQUEST_RECEIPTS_REFRESH:
       return Object.assign({}, state, {
         isFullLoading: true,
         isLoading: true
       });
     case REQUEST_RECEIPT_UPLOAD:
+    case REQUEST_RECEIPT_PAGE_LOAD:
+    case REQUEST_RECEIPT_EDIT:
       return Object.assign({}, state, {
         isLoading: true
       });
     case RECEIVE_RECEIPT_UPLOAD:
+    case RECEIVE_RECEIPT_EDIT:
       return Object.assign({}, state, {
         isLoading: false
       });
@@ -84,17 +91,31 @@ function receipts(state = RECEIPTS_INITIAL_STATE, action) {
           isLoading: false
         });
       }
-    case RECEIVE_RECEIPT_PAGE_CHANGE:
+    case RECEIVE_RECEIPTS_REFRESH:
       if (action.success) {
         return Object.assign({}, state, {
           isFullLoading: false,
           isLoading: false,
           items: action.receipts,
-          currentPage: action.pageNum
+          totalNumReceipts: action.numReceipts,
+          numPages: action.numPages,
+          currentPage: 0
         });
       } else {
         return Object.assign({}, state, {
           isFullLoading: false,
+          isLoading: false
+        });
+      }
+    case RECEIVE_RECEIPT_PAGE_LOAD:
+      if (action.success) {
+        return Object.assign({}, state, {
+          isLoading: false,
+          items: [...state.items, ...action.receipts],
+          currentPage: action.pageNum
+        });
+      } else {
+        return Object.assign({}, state, {
           isLoading: false
         });
       }

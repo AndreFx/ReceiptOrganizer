@@ -51,7 +51,6 @@ class ReceiptCreationUpload extends Component {
       isLoading
     } = this.props;
 
-    //TODO: Disable clicking file input when loading, this still isnt working
     return (
       <FormGroup row>
         <input
@@ -61,6 +60,7 @@ class ReceiptCreationUpload extends Component {
           className={classes.fileUploadInput}
           onChange={handleFileInputChange}
           ref={this.fileInput}
+          disabled={isLoading}
         />
         <label htmlFor="receipt-file-upload">
           <Button

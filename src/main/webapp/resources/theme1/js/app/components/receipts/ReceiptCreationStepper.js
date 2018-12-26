@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
 import {
   Typography,
@@ -10,7 +9,6 @@ import {
   Step,
   Stepper
 } from "@material-ui/core";
-
 import {
   RECEIPT_CREATION_STEP_UPLOAD,
   RECEIPT_CREATION_STEP_MODIFY_DATA,
@@ -42,7 +40,7 @@ import {
   QUANTITY_NOT_A_NUMBER,
   PRICE_NOT_A_NUMBER,
   LENGTH_NOT_A_NUMBER,
-  RECEIPT_EDIT_SUCCESS
+  RECEIPT_CREATION_SUCCESS
 } from "../../../common/uiTextConstants";
 
 const styles = theme => ({
@@ -68,35 +66,33 @@ function getSteps() {
   return [RECEIPT_CREATION_STEP_UPLOAD, RECEIPT_CREATION_STEP_MODIFY_DATA];
 }
 
+function getInitialState() {
+  return {
+    activeStep: 0,
+    skipOcr: false,
+    fileUpload: null,
+    newReceipt: null,
+    editFormErrors: {
+      title: "",
+      tax: "",
+      total: "",
+      description: "",
+      items: []
+    },
+    editFormValid: {
+      title: true,
+      tax: true,
+      total: true,
+      description: true,
+      items: []
+    }
+  };
+}
+
 class ReceiptCreationStepper extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      activeStep: 0,
-      skipOcr: false,
-      fileUpload: null,
-      newReceipt: null,
-      editFormErrors: {
-        title: "",
-        tax: "",
-        total: "",
-        description: "",
-        items: []
-      },
-      editFormValid: {
-        title: true,
-        tax: true,
-        total: true,
-        description: true,
-        items: []
-      },
-      uploadFormErrors: {
-        file: ""
-      },
-      uploadFormValid: {
-        file: false
-      }
-    };
+    this.state = getInitialState();
 
     this.handleNext = this.handleNext.bind(this);
     this.handleBack = this.handleBack.bind(this);
@@ -118,7 +114,6 @@ class ReceiptCreationStepper extends Component {
     switch (this.state.activeStep) {
       case 0:
         const self = this;
-        //TODO: Validate form first
         this.props
           .uploadReceipt(this.state.skipOcr, this.state.fileUpload)
           .then(function(response) {
@@ -188,10 +183,8 @@ class ReceiptCreationStepper extends Component {
                 }
               }));
             }
-            //TODO: make request to load current query/page num again
-          })
-          .catch(function() {
-            //TODO: Form errors
+
+            self.props.refreshReceipts();
           });
         break;
       case 1:
@@ -204,24 +197,23 @@ class ReceiptCreationStepper extends Component {
             };
           });
           const self = this;
-          this.props
-            .editReceipt(updatedReceipt)
-            .then(function() {
-              //TODO: make request to load current query/page num again
-              self.props.addSnackbar({
-                msg: RECEIPT_EDIT_SUCCESS,
-                variant: SUCCESS_SNACKBAR,
-                actions: [],
-                handlers: [],
-                handlerParams: [],
-                autohideDuration: SNACKBAR_AUTOHIDE_DURATION_DEFAULT
-              });
-              self.props.onClose();
-            })
-            .catch(function() {
-              //TODO: Errors
-            });
+          this.props.editReceipt(updatedReceipt).then(function() {
+            self.props.refreshReceipts();
+            self.setState(prevState => ({
+              activeStep: prevState.activeStep + 1
+            }));
+          });
         }
+        break;
+      case 2:
+        this.props.onClose({
+          msg: RECEIPT_CREATION_SUCCESS,
+          variant: SUCCESS_SNACKBAR,
+          actions: [],
+          handlers: [],
+          handlerParams: [],
+          autohideDuration: SNACKBAR_AUTOHIDE_DURATION_DEFAULT
+        });
         break;
       default:
         break;
@@ -239,9 +231,7 @@ class ReceiptCreationStepper extends Component {
   }
 
   handleReset() {
-    this.setState({
-      activeStep: 0
-    });
+    this.setState(getInitialState());
   }
 
   getStepContent() {
@@ -270,6 +260,7 @@ class ReceiptCreationStepper extends Component {
             onItemRemove={this.handleItemRemove}
             onItemChange={this.handleItemChange}
             onFieldChange={this.handleFieldChange}
+            isLoading={this.props.isLoading}
           />
         );
       default:
@@ -572,7 +563,7 @@ class ReceiptCreationStepper extends Component {
   }
 
   render() {
-    const { classes, theme, isLoading } = this.props;
+    const { classes, isLoading } = this.props;
     const { activeStep, fileUpload } = this.state;
     const steps = getSteps();
 
@@ -597,6 +588,14 @@ class ReceiptCreationStepper extends Component {
               <Button onClick={this.handleReset} className={classes.button}>
                 Reset
               </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.handleNext}
+                className={classes.button}
+              >
+                Close
+              </Button>
             </div>
           ) : (
             <div>
@@ -620,10 +619,7 @@ class ReceiptCreationStepper extends Component {
                     </Button>
                   ) : null}
                   <Button
-                    disabled={
-                      (activeStep === 0 && !fileUpload) ||
-                      (activeStep === 0 && isLoading)
-                    }
+                    disabled={(activeStep === 0 && !fileUpload) || isLoading}
                     variant="contained"
                     color="primary"
                     onClick={this.handleNext}
@@ -645,9 +641,9 @@ ReceiptCreationStepper.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
-  addSnackbar: PropTypes.func.isRequired,
   uploadReceipt: PropTypes.func.isRequired,
   editReceipt: PropTypes.func.isRequired,
+  refreshReceipts: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   labels: PropTypes.array
 };

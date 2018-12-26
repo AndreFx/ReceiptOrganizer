@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import _ from "lodash";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
@@ -179,10 +180,12 @@ class ReceiptEdit extends Component {
       onFieldChange,
       receipt,
       labels,
-      formErrors
+      formErrors,
+      isLoading
     } = this.props;
     const { categoryLabelWidth, itemLabelWidth } = this.state;
 
+    //TODO: Add vendor to form
     return (
       <Grid container spacing={24} justify="center">
         <Grid item xs>
@@ -204,6 +207,7 @@ class ReceiptEdit extends Component {
                     : REQUIRED_FIELD
                 }
                 error={formErrors[RECEIPT_TITLE_NAME].length !== 0}
+                disabled={isLoading}
               />
             </FormGroup>
             <FormGroup>
@@ -214,6 +218,7 @@ class ReceiptEdit extends Component {
                 value={receipt.date}
                 onChange={onFieldChange}
                 className={classes.textField}
+                disabled={isLoading}
               />
             </FormGroup>
             <FormGroup>
@@ -294,6 +299,7 @@ class ReceiptEdit extends Component {
                               RECEIPT_ITEM_NAME_NAME
                             ].length !== 0
                           }
+                          disabled={isLoading}
                         />
                       </Grid>
                       <Grid item xs={2}>
@@ -320,6 +326,7 @@ class ReceiptEdit extends Component {
                               RECEIPT_ITEM_QUANTITY_NAME
                             ].length !== 0
                           }
+                          disabled={isLoading}
                         />
                       </Grid>
                       <Grid item xs={2}>
@@ -353,6 +360,7 @@ class ReceiptEdit extends Component {
                               RECEIPT_ITEM_PRICE_NAME
                             ].length !== 0
                           }
+                          disabled={isLoading}
                         />
                       </Grid>
                       <Grid item xs={4}>
@@ -381,6 +389,7 @@ class ReceiptEdit extends Component {
                                   RECEIPT_ITEM_WAR_LEN_NAME
                                 ].length !== 0
                               }
+                              disabled={isLoading}
                             />
                           </Grid>
                           <Grid item xs={6}>
@@ -407,6 +416,7 @@ class ReceiptEdit extends Component {
                                   />
                                 }
                                 MenuProps={MenuProps}
+                                disabled={isLoading}
                               >
                                 {WARRANTY_UNITS.map(function(val) {
                                   let text = getWarrantyUnitText(val);
@@ -441,6 +451,7 @@ class ReceiptEdit extends Component {
                     variant="contained"
                     className={classes.button}
                     onClick={onItemAdd}
+                    disabled={isLoading}
                   >
                     <AddIcon className={classes.leftIcon} />
                     Add Item
@@ -470,6 +481,7 @@ class ReceiptEdit extends Component {
                     : REQUIRED_FIELD
                 }
                 error={formErrors[RECEIPT_TAX_NAME].length !== 0}
+                disabled={isLoading}
               />
             </FormGroup>
             <FormGroup>
@@ -494,6 +506,7 @@ class ReceiptEdit extends Component {
                     : REQUIRED_FIELD
                 }
                 error={formErrors[RECEIPT_TOTAL_NAME].length !== 0}
+                disabled={isLoading}
               />
             </FormGroup>
             <FormGroup>
@@ -523,6 +536,7 @@ class ReceiptEdit extends Component {
                     </div>
                   )}
                   MenuProps={MenuProps}
+                  disabled={isLoading}
                 >
                   {labels.map(val => (
                     <MenuItem
@@ -556,6 +570,7 @@ class ReceiptEdit extends Component {
                     : ""
                 }
                 error={formErrors[RECEIPT_DESCRIPTION_NAME].length !== 0}
+                disabled={isLoading}
               />
             </FormGroup>
           </form>
@@ -579,8 +594,9 @@ ReceiptEdit.propTypes = {
   onItemChange: PropTypes.func.isRequired,
   onFieldChange: PropTypes.func.isRequired,
   receipt: PropTypes.object.isRequired,
-  labels: PropTypes.array,
-  formErrors: PropTypes.object.isRequired
+  labels: PropTypes.array.isRequired,
+  formErrors: PropTypes.object.isRequired,
+  isLoading: PropTypes.bool.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(ReceiptEdit);

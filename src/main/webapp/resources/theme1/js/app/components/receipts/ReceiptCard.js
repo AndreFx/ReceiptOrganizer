@@ -18,12 +18,15 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 
-import { GET_RECEIPT_FILE_PATH } from "../../../common/constants";
+import {
+  GET_RECEIPT_FILE_PATH,
+  RECEIPT_CARD_WIDTH
+} from "../../../common/constants";
 import classnames from "classnames";
 
 const styles = theme => ({
   card: {
-    width: 300
+    width: RECEIPT_CARD_WIDTH
   },
   media: {
     objectFit: "cover"
@@ -79,7 +82,7 @@ class ReceiptCard extends Component {
         <CardHeader
           avatar={
             <Avatar aria-label="Receipt" className={classes.avatar}>
-              {receipt.vendor.substring(0, 1)}
+              {receipt.vendor ? receipt.vendor.substring(0, 1) : "?"}
             </Avatar>
           }
           action={
@@ -87,8 +90,8 @@ class ReceiptCard extends Component {
               <MoreVertIcon />
             </IconButton>
           }
-          title={receipt.title}
-          subheader={receipt.vendor}
+          title={receipt.title ? receipt.title : ""}
+          subheader={receipt.vendor ? receipt.vendor : ""}
         />
         <div className={classes.body}>
           <CardActionArea>
@@ -96,7 +99,7 @@ class ReceiptCard extends Component {
               component="img"
               className={classes.media}
               image={GET_RECEIPT_FILE_PATH.format(receipt.id, receipt.fileName)}
-              title={receipt.title}
+              title={receipt.title ? receipt.title : ""}
             />
           </CardActionArea>
         </div>
