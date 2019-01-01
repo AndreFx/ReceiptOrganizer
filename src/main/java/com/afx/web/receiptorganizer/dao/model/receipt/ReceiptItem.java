@@ -2,6 +2,8 @@ package com.afx.web.receiptorganizer.dao.model.receipt;
 
 import java.math.BigDecimal;
 
+import java.util.Objects;
+
 public class ReceiptItem {
 
     /*
@@ -66,5 +68,22 @@ public class ReceiptItem {
 
     public void setWarrantyUnit(String warrantyUnit) {
         this.warrantyUnit = warrantyUnit;
+    }
+
+    /*
+    Public Methods
+     */
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null)
+            return false;
+        if (getClass() != o.getClass())
+            return false;
+        ReceiptItem item = (ReceiptItem) o;
+
+        return Objects.equals(itemNumber, item.getItemNumber()) && Objects.equals(name, item.getName());
     }
 }

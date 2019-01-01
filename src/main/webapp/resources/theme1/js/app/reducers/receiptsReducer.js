@@ -17,8 +17,11 @@ import {
   REQUEST_RECEIPT_PAGE_LOAD,
   RECEIVE_RECEIPT_PAGE_LOAD,
   REQUEST_RECEIPTS_REFRESH,
-  RECEIVE_RECEIPTS_REFRESH
+  RECEIVE_RECEIPTS_REFRESH,
+  REQUEST_RECEIPT_DELETE,
+  RECEIVE_RECEIPT_DELETE
 } from "../actions/receipts/receiptsActions";
+import { DEFAULT_PAGINATION_SIZE } from "../../common/constants";
 
 export const RECEIPTS_INITIAL_STATE = {
   isLoading: false,
@@ -44,14 +47,59 @@ function receipts(state = RECEIPTS_INITIAL_STATE, action) {
     case REQUEST_RECEIPT_UPLOAD:
     case REQUEST_RECEIPT_PAGE_LOAD:
     case REQUEST_RECEIPT_EDIT:
+    case REQUEST_RECEIPT_DELETE:
       return Object.assign({}, state, {
         isLoading: true
       });
     case RECEIVE_RECEIPT_UPLOAD:
     case RECEIVE_RECEIPT_EDIT:
-      return Object.assign({}, state, {
-        isLoading: false
-      });
+      if (action.success) {
+        return Object.assign({}, state, {
+          items: [
+            ...state.items.map(function(el) {
+              if (el.id === action.id) {
+                el = action.receipt;
+              }
+              return el;
+            })
+          ],
+          totalNumReceipts: state.totalNumReceipts - 1,
+          numPages:
+            Math.ceil(
+              (state.totalNumReceipts - 1) / DEFAULT_PAGINATION_SIZE
+            ) === state.numPages
+              ? state.numPages
+              : state.numPages - 1,
+          isLoading: false
+        });
+      } else {
+        return Object.assign({}, state, {
+          isLoading: false
+        });
+      }
+    case RECEIVE_RECEIPT_DELETE:
+      if (action.success) {
+        //TODO: Instead of calculating the new numPages, make new endpoint that returns it
+        return Object.assign({}, state, {
+          items: [
+            ...state.items.filter(function(el) {
+              return el.id !== action.id;
+            })
+          ],
+          totalNumReceipts: state.totalNumReceipts - 1,
+          numPages:
+            Math.ceil(
+              (state.totalNumReceipts - 1) / DEFAULT_PAGINATION_SIZE
+            ) === state.numPages
+              ? state.numPages
+              : state.numPages - 1,
+          isLoading: false
+        });
+      } else {
+        return Object.assign({}, state, {
+          isLoading: false
+        });
+      }
     case RECEIVE_ADD_ACTIVE_LABEL:
     case RECEIVE_REMOVE_ACTIVE_LABEL:
       if (action.success) {

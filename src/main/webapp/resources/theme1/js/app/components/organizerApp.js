@@ -13,8 +13,7 @@ import {
   SNACKBAR_HORIZONTAL,
   SNACKBAR_AUTOHIDE_DURATION_DEFAULT,
   SNACKBAR_EXPAND_QUERY_WIDTH,
-  RECEIPT_CREATION,
-  RECEIPT_CREATION_TITLE
+  RECEIPT_CREATION
 } from "../../common/constants";
 import LinearIndeterminate from "./loading/linearIndeterminate";
 import NavContainer from "../containers/navigation/NavContainer";
@@ -22,8 +21,7 @@ import SnackbarContentWrapper from "./snackbar/SnackbarContentWrapper";
 import ContentWrapperContainer from "../containers/content/ContentWrapperContainer";
 import DrawerContentWrapperContainer from "../containers/drawer/DrawerContentWrapperContainer";
 import DialogWrapperContainer from "../containers/dialog/DialogWrapperContainer";
-import ReceiptCreationStepperContainer from "../containers/receipts/ReceiptCreationStepperContainer";
-import ActionDrawer from "./drawer/ActionDrawer";
+import ActionDrawerContainer from "../containers/drawer/ActionDrawerContainer";
 
 const styles = theme => ({
   root: {
@@ -107,8 +105,7 @@ class OrganizerApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: true,
-      actionDrawerOpen: false
+      open: true
     };
 
     //Bind functions in constructor so a new function isn't made in every render
@@ -118,7 +115,6 @@ class OrganizerApp extends React.Component {
     this.handleSnackbarExited = this.handleSnackbarExited.bind(this);
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     this.handleFABClick = this.handleFABClick.bind(this);
-    this.toggleActionDrawer = this.toggleActionDrawer.bind(this);
   }
 
   handleDrawerOpen() {
@@ -134,21 +130,8 @@ class OrganizerApp extends React.Component {
   }
 
   handleFABClick() {
-    this.toggleActionDrawer(true)();
-
+    this.props.toggleActionDrawer(true);
     this.props.updateActionDrawerView(RECEIPT_CREATION);
-  }
-
-  toggleActionDrawer(open) {
-    let toggle = function(eventOrSnackbar) {
-      if (eventOrSnackbar && eventOrSnackbar.variant) {
-        this.props.addSnackbar(eventOrSnackbar);
-      }
-      this.setState({
-        actionDrawerOpen: open
-      });
-    };
-    return toggle.bind(this);
   }
 
   handleSnackbarClose(event, reason) {
@@ -186,24 +169,12 @@ class OrganizerApp extends React.Component {
       currentSnackbar,
       snackbarOpen,
       isLoading,
-      windowWidth,
-      actionDrawerView
+      windowWidth
     } = this.props;
     let autohideDuration = SNACKBAR_AUTOHIDE_DURATION_DEFAULT;
-    let actionDrawerContentView = null;
-    let actionDrawerTitle = null;
 
     if (currentSnackbar) {
       autohideDuration = currentSnackbar.autohideDuration;
-    }
-
-    if (actionDrawerView === RECEIPT_CREATION) {
-      actionDrawerContentView = (
-        <ReceiptCreationStepperContainer
-          onClose={this.toggleActionDrawer(false)}
-        />
-      );
-      actionDrawerTitle = RECEIPT_CREATION_TITLE;
     }
 
     return (
@@ -230,13 +201,7 @@ class OrganizerApp extends React.Component {
               drawerOpen={this.state.open}
             />
           </Drawer>
-          <ActionDrawer
-            open={this.state.actionDrawerOpen}
-            onClose={this.toggleActionDrawer(false)}
-            title={actionDrawerTitle}
-            contentComponent={actionDrawerContentView}
-            isLoading={isLoading}
-          />
+          <ActionDrawerContainer />
           <ContentWrapperContainer drawerOpen={this.state.open} />
           <Button
             variant="extendedFab"
@@ -289,12 +254,11 @@ OrganizerApp.propTypes = {
   currentSnackbar: PropTypes.object,
   snackbarQueueLength: PropTypes.number.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  addSnackbar: PropTypes.func.isRequired,
   processSnackbarQueue: PropTypes.func.isRequired,
   finishCurrentSnackbar: PropTypes.func.isRequired,
   updateWindowDimensions: PropTypes.func.isRequired,
-  updateActionDrawerView: PropTypes.func.isRequired,
-  actionDrawerView: PropTypes.string.isRequired
+  toggleActionDrawer: PropTypes.func.isRequired,
+  updateActionDrawerView: PropTypes.func.isRequired
 };
 
 export default withStyles(styles, {

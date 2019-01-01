@@ -1,28 +1,29 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import Input from "@material-ui/core/Input";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
 import { fade } from "@material-ui/core/styles/colorManipulator";
-import { withStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreIcon from "@material-ui/icons/MoreVert";
-
-//Custom imports
+import ClearIcon from "@material-ui/icons/Clear";
+import {
+  Typography,
+  InputAdornment,
+  Menu,
+  MenuItem,
+  IconButton,
+  AppBar,
+  Toolbar,
+  withStyles,
+  Input
+} from "@material-ui/core";
 import {
   DRAWER_WIDTH,
   LOGIN_PATH,
   SNACKBAR_ACTION_RETRY,
   RECEIPT_LIBRARY
 } from "../../../common/constants";
-import { logoutUser } from "../../actions/user/userActions";
-import { Typography } from "@material-ui/core";
 
 const styles = theme => ({
   grow: {
@@ -92,9 +93,16 @@ const styles = theme => ({
     paddingLeft: theme.spacing.unit * 10,
     transition: theme.transitions.create("width"),
     width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: 200
+    [theme.breakpoints.up("sm")]: {
+      width: 120,
+      "&:focus": {
+        width: 200
+      }
     }
+  },
+  clearButton: {
+    color: "#ffffff",
+    width: 48
   },
   sectionDesktop: {
     display: "none",
@@ -128,6 +136,7 @@ class NavBar extends React.Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.handleSearchInput = this.handleSearchInput.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
+    this.handleSearchClear = this.handleSearchClear.bind(this);
     this.onEnterPressed = this.onEnterPressed.bind(this);
     this.handleTitleClick = this.handleTitleClick.bind(this);
   }
@@ -193,6 +202,12 @@ class NavBar extends React.Component {
     this.props.queryReceipts(this.state.queryString);
   }
 
+  handleSearchClear() {
+    this.setState({
+      queryString: ""
+    });
+  }
+
   render() {
     const { anchorEl, mobileMoreAnchorEl } = this.state;
     const classes = this.props.classes;
@@ -213,7 +228,6 @@ class NavBar extends React.Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
         <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
       </Menu>
     );
@@ -282,6 +296,21 @@ class NavBar extends React.Component {
                   root: classes.inputRoot,
                   input: classes.inputInput
                 }}
+                value={this.state.queryString}
+                endAdornment={
+                  <InputAdornment
+                    position="end"
+                    className={classes.clearButton}
+                  >
+                    <IconButton
+                      aria-label="Clear"
+                      color="inherit"
+                      onClick={this.handleSearchClear}
+                    >
+                      {this.state.queryString ? <ClearIcon /> : null}
+                    </IconButton>
+                  </InputAdornment>
+                }
                 onChange={this.handleSearchInput}
                 onKeyDown={this.onEnterPressed}
               />

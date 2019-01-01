@@ -2,7 +2,13 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
-import { ACTION_DRAWER_WIDTH } from "../../../common/constants";
+import {
+  ACTION_DRAWER_WIDTH,
+  RECEIPT_CREATION,
+  RECEIPT_EDIT,
+  RECEIPT_CREATION_TITLE,
+  RECEIPT_VIEW
+} from "../../../common/constants";
 import {
   Drawer,
   AppBar,
@@ -11,6 +17,9 @@ import {
   Typography
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import ReceiptEditContainer from "../../containers/receipts/ReceiptEditContainer";
+import ReceiptCreationStepperContainer from "../../containers/receipts/ReceiptCreationStepperContainer";
+import { RECEIPT_EDIT_TITLE } from "../../../common/uiTextConstants";
 
 const styles = theme => ({
   actionDrawerPaper: {
@@ -53,24 +62,61 @@ const styles = theme => ({
 class ActionDrawer extends Component {
   constructor(props) {
     super(props);
+
+    this.handleClose = this.handleClose.bind(this);
+  }
+
+  handleClose() {
+    this.props.toggleActionDrawer(false);
   }
 
   render() {
-    const {
-      classes,
-      open,
-      onClose,
-      title,
-      contentComponent,
-      isLoading
-    } = this.props;
+    const { classes, open, view, options, isReceiptsLoading } = this.props;
+    let component = null;
+    let isLoading = null;
+    let title = "";
+
+    switch (view) {
+      case RECEIPT_CREATION:
+        component = (
+          <ReceiptCreationStepperContainer onClose={this.handleClose} />
+        );
+        isLoading = isReceiptsLoading;
+        title = RECEIPT_CREATION_TITLE;
+        break;
+      case RECEIPT_EDIT:
+        component = (
+          <ReceiptEditContainer
+            receipt={options.receipt}
+            onCancel={this.handleClose}
+            allowEdit={true}
+          />
+        );
+        isLoading = isReceiptsLoading;
+        title = RECEIPT_EDIT_TITLE + options.receipt.title;
+        break;
+      case RECEIPT_VIEW:
+        component = (
+          <ReceiptEditContainer
+            receipt={options.receipt}
+            onSubmit={this.handleClose}
+            onCancel={this.handleClose}
+            allowEdit={false}
+          />
+        );
+        isLoading = isReceiptsLoading;
+        title = options.receipt.title;
+        break;
+      default:
+        break;
+    }
 
     return (
       <Drawer
         variant="temporary"
         anchor="right"
         open={open}
-        onClose={onClose}
+        onClose={this.handleClose}
         classes={{
           paper: classNames(
             classes.drawerPaper,
@@ -87,7 +133,7 @@ class ActionDrawer extends Component {
                 disabled={isLoading}
                 color="inherit"
                 aria-label="Close drawer"
-                onClick={onClose}
+                onClick={this.handleClose}
                 className={classes.menuButton}
               >
                 <CloseIcon />
@@ -103,7 +149,7 @@ class ActionDrawer extends Component {
             </Toolbar>
           </AppBar>
         </div>
-        <div className={classes.actionDrawerContent}>{contentComponent}</div>
+        <div className={classes.actionDrawerContent}>{component}</div>
       </Drawer>
     );
   }
@@ -112,11 +158,13 @@ class ActionDrawer extends Component {
 ActionDrawer.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
+  toggleActionDrawer: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  contentComponent: PropTypes.element.isRequired,
-  isLoading: PropTypes.bool.isRequired
+  view: PropTypes.string.isRequired,
+  options: PropTypes.object,
+  isLabelsLoading: PropTypes.bool.isRequired,
+  isUserLoading: PropTypes.bool.isRequired,
+  isReceiptsLoading: PropTypes.bool.isRequired
 };
 
 export default withStyles(styles, {

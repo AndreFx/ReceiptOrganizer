@@ -130,7 +130,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
         }
     }
 
-    public void editReceipt(String username, Receipt receipt) {
+    public Receipt editReceipt(String username, Receipt receipt) {
         TransactionDefinition def = new DefaultTransactionDefinition();
         TransactionStatus status = transactionManager.getTransaction(def);
 
@@ -195,6 +195,9 @@ public class ReceiptDaoImpl implements ReceiptDao {
             transactionManager.rollback(status);
             throw e;
         }
+
+        //Fetch updated receipt
+        return getReceipt(username, receipt.getId());
     }
 
     public Receipt getReceipt(String username, int receiptId) {
@@ -307,13 +310,12 @@ public class ReceiptDaoImpl implements ReceiptDao {
 
     public ReceiptPage getRangeUserReceipts(String username, String searchQuery, List<String> labelNames, int start, int numRows) {
         ReceiptPage receiptsPage = null;
-        if (searchQuery.equals("")) {
-            StringBuilder temp = new StringBuilder(searchQuery);
-            temp.insert(0, '%');
-            temp.append('%');
-            searchQuery = temp.toString();
-        }
-        if (labelNames.size() == 0) {
+        StringBuilder temp = new StringBuilder(searchQuery);
+        int numLabels = labelNames.size();
+        temp.insert(0, '%');
+        temp.append('%');
+        searchQuery = temp.toString();
+        if (numLabels == 0) {
             labelNames.add("All Receipts");
         }
 
@@ -324,32 +326,34 @@ public class ReceiptDaoImpl implements ReceiptDao {
                 .addValue("startrow", start)
                 .addValue("numrows", numRows)
                 .addValue("labelnames", labelNames)
-                .addValue("labelnameslength", labelNames.size());
+                .addValue("labelnameslength", numLabels);
 
-            String sqlQuery = "SELECT TOP_RECEIPTS.ReceiptId, LabelName, Title, Vendor, Description, OriginalFileName, Date, Tax, Total, ItemNumber, Name, Quantity, UnitPrice, WarrantyLength, WarrantyLengthUnit, ReceiptCount " +
-                    "FROM (SELECT DISTINCT RECEIPT.ReceiptId, Title, Vendor, Description, OriginalFileName, Date, Tax, Total, ReceiptCount = COUNT(*) OVER() " +
-                    "                    FROM USER_RECEIPTS " +
-                    "                    INNER JOIN RECEIPT " +
-                    "                    LEFT JOIN RECEIPT_LABELS " +
-                    "                    ON RECEIPT.ReceiptId = RECEIPT_LABELS.ReceiptId " +
-                    "                    ON USER_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
-                    "                    LEFT OUTER JOIN RECEIPT_ITEM " +
-                    "                    ON RECEIPT.ReceiptId = RECEIPT_ITEM.ReceiptId " +
-                    "                    WHERE USER_RECEIPTS.Username = :username AND (COALESCE(RECEIPT.Title, '<NULL>') LIKE :searchQuery OR (COALESCE(RECEIPT_ITEM.Name, '<NULL>') LIKE :searchQuery AND RECEIPT.Title LIKE :searchQuery) OR RECEIPT_ITEM.Name LIKE :searchQuery) " +
-                    "                    GROUP BY RECEIPT.ReceiptId, Title, Vendor, Description, OriginalFileName, Date, Tax, Total " +
-                    "                    HAVING SUM(" +
-                    "                    CASE " +
-                    "                       WHEN LabelName IN (:labelnames) OR 'All Receipts' IN (:labelnames) THEN 1 " +
-                    "                       ELSE 0 " +
-                    "                    END) >= :labelnameslength "+
-                    "                    ORDER BY RECEIPT.Title " +
-                    "                    OFFSET :startrow ROWS " +
-                    "                    FETCH NEXT :numrows ROWS ONLY) AS TOP_RECEIPTS " +
-                    "LEFT OUTER JOIN RECEIPT_ITEM " +
-                    "ON TOP_RECEIPTS.ReceiptId = RECEIPT_ITEM.ReceiptId " +
-                    "LEFT OUTER JOIN RECEIPT_LABELS " +
-                    "ON TOP_RECEIPTS.ReceiptId = RECEIPT_LABELS.ReceiptId " +
-                    "ORDER BY TOP_RECEIPTS.Title";
+            String sqlQuery = 
+            "SELECT TOP_RECEIPTS.ReceiptId, LabelName, RECEIPT.Title, Vendor, Description, OriginalFileName, Date, Tax, Total, ItemNumber, Name, Quantity, UnitPrice, WarrantyLength, WarrantyLengthUnit, ReceiptCount " +
+            "FROM (SELECT DISTINCT(RECEIPT.ReceiptId), RECEIPT.Title, ReceiptCount " +
+            "                   FROM USER_RECEIPTS " + 
+            "                   INNER JOIN (SELECT RECEIPT.ReceiptId, ReceiptCount = COUNT(RECEIPT.ReceiptId) " +
+            "                               FROM RECEIPT, RECEIPT_LABELS " +
+            "                               WHERE RECEIPT.ReceiptId = RECEIPT_LABELS.ReceiptId " +
+            "                               AND (RECEIPT_LABELS.LabelName IN (:labelnames) OR 'All Receipts' IN (:labelnames)) " +
+            "                               GROUP BY RECEIPT.ReceiptId " +
+            "                               HAVING COUNT(RECEIPT.ReceiptId) = :labelnameslength OR 'All Receipts' IN (:labelnames)) AS VALID_RECEIPTS " +
+            "                   ON USER_RECEIPTS.ReceiptId = VALID_RECEIPTS.ReceiptId " +
+            "                   INNER JOIN RECEIPT " +
+            "                   ON RECEIPT.ReceiptId = VALID_RECEIPTS.ReceiptId " +
+            "                   LEFT OUTER JOIN RECEIPT_ITEM " +
+            "                   ON RECEIPT.ReceiptId = RECEIPT_ITEM.ReceiptId " + 
+            "                   WHERE USER_RECEIPTS.Username = :username AND (COALESCE(RECEIPT.Title, '<NULL>') LIKE :searchQuery OR (COALESCE(RECEIPT_ITEM.Name, '<NULL>') LIKE :searchQuery AND RECEIPT.Title LIKE :searchQuery) OR RECEIPT_ITEM.Name LIKE :searchQuery) " + 
+            "                   ORDER BY RECEIPT.Title " +
+            "                   OFFSET :startrow ROWS " +
+            "                   FETCH NEXT :numrows ROWS ONLY) AS TOP_RECEIPTS " +
+            "LEFT OUTER JOIN RECEIPT_ITEM " +
+            "ON TOP_RECEIPTS.ReceiptId = RECEIPT_ITEM.ReceiptId " +
+            "LEFT OUTER JOIN RECEIPT_LABELS " +
+            "ON TOP_RECEIPTS.ReceiptId = RECEIPT_LABELS.ReceiptId " +
+            "INNER JOIN RECEIPT " +
+            "ON TOP_RECEIPTS.ReceiptId = RECEIPT.ReceiptId " +
+            "ORDER BY RECEIPT.Title";
 
             receiptsPage = this.jdbcTemplate.query(sqlQuery, parameters, new ReceiptPageResultSetExtractor());
         } catch(DataAccessException e) {

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import ReceiptCard from "./ReceiptCard";
+import ReceiptCardContainer from "../../containers/receipts/ReceiptCardContainer";
 import { Grid } from "@material-ui/core";
 
 class ReceiptCardList extends Component {
@@ -41,7 +41,7 @@ class ReceiptCardList extends Component {
             >
               {arr.map((r, ind) => (
                 <Grid key={r.id} item>
-                  <ReceiptCard receipt={r} />
+                  <ReceiptCardContainer receipt={r} />
                 </Grid>
               ))}
             </Grid>

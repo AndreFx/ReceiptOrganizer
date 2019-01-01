@@ -11,7 +11,10 @@ import { OPEN_DIALOG, CLOSE_DIALOG } from "../actions/ui/dialog/dialogActions";
 import { UPDATE_WINDOW_DIMENSIONS } from "../actions/ui/window/windowActions";
 import { UPDATE_CONTENT_VIEW } from "../actions/ui/content/contentActions";
 import contentReducer, { CONTENT_INITIAL_STATE } from "./contentReducer";
-import { UPDATE_ACTION_DRAWER_VIEW } from "../actions/ui/actionDrawer/actionDrawerActions";
+import {
+  UPDATE_ACTION_DRAWER_VIEW,
+  TOGGLE_ACTION_DRAWER
+} from "../actions/ui/actionDrawer/actionDrawerActions";
 import actionDrawerReducer, {
   ACTION_DRAWER_INITIAL_STATE
 } from "./actionDrawerReducer";
@@ -50,6 +53,7 @@ function uiReducer(state = UI_INITIAL_STATE, action) {
         content: contentReducer(state.content, action)
       };
     case UPDATE_ACTION_DRAWER_VIEW:
+    case TOGGLE_ACTION_DRAWER:
       return {
         ...state,
         actionDrawer: actionDrawerReducer(state.actionDrawer, action)

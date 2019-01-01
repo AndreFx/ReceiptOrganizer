@@ -199,14 +199,15 @@ public class ReceiptController {
     }
 
     @RequestMapping(value = "/{receiptId}/edit", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
-    public BaseResponse update(@ModelAttribute("user") User user, Locale locale, @PathVariable(value = "receiptId") int id, @RequestBody Receipt updatedReceipt) {
+    public ReceiptResponse update(@ModelAttribute("user") User user, Locale locale, @PathVariable(value = "receiptId") int id, @RequestBody Receipt updatedReceipt) {
         logger.debug("User: " + user.getUsername() + " updating receipt with id: " + id);
         boolean success = false;
         String message = "";
+        Receipt finalUpdatedReceipt = null;
 
         if (Integer.compare(updatedReceipt.getId(), id) == 0) {
             try {
-                this.receiptService.editReceipt(user.getUsername(), updatedReceipt);
+                finalUpdatedReceipt = this.receiptService.editReceipt(user.getUsername(), updatedReceipt);
     
                 success = true;
                 message = messageSource.getMessage("receipt.edit.success", null, locale);
@@ -220,7 +221,7 @@ public class ReceiptController {
             message = messageSource.getMessage("receipt.edit.failure.invalidid", null, locale);
         }
 
-        return new BaseResponse(success, message);
+        return new ReceiptResponse(finalUpdatedReceipt, success, message);
     }
 
     @RequestMapping(value = "/{receiptId}/delete", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)

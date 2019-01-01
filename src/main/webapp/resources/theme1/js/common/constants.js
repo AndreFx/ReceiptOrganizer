@@ -5,8 +5,11 @@ export const RECEIPT_LIBRARY = "RECEIPT_LIBRARY";
 
 /* Action Drawer Views */
 export const RECEIPT_CREATION = "RECEIPT_CREATION";
+export const RECEIPT_EDIT = "RECEIPT_EDIT";
+export const RECEIPT_VIEW = "RECEIPT_VIEW";
 
 /* UI Sizes */
+export const DEFAULT_PAGINATION_SIZE = 10;
 export const DRAWER_WIDTH = 360;
 export const DRAWER_WIDTH_CLOSED = 72;
 export const RECEIPT_CARD_WIDTH = 300;
@@ -123,12 +126,14 @@ export const GET_RECEIPT_THUMBNAIL_PATH =
 export const GET_RECEIPT_FILE_PATH = "/ReceiptOrganizer/receipts/{0}/file/{1}";
 export const CREATE_RECEIPT_PATH = "/ReceiptOrganizer/receipts/create";
 export const EDIT_RECEIPT_PATH = "/ReceiptOrganizer/receipts/{0}/edit";
+export const DELETE_RECEIPT_PATH = "/ReceiptOrganizer/receipts/{0}/delete";
 
 /* Validation & Form helpers */
 
 //Receipt validation checks
 export const MAX_TITLE_LENGTH = 50;
 export const MAX_DESCRIPTION_LENGTH = 2000;
+export const MAX_VENDOR_LENGTH = 50;
 
 //Service Errors
 export const SERVER_ERROR = "Unable to reach server";

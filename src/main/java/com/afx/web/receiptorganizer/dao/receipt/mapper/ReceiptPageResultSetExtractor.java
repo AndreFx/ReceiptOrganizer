@@ -64,7 +64,10 @@ public class ReceiptPageResultSetExtractor  implements ResultSetExtractor<Receip
                 BigDecimal unitPrice = rs.getBigDecimal("UnitPrice");
 
                 currentItem.setUnitPrice(unitPrice);
-                currentReceiptItems.add(currentItem);
+                
+                if (!currentReceipt.getItems().contains(currentItem)) {
+                    currentReceiptItems.add(currentItem);
+                }
             }
 
             Label currentLabel = new Label();

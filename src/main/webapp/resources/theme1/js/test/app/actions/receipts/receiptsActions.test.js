@@ -430,9 +430,13 @@ describe("receiptsActions", function() {
       const mockMsg = "Success";
       const receipts = [
         {
-          title: "MyReceipt"
+          title: "MyReceipt",
+          date: JSON.stringify(new Date()),
+          items: []
         }
-      ];
+      ].map(function(el) {
+        return actions.formatReceipt(el);
+      });
       const expectedActions = [
         {
           type: actions.REQUEST_QUERY_RECEIPTS
@@ -543,9 +547,13 @@ describe("receiptsActions", function() {
       const mockMsg = "Success";
       const receipts = [
         {
-          title: "MyReceipt"
+          title: "MyReceipt",
+          date: JSON.stringify(new Date()),
+          items: []
         }
-      ];
+      ].map(function(el) {
+        return actions.formatReceipt(el);
+      });
       const expectedActions = [
         {
           type: actions.REQUEST_RECEIPT_PAGE_LOAD

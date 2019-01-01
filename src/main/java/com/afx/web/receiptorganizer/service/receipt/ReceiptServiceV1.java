@@ -112,8 +112,8 @@ public class ReceiptServiceV1 implements ReceiptService {
         this.receiptDao.deleteReceipt(username, receiptId);
     }
 
-    public void editReceipt(String username, Receipt receipt) {
-        this.receiptDao.editReceipt(username, receipt);
+    public Receipt editReceipt(String username, Receipt receipt) {
+        return this.receiptDao.editReceipt(username, receipt);
     }
 
     public Receipt getReceipt(String username, int receiptId) {

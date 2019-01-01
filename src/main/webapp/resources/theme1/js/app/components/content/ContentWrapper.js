@@ -59,7 +59,7 @@ class ContentWrapper extends React.Component {
     const nextPage = currentPage + 1;
 
     //TODO: Improve to handle failures in loadReceiptPage
-    //TODO: Fix queries not working. Ex: "Ohio"
+    //TODO: Make a timer to auto logout users when the session dies
     if (
       this.ContentRef.current.scrollTop /
         this.ContentRef.current.scrollHeight >=
@@ -92,6 +92,7 @@ class ContentWrapper extends React.Component {
     if (
       prevProps.query !== this.props.query ||
       !_.isEqual(prevProps.activeLabels, this.props.activeLabels) ||
+      this.props.numPages !== this.state.receiptPageStatuses.length ||
       this.state.lastLoadedPage !== this.props.currentPage
     ) {
       //Reset receiptPageStatuses on new queries and active label changes
@@ -126,7 +127,6 @@ class ContentWrapper extends React.Component {
   render() {
     const {
       classes,
-      theme,
       isLoading,
       drawerOpen,
       activeLabels,
@@ -135,8 +135,7 @@ class ContentWrapper extends React.Component {
       query,
       receipts,
       windowWidth,
-      windowHeight,
-      view
+      windowHeight
     } = this.props;
     let receiptLoadingWidth = windowWidth;
     let receiptLoadingHeight =

@@ -7,7 +7,9 @@ import {
   HOST_URL,
   CONTENT_TYPE_JSON,
   CREATE_RECEIPT_PATH,
-  EDIT_RECEIPT_PATH
+  EDIT_RECEIPT_PATH,
+  DELETE_RECEIPT_PATH,
+  CURRENCY_FIXED_DECIMAL
 } from "../../../common/constants";
 import {
   requestAddActiveLabel,
@@ -28,6 +30,8 @@ export const REQUEST_RECEIPT_UPLOAD = "REQUEST_RECEIPT_UPLOAD";
 export const RECEIVE_RECEIPT_UPLOAD = "RECEIVE_RECEIPT_UPLOAD";
 export const REQUEST_RECEIPT_EDIT = "REQUEST_RECEIPT_EDIT";
 export const RECEIVE_RECEIPT_EDIT = "RECEIVE_RECEIPT_EDIT";
+export const REQUEST_RECEIPT_DELETE = "REQUEST_RECEIPT_DELETE";
+export const RECEIVE_RECEIPT_DELETE = "RECEIVE_RECEIPT_DELETE";
 export const REQUEST_RECEIPTS_REFRESH = "REQUEST_RECEIPTS_REFRESH";
 export const RECEIVE_RECEIPTS_REFRESH = "RECEIVE_RECEIPTS_REFRESH";
 
@@ -39,6 +43,28 @@ const errorSnackbar = {
   handlerParams: [],
   autohideDuration: SNACKBAR_AUTOHIDE_DURATION_DEFAULT
 };
+
+export function formatReceipt(receipt) {
+  return {
+    ...receipt,
+    labels: receipt.labels ? receipt.labels : [],
+    items: receipt.items.map(function(el) {
+      return {
+        ...el,
+        unitPrice: Number.parseFloat(el.unitPrice).toFixed(
+          CURRENCY_FIXED_DECIMAL
+        ),
+        warrantyUnit: el.warrantyUnit ? el.warrantyUnit : "d"
+      };
+    }),
+    total: Number.parseFloat(receipt.total).toFixed(CURRENCY_FIXED_DECIMAL),
+    tax: Number.parseFloat(receipt.tax).toFixed(CURRENCY_FIXED_DECIMAL),
+    title: receipt.title ? receipt.title : "",
+    description: receipt.description ? receipt.description : "",
+    date: receipt.date ? receipt.date : new Date(),
+    vendor: receipt.vendor ? receipt.vendor : ""
+  };
+}
 
 export function requestQueryReceipts() {
   return {
@@ -89,10 +115,13 @@ export function queryReceipts(query) {
         return response.json();
       })
       .then(function(json) {
+        const receipts = json.receipts.map(function(el) {
+          return formatReceipt(el);
+        });
         dispatch(
           receiveQueryReceipts(
             query,
-            json.receipts,
+            receipts,
             json.totalNumReceipts,
             json.numPages,
             json.success
@@ -156,9 +185,12 @@ export function refreshReceipts() {
         return response.json();
       })
       .then(function(json) {
+        const receipts = json.receipts.map(function(el) {
+          return formatReceipt(el);
+        });
         dispatch(
           receiveReceiptsRefresh(
-            json.receipts,
+            receipts,
             json.totalNumReceipts,
             json.numPages,
             json.success
@@ -216,7 +248,10 @@ export function loadReceiptPage(pageNum) {
         return response.json();
       })
       .then(function(json) {
-        dispatch(receiveReceiptPageLoad(pageNum, json.receipts, json.success));
+        const receipts = json.receipts.map(function(el) {
+          return formatReceipt(el);
+        });
+        dispatch(receiveReceiptPageLoad(pageNum, receipts, json.success));
 
         return Promise.resolve(json.success);
       })
@@ -255,10 +290,13 @@ export function addActiveLabel(label) {
         return response.json();
       })
       .then(function(json) {
+        const receipts = json.receipts.map(function(el) {
+          return formatReceipt(el);
+        });
         dispatch(
           receiveAddActiveLabel(
             label,
-            json.receipts,
+            receipts,
             json.totalNumReceipts,
             json.numPages,
             json.success
@@ -343,10 +381,13 @@ export function removeActiveLabel(label) {
         return response.json();
       })
       .then(function(json) {
+        const receipts = json.receipts.map(function(el) {
+          return formatReceipt(el);
+        });
         dispatch(
           receiveRemoveActiveLabel(
             label,
-            json.receipts,
+            receipts,
             json.totalNumReceipts,
             json.numPages,
             json.success
@@ -415,15 +456,17 @@ export function uploadReceipt(skipOcr, receiptFile) {
   };
 }
 
-export function requestReceiptEdit() {
+export function requestEditReceipt() {
   return {
     type: REQUEST_RECEIPT_EDIT
   };
 }
 
-export function receiveReceiptEdit(success) {
+export function receiveEditReceipt(id, receipt, success) {
   return {
     type: RECEIVE_RECEIPT_EDIT,
+    id: id,
+    receipt: receipt,
     success: success
   };
 }
@@ -436,7 +479,7 @@ export function editReceipt(updatedReceipt) {
     let url = new URL(HOST_URL + EDIT_RECEIPT_PATH.format(updatedReceipt.id));
 
     //Dispatch appropriate action
-    dispatch(requestReceiptEdit());
+    dispatch(requestEditReceipt());
 
     return fetchService
       .doFetch(url, {
@@ -453,12 +496,64 @@ export function editReceipt(updatedReceipt) {
         return response.json();
       })
       .then(function(json) {
-        dispatch(receiveReceiptEdit(json.success));
+        dispatch(
+          receiveEditReceipt(json.receipt.id, json.receipt, json.success)
+        );
 
         return Promise.resolve(json);
       })
       .catch(function(error) {
-        dispatch(receiveReceiptEdit(false));
+        dispatch(receiveEditReceipt(updatedReceipt.id, null, false));
+        dispatch(addSnackbar(errorSnackbar));
+        return Promise.reject();
+      });
+  };
+}
+
+export function requestDeleteReceipt() {
+  return {
+    type: REQUEST_RECEIPT_DELETE
+  };
+}
+
+export function receiveDeleteReceipt(id, success) {
+  return {
+    type: RECEIVE_RECEIPT_DELETE,
+    id: id,
+    success: success
+  };
+}
+
+export function deleteReceipt(id) {
+  return function(dispatch, getState) {
+    const state = getState();
+    const csrfHeaderName = state.csrf.csrfheadername;
+    const csrfToken = state.csrf.csrftoken;
+    let url = new URL(HOST_URL + DELETE_RECEIPT_PATH.format(id));
+
+    //Dispatch appropriate action
+    dispatch(requestDeleteReceipt());
+
+    return fetchService
+      .doFetch(url, {
+        method: "post",
+        headers: {
+          Accept: CONTENT_TYPE_JSON,
+          "Content-Type": CONTENT_TYPE_JSON,
+          [csrfHeaderName]: csrfToken
+        }
+      })
+      .then(function(response) {
+        fetchService.checkResponseStatus(response);
+        return response.json();
+      })
+      .then(function(json) {
+        dispatch(receiveDeleteReceipt(id, json.success));
+
+        return Promise.resolve(json);
+      })
+      .catch(function(error) {
+        dispatch(receiveDeleteReceipt(id, false));
         dispatch(addSnackbar(errorSnackbar));
         return Promise.reject();
       });

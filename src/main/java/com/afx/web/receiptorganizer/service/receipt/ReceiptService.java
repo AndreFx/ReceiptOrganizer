@@ -12,7 +12,7 @@ public interface ReceiptService {
 
     void deleteReceipt(String username, int receiptId);
 
-    void editReceipt(String username, Receipt receipt);
+    Receipt editReceipt(String username, Receipt receipt);
 
     Receipt getReceipt(String username, int receiptId);
 

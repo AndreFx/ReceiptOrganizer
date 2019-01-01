@@ -12,6 +12,20 @@ public class ReceiptResponse extends BaseResponse {
     private Receipt receipt;
 
     /*
+     * Constructors
+     */
+    
+    public ReceiptResponse(Receipt receipt, boolean success, String message) {
+        super(success, message);
+
+        this.receipt = receipt;
+    }
+
+    public ReceiptResponse() {
+        super();
+    }
+
+    /*
      * Getters and setters
      */
 
