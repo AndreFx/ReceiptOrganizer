@@ -1,0 +1,25 @@
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+@media (max-width: 950px) {
+    /**
+    SIDEBAR MEDIAQUERIES
+     */
+    #sidebar {
+        margin-left: -300px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #content {
+        width: 100%;
+    }
+    #content.active {
+        width: calc(100% - 300px);
+    }
+}
+@media only screen and (max-width: 768px){
+    .image-modal-content {
+        width: 100%;
+    }
+}

@@ -1,5 +1,7 @@
 package com.afx.web.receiptorganizer.authentication;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,8 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
-
-import java.util.Arrays;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -47,18 +48,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-          /*
-           * Set up your spring security config here. For example...
-          */
-        http.authorizeRequests().antMatchers("/resources/**", "/login").permitAll()
-                .and().authorizeRequests().anyRequest().authenticated()
-                .and().formLogin().loginPage("/login").permitAll().successHandler(authSuccess)
-                .and().logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccess).logoutSuccessUrl("/login?logout").invalidateHttpSession(true);
-          /*
+        /*
            * Use HTTPs for ALL requests
           */
         http.requiresChannel().anyRequest().requiresSecure();
         http.portMapper().http(httpPort).mapsTo(httpsPort);
+        
+        http.authorizeRequests().antMatchers("/resources/**", "/login").permitAll()
+                .and().authorizeRequests().anyRequest().authenticated()
+                .and().formLogin().loginPage("/login").permitAll().successHandler(authSuccess)
+                .and().logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccess).invalidateHttpSession(true);
+
+        http.exceptionHandling().accessDeniedHandler(getAccessDeniedHandler());
     }
 
     @Override
@@ -85,5 +86,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         provider.setConvertSubErrorCodesToExceptions(true);
         provider.setUseAuthenticationRequestCredentials(true);
         return provider;
+    }
+
+    public AccessDeniedHandler getAccessDeniedHandler() {
+        return new MissingCsrfTokenAccessDeniedHandler();
     }
 }

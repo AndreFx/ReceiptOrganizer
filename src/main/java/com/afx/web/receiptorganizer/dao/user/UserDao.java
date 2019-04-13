@@ -1,6 +1,6 @@
 package com.afx.web.receiptorganizer.dao.user;
 
-import com.afx.web.receiptorganizer.types.User;
+import com.afx.web.receiptorganizer.dao.model.user.User;
 
 public interface UserDao {
 

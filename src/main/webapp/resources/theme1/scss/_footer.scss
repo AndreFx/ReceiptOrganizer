@@ -1,0 +1,137 @@
+/* ---------------------------------------------------
+    FOOTER STYLES
+----------------------------------------------------- */
+.footer {
+    margin-top: 50px;
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+.footer-links {
+    padding-left: 0;
+    margin-bottom: 25px;
+}
+.footer a {
+    font-weight: 500;
+    color: #464a4c;
+}
+h4.footer-text {
+    color: #9d9f9e;
+    font-size: 12px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0 22px;
+}
+
+/* ---------------------------------------------------
+    MODAL STYLES
+----------------------------------------------------- */
+.modal-header h4.modal-title {
+    font-family: "Open Sans",sans-serif;
+    font-weight: 300;
+}
+.modal-body label {
+    font-family: "Open Sans",sans-serif;
+    font-weight: 400;
+}
+.content-body .modal .modal-body input, .content-body .modal .modal-body textarea {
+    border: 1px solid #e6e6e6;
+    box-shadow: none;
+}
+
+/**
+Buttons
+ */
+.delete-icon {
+    color: #f1f1f1;
+    font-weight: bold;
+}
+
+/**
+Image Modal
+ */
+body.image-modal-open {
+    overflow: hidden;
+}
+.image-modal-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+}
+.image-modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 2; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+.image-modal-caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+}
+.image-modal-content, .image-modal-caption {
+    -webkit-animation-name: zoom;
+    -webkit-animation-duration: 0.6s;
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+.image-modal-download {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.image-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.image-modal-close:hover,
+.image-modal-close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+.image-modal-download:hover {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+.image-modal-download:not(:hover) {
+    color: #f1f1f1;
+    text-decoration: none;
+    cursor: pointer;
+}
+@-webkit-keyframes zoom {
+    from {-webkit-transform:scale(0)}
+    to {-webkit-transform:scale(1)}
+}
+@keyframes zoom {
+    from {transform:scale(0)}
+    to {transform:scale(1)}
+}
