@@ -7,7 +7,10 @@ import {
   finishCurrentSnackbar
 } from "../actions/ui/snackbar/snackbarActions";
 import { updateWindowDimensions } from "../actions/ui/window/windowActions";
-import { updateActionDrawerView } from "../actions/ui/actionDrawer/actionDrawerActions";
+import {
+  updateActionDrawerView,
+  toggleActionDrawer
+} from "../actions/ui/actionDrawer/actionDrawerActions";
 
 function mapStateToProps(state) {
   return {
@@ -18,8 +21,7 @@ function mapStateToProps(state) {
     currentSnackbar: state.ui.snackbar.currentSnackbar,
     snackbarOpen: state.ui.snackbar.snackbarOpen,
     snackbarQueueLength: state.ui.snackbar.snackbarQueue.length,
-    windowWidth: state.ui.window.width,
-    actionDrawerView: state.ui.actionDrawer.view
+    windowWidth: state.ui.window.width
   };
 }
 
@@ -34,8 +36,11 @@ function mapDispatchToProps(dispatch) {
     updateWindowDimensions: (width, height) => {
       dispatch(updateWindowDimensions(width, height));
     },
-    updateActionDrawerView: view => {
-      dispatch(updateActionDrawerView(view));
+    updateActionDrawerView: (view, options) => {
+      dispatch(updateActionDrawerView(view, options));
+    },
+    toggleActionDrawer: open => {
+      dispatch(toggleActionDrawer(open));
     }
   };
 }
