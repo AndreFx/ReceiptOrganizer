@@ -15,7 +15,7 @@ import {
   SNACKBAR_EXPAND_QUERY_WIDTH,
   RECEIPT_CREATION
 } from "../../common/constants";
-import LinearIndeterminate from "./loading/linearIndeterminate";
+import LinearIndeterminate from "./loading/LinearIndeterminate";
 import NavContainer from "../containers/navigation/NavContainer";
 import SnackbarContentWrapper from "./snackbar/SnackbarContentWrapper";
 import ContentWrapperContainer from "../containers/content/ContentWrapperContainer";
