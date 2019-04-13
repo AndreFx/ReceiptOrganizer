@@ -1,9 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
-
-//Custom Imports
 import Label from "./Label";
+import { APP_BAR_HEIGHT } from "../../../common/constants";
+
+const styles = theme => ({
+  categoryList: {
+    maxHeight: "calc(100vh - " + APP_BAR_HEIGHT * 3 + "px)",
+    overflowY: "auto"
+  }
+});
 
 class LabelList extends React.Component {
   constructor(props) {
@@ -16,6 +23,7 @@ class LabelList extends React.Component {
 
   render() {
     const {
+      classes,
       labels,
       deleteLabel,
       editLabel,
@@ -33,7 +41,7 @@ class LabelList extends React.Component {
     } = this.props;
 
     return (
-      <List>
+      <List className={classes.categoryList}>
         {" "}
         {labels.map((l, ind) => (
           <Label
@@ -60,6 +68,8 @@ class LabelList extends React.Component {
 }
 
 LabelList.propTypes = {
+  classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
   labels: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired
@@ -85,4 +95,6 @@ LabelList.propTypes = {
   updateContentView: PropTypes.func.isRequired
 };
 
-export default LabelList;
+export default withStyles(styles, {
+  withTheme: true
+})(LabelList);

@@ -23,7 +23,9 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.default,
     padding: "25px 40px 25px",
     marginTop: APP_BAR_HEIGHT + "px",
-    overflowY: "scroll"
+    overflowY: "auto",
+    maxHeight: "calc(100vh - " + APP_BAR_HEIGHT + "px)",
+    boxSizing: "border-box"
   },
   contentMediaQueryOpen: {
     "@media (min-width: 1024px)": {
