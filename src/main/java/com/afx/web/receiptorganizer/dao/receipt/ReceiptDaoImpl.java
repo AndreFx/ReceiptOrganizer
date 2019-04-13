@@ -333,9 +333,8 @@ public class ReceiptDaoImpl implements ReceiptDao {
             "FROM (SELECT DISTINCT(RECEIPT.ReceiptId), RECEIPT.Title, ReceiptCount " +
             "                   FROM USER_RECEIPTS " + 
             "                   INNER JOIN (SELECT RECEIPT.ReceiptId, ReceiptCount = COUNT(RECEIPT.ReceiptId) " +
-            "                               FROM RECEIPT, RECEIPT_LABELS " +
-            "                               WHERE RECEIPT.ReceiptId = RECEIPT_LABELS.ReceiptId " +
-            "                               AND (RECEIPT_LABELS.LabelName IN (:labelnames) OR 'All Receipts' IN (:labelnames)) " +
+            "                               FROM RECEIPT LEFT JOIN RECEIPT_LABELS ON RECEIPT.ReceiptId = RECEIPT_LABELS.ReceiptId " +
+            "                               WHERE (RECEIPT_LABELS.LabelName IN (:labelnames) OR 'All Receipts' IN (:labelnames)) " +
             "                               GROUP BY RECEIPT.ReceiptId " +
             "                               HAVING COUNT(RECEIPT.ReceiptId) = :labelnameslength OR 'All Receipts' IN (:labelnames)) AS VALID_RECEIPTS " +
             "                   ON USER_RECEIPTS.ReceiptId = VALID_RECEIPTS.ReceiptId " +
