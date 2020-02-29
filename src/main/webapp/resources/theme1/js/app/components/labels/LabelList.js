@@ -8,7 +8,8 @@ import { APP_BAR_HEIGHT } from "../../../common/constants";
 const styles = theme => ({
   categoryList: {
     maxHeight: "calc(100vh - " + APP_BAR_HEIGHT * 3 + "px)",
-    overflowY: "auto"
+    overflowY: "auto",
+    overflowX: "hidden"
   }
 });
 

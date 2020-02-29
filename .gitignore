@@ -38,3 +38,6 @@ target/*
 # NPM
 node_modules/*
 src/main/webapp/resources/theme1/js/built/*
+
+# Other
+.sts4-cache/*
