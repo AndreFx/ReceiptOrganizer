@@ -46,7 +46,7 @@
 		<icepdf.version>6.2.2</icepdf.version>
 		<servlet.api.version>3.1.0</servlet.api.version>
 		<hamcrest.version>1.3</hamcrest.version>
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<mockito.version>2.16.0</mockito.version>
 		<jsonpath.version>2.4.0</jsonpath.version>
 		<jsonpath.assert.version>2.4.0</jsonpath.assert.version>
