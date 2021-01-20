@@ -29,7 +29,7 @@
 		<spring.version>5.0.9.RELEASE</spring.version>
 		<spring.data.version>2.1.1.RELEASE</spring.data.version>
 		<spring.ldap.version>2.3.2.RELEASE</spring.ldap.version>
-		<jackson.version>2.9.7</jackson.version>
+		<jackson.version>2.9.10.7</jackson.version>
 		<google.vision.version>1.14.0</google.vision.version>
 		<commons.lang.version>3.6</commons.lang.version>
 		<commons.codec.version>1.10</commons.codec.version>
