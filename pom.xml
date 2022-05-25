@@ -26,7 +26,7 @@
 		<java.version>1.8</java.version>
 		<javaee.version>7.0</javaee.version>
 		<log4j.version>2.8.2</log4j.version>
-		<spring.version>5.0.9.RELEASE</spring.version>
+		<spring.version>5.5.7</spring.version>
 		<spring.data.version>2.1.1.RELEASE</spring.data.version>
 		<spring.ldap.version>2.3.2.RELEASE</spring.ldap.version>
 		<jackson.version>2.9.7</jackson.version>
